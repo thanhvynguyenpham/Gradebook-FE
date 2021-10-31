@@ -12,7 +12,7 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { Add } from "@mui/icons-material";
 
-export default function Header() {
+export default function Header(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
@@ -53,7 +53,7 @@ export default function Header() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Create new class</MenuItem>
+      <MenuItem onClick={props.onCreateClass}>Create new class</MenuItem>
       <MenuItem onClick={handleMenuClose}>Join a class</MenuItem>
     </Menu>
   );
