@@ -12,7 +12,7 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { Add } from "@mui/icons-material";
 
-export default function Header(props) {
+export default function Header({ onCreateClass }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
@@ -36,6 +36,11 @@ export default function Header(props) {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  const handleCreateClass = () => {
+    handleMenuClose();
+    onCreateClass();
+  };
+
   const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
@@ -53,7 +58,7 @@ export default function Header(props) {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={props.onCreateClass}>Create new class</MenuItem>
+      <MenuItem onClick={handleCreateClass}>Create new class</MenuItem>
       <MenuItem onClick={handleMenuClose}>Join a class</MenuItem>
     </Menu>
   );

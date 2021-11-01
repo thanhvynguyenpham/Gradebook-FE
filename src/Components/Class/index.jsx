@@ -6,7 +6,7 @@ import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import "./class.scss";
 
 export default function Class(props) {
   return (
@@ -18,7 +18,12 @@ export default function Class(props) {
         image="https://www.gstatic.com/classroom/themes/img_bookclub.jpg"
       />
       <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
+        <Typography
+          gutterBottom
+          variant="h5"
+          component="div"
+          className="text-overflow"
+        >
           {props.name}
         </Typography>
         <Typography variant="body2" color="text.secondary">

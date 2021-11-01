@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -7,6 +7,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { post } from "../../Utils/httpHelpers";
 
 const validationSchema = yup.object({
   classname: yup
@@ -14,14 +15,11 @@ const validationSchema = yup.object({
     .required("Class name is required"),
   description: yup
     .string("Enter your class description")
-    .required("Password is required"),
+    .required("Description is required"),
 });
 
-export default function CreateClassForm() {
-  const [open, setOpen] = React.useState(true);
-  const handleClose = () => {
-    setOpen(false);
-  };
+const CreateClassForm = ({ isShow, reloadFucntion, handleClose }) => {
+  const [btnDisabled, setBtnDisabled] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -30,13 +28,39 @@ export default function CreateClassForm() {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+      setBtnDisabled(true);
+      submitForm(values);
     },
   });
 
+  useEffect(() => {
+    return () => {
+      setBtnDisabled(false);
+      formik.resetForm();
+    };
+  }, [isShow]);
+
+  function submitForm(values) {
+    const body = {
+      name: values.classname,
+      description: values.description,
+      ownerID: 1,
+    };
+    post("class", body)
+      .then((response) => {
+        if (response.status === 200) {
+          reloadFucntion();
+          handleClose();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   return (
     <div>
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={isShow} onClose={handleClose}>
         <form onSubmit={formik.handleSubmit}>
           <DialogTitle>Create A Class</DialogTitle>
           <DialogContent>
@@ -73,11 +97,17 @@ export default function CreateClassForm() {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button type="submit">Create</Button>
+            <Button onClick={handleClose} disabled={btnDisabled}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={btnDisabled}>
+              Create
+            </Button>
           </DialogActions>
         </form>
       </Dialog>
     </div>
   );
-}
+};
+
+export default CreateClassForm;
