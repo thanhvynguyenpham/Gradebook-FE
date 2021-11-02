@@ -30,14 +30,12 @@ const CreateClassForm = ({ isShow, reloadFucntion, handleClose }) => {
     onSubmit: (values) => {
       setBtnDisabled(true);
       submitForm(values);
+      formik.resetForm();
     },
   });
 
   useEffect(() => {
-    return () => {
-      setBtnDisabled(false);
-      formik.resetForm();
-    };
+    setBtnDisabled(false);
   }, [isShow]);
 
   function submitForm(values) {
@@ -56,6 +54,11 @@ const CreateClassForm = ({ isShow, reloadFucntion, handleClose }) => {
       .catch((error) => {
         console.log(error);
       });
+  }
+
+  function onClose() {
+    handleClose();
+    formik.resetForm();
   }
 
   return (
@@ -97,7 +100,7 @@ const CreateClassForm = ({ isShow, reloadFucntion, handleClose }) => {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose} disabled={btnDisabled}>
+            <Button onClick={onClose} disabled={btnDisabled}>
               Cancel
             </Button>
             <Button type="submit" disabled={btnDisabled}>
