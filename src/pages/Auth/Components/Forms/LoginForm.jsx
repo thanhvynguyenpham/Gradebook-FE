@@ -1,6 +1,7 @@
 import { Button, IconButton, InputAdornment, TextField } from "@mui/material";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { Link } from "react-router-dom";
 import React from "react";
 import "./index.scss";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
@@ -8,16 +9,16 @@ import { useState } from "react";
 
 const validationSchema = yup.object({
   email: yup
-    .string("Enter your email")
-    .email("Enter a valid email")
-    .required("Class name is required"),
+    .string("Enter your email.")
+    .email("Enter a valid email.")
+    .required("Email is required."),
   password: yup
-    .string("Enter your class description")
-    .required("Description is required"),
+    .string("Enter your password.")
+    .required("Password is required."),
 });
 
 export const LoginForm = () => {
-  const [errorMsg, setErrorMsg] = useState("Invalid email or password");
+  const [errorMsg, setErrorMsg] = useState("");
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -39,11 +40,7 @@ export const LoginForm = () => {
   return (
     <div className="authen-form">
       <div className="authen-section">
-        <img
-          src="assets/img/logo.png"
-          alt="logo"
-          style={{ position: "absolute", top: "100px" }}
-        ></img>
+        <img src="assets/img/logo_white.png" alt="logo" className="logo"></img>
         <form onSubmit={formik.handleSubmit}>
           <div className="title">
             <span>Login</span>
@@ -94,10 +91,20 @@ export const LoginForm = () => {
             variant="contained"
             color="warning"
             fullWidth
-            style={{ marginTop: "30px" }}
+            style={{ marginTop: "20px" }}
           >
             Login
           </Button>
+          <div className="form-footer">
+            <span>Haven't had an account yet?</span>
+            <span style={{ float: "right" }}>
+              <Link to="/register">
+                <a style={{ color: "white", textDecoration: "none" }}>
+                  <b>Sign Up</b>
+                </a>
+              </Link>
+            </span>
+          </div>
         </form>
       </div>
     </div>

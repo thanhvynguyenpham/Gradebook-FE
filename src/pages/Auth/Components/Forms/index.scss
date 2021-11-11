@@ -17,7 +17,9 @@
     form {
       max-width: 300px;
     }
-
+    .logo {
+      margin-block: 20px;
+    }
     .title {
       font-style: normal;
       font-weight: bold;
@@ -33,6 +35,10 @@
       height: 1.25rem;
       margin: 0.2rem 0 0.4rem 0;
       text-align: center;
+    }
+    .form-footer {
+      margin-block-start: 10px;
+      margin-block-end: 20px;
     }
   }
 }
