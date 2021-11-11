@@ -1,0 +1,38 @@
+.authen-form {
+  vertical-align: center;
+  align-items: center;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.25);
+  border-radius: 15px;
+  .authen-section {
+    min-height: 500px;
+    min-width: 320px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+
+    form {
+      max-width: 300px;
+    }
+
+    .title {
+      font-style: normal;
+      font-weight: bold;
+      font-size: 30px;
+      line-height: 41px;
+      color: #e75300;
+      width: 80%;
+      margin-bottom: 25px;
+    }
+    .error-msg {
+      color: red;
+      font-size: 0.9rem;
+      height: 1.25rem;
+      margin: 0.2rem 0 0.4rem 0;
+      text-align: center;
+    }
+  }
+}

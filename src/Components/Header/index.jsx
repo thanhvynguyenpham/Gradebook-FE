@@ -102,7 +102,7 @@ export default function Header({ onCreateClass }) {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="static" color="warning">
         <Toolbar>
           <IconButton
             size="large"
