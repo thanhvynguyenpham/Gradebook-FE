@@ -12,6 +12,7 @@ import React from "react";
 import "./index.scss";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
+import GoogleLogin from "react-google-login";
 
 const validationSchema = yup.object({
   firstname: yup
@@ -61,10 +62,20 @@ export const SignUpForm = () => {
     const newStatus = !showPasswordConfirm;
     setShowPasswordConfirm(newStatus);
   }
+
+  const responseGoogle = (response) => {
+    console.log(response);
+  };
   return (
     <div className="authen-form">
       <div className="authen-section">
-        <img src="assets/img/logo_white.png" alt="logo" className="logo"></img>
+        <Link to="/">
+          <img
+            src="assets/img/logo_white.png"
+            alt="logo"
+            className="logo"
+          ></img>
+        </Link>
         <form onSubmit={formik.handleSubmit}>
           <div className="title">
             <span>Sign Up</span>
@@ -182,6 +193,34 @@ export const SignUpForm = () => {
           >
             Sign Up
           </Button>
+          <div className="social-login-block">
+            <div className="message" style={{ textAlign: "center" }}>
+              or login with
+            </div>
+            <GoogleLogin
+              clientId="989952992245-j12fvr7j1aeegfm7o1p5ltg3i94adku6.apps.googleusercontent.com"
+              render={(renderProps) => (
+                <Button
+                  className="gg-login-btn"
+                  onClick={renderProps.onClick}
+                  disabled={renderProps.disabled}
+                >
+                  <img
+                    data-test="icon"
+                    src="assets/icons/google-icon.svg"
+                    alt="google"
+                    width="36"
+                    height="36"
+                    className="button__icon"
+                  />
+                </Button>
+              )}
+              buttonText="Login"
+              onSuccess={responseGoogle}
+              onFailure={responseGoogle}
+              cookiePolicy={"single_host_origin"}
+            />
+          </div>
           <div className="form-footer">
             <span>Already have an account?</span>
             <span style={{ float: "right" }}>

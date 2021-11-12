@@ -1,3 +1,4 @@
+@import "../../../../variables.scss";
 .authen-form {
   vertical-align: center;
   align-items: center;
@@ -25,7 +26,7 @@
       font-weight: bold;
       font-size: 30px;
       line-height: 41px;
-      color: #e75300;
+      color: $secondary;
       width: 80%;
       margin-bottom: 25px;
     }
@@ -39,6 +40,17 @@
     .form-footer {
       margin-block-start: 10px;
       margin-block-end: 20px;
+    }
+    .social-login-block {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .message {
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
     }
   }
 }

@@ -1,6 +1,5 @@
 import axios from "axios";
-const endpoint = "https://gradebook-nptv.herokuapp.com/api/v1/";
-// const endpoint = "http://localhost:8080/api/v1/";
+const endpoint = process.env.REACT_APP_API_LINK;
 
 export function get(url) {
   return axios.get(endpoint + url, {
@@ -11,6 +10,23 @@ export function get(url) {
 }
 
 export function post(url, body) {
+  return axios.post(endpoint + url, body, {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "application/json; charset=utf-8",
+    },
+  });
+}
+
+export function getAuth(url) {
+  return axios.get(endpoint + url, {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
+  });
+}
+
+export function postAuth(url, body) {
   return axios.post(endpoint + url, body, {
     headers: {
       "Access-Control-Allow-Origin": "*",

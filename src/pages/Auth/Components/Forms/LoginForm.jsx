@@ -6,6 +6,10 @@ import React from "react";
 import "./index.scss";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
+import GoogleLogin from "react-google-login";
+import { post } from "../../../../utils/httpHelpers";
+import { useCookies } from "react-cookie";
+import { useHistory } from "react-router-dom";
 
 const validationSchema = yup.object({
   email: yup
@@ -17,8 +21,14 @@ const validationSchema = yup.object({
     .required("Password is required."),
 });
 
-export const LoginForm = () => {
+export const LoginForm = ({
+  showFailedAlert,
+  showLoadingScreen,
+  closeLoadingScreen,
+}) => {
   const [errorMsg, setErrorMsg] = useState("");
+  const history = useHistory();
+  const [cookies, setCookie] = useCookies(["access_token", "refresh_token"]);
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -27,7 +37,8 @@ export const LoginForm = () => {
     validationSchema: validationSchema,
     onSubmit: (values) => {
       // setBtnDisabled(true);
-      // submitForm(values);
+      setErrorMsg("");
+      submitForm(values);
       // formik.resetForm();
     },
     validateOnChange: (value) => {},
@@ -37,16 +48,68 @@ export const LoginForm = () => {
     const newStatus = !showPassword;
     setShowPassword(newStatus);
   }
+  const onGoogleLoginSuccess = (response) => {
+    showLoadingScreen();
+    const body = {
+      token: response.tokenId,
+    };
+    post("/api/auth/google", JSON.stringify(body))
+      .then((response) => {
+        closeLoadingScreen();
+        if (response.status === 200) {
+          setCookie("access_token", response.data.accessToken);
+          setCookie("refresh_token", response.data.refreshToken);
+          history.goBack();
+        }
+      })
+      .catch((error) => {
+        closeLoadingScreen();
+        showFailedAlert();
+        console.log(error);
+      });
+  };
+  const onGoogleLoginFailure = (response) => {
+    console.log(response);
+  };
+
+  const submitForm = (values) => {
+    showLoadingScreen();
+    const body = {
+      email: values.email,
+      password: values.password,
+    };
+    post("/api/auth", JSON.stringify(body))
+      .then((response) => {
+        closeLoadingScreen();
+        if (response.status === 200) {
+          setCookie("access_token", response.data.accessToken);
+          setCookie("refresh_token", response.data.refreshToken);
+          history.goBack();
+        }
+      })
+      .catch((error) => {
+        closeLoadingScreen();
+        setErrorMsg("Invalid email or password");
+        console.log(error);
+      });
+  };
+
   return (
     <div className="authen-form">
       <div className="authen-section">
-        <img src="assets/img/logo_white.png" alt="logo" className="logo"></img>
+        <Link to="/">
+          <img
+            src="assets/img/logo_white.png"
+            alt="logo"
+            className="logo"
+          ></img>
+        </Link>
         <form onSubmit={formik.handleSubmit}>
           <div className="title">
             <span>Login</span>
           </div>
           <TextField
-            color="warning"
+            color="secondary"
             autoFocus
             margin="dense"
             id="email"
@@ -60,7 +123,7 @@ export const LoginForm = () => {
             helperText={formik.touched.email && formik.errors.email}
           />
           <TextField
-            color="warning"
+            color="secondary"
             margin="dense"
             fullWidth
             variant="standard"
@@ -89,17 +152,45 @@ export const LoginForm = () => {
           <Button
             type="submit"
             variant="contained"
-            color="warning"
+            color="secondary"
             fullWidth
             style={{ marginTop: "20px" }}
           >
             Login
           </Button>
+          <div className="social-login-block">
+            <div className="message" style={{ textAlign: "center" }}>
+              or login with
+            </div>
+            <GoogleLogin
+              clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+              render={(renderProps) => (
+                <Button
+                  className="gg-login-btn"
+                  onClick={renderProps.onClick}
+                  disabled={renderProps.disabled}
+                >
+                  <img
+                    data-test="icon"
+                    src="assets/icons/google-icon.svg"
+                    alt="google"
+                    width="36"
+                    height="36"
+                    className="button__icon"
+                  />
+                </Button>
+              )}
+              buttonText="Login"
+              onSuccess={onGoogleLoginSuccess}
+              onFailure={onGoogleLoginFailure}
+              cookiePolicy={"single_host_origin"}
+            />
+          </div>
           <div className="form-footer">
             <span>Haven't had an account yet?</span>
             <span style={{ float: "right" }}>
               <Link to="/register">
-                <a style={{ color: "white", textDecoration: "none" }}>
+                <a style={{ color: "white" }}>
                   <b>Sign Up</b>
                 </a>
               </Link>
