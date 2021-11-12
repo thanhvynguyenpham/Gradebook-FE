@@ -7,9 +7,9 @@ import "./index.scss";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
 import GoogleLogin from "react-google-login";
-import { post } from "../../../../utils/httpHelpers";
-import { useCookies } from "react-cookie";
+import { post, refreshToken } from "../../../../utils/httpHelpers";
 import { useHistory } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const validationSchema = yup.object({
   email: yup
@@ -28,7 +28,6 @@ export const LoginForm = ({
 }) => {
   const [errorMsg, setErrorMsg] = useState("");
   const history = useHistory();
-  const [cookies, setCookie] = useCookies(["access_token", "refresh_token"]);
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -57,8 +56,8 @@ export const LoginForm = ({
       .then((response) => {
         closeLoadingScreen();
         if (response.status === 200) {
-          setCookie("access_token", response.data.accessToken);
-          setCookie("refresh_token", response.data.refreshToken);
+          Cookies.set("access_token", response.data.accessToken);
+          Cookies.set("refresh_token", response.data.refreshToken);
           history.goBack();
         }
       })
@@ -82,8 +81,8 @@ export const LoginForm = ({
       .then((response) => {
         closeLoadingScreen();
         if (response.status === 200) {
-          setCookie("access_token", response.data.accessToken);
-          setCookie("refresh_token", response.data.refreshToken);
+          Cookies.set("access_token", response.data.accessToken);
+          Cookies.set("refresh_token", response.data.refreshToken);
           history.goBack();
         }
       })

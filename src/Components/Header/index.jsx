@@ -12,14 +12,13 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { Add, Login, BorderColor } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-import { useCookies } from "react-cookie";
+import Cookies from "js-cookie";
 
 export default function Header({ onCreateClass }) {
-  const [cookies, setCookie] = useCookies(["access_token", "refresh_token"]);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [loggedIn, setLoggedIn] = React.useState(
-    cookies.access_token ? true : false
+    Cookies.get("access_token") ? true : false
   );
 
   const isMenuOpen = Boolean(anchorEl);
