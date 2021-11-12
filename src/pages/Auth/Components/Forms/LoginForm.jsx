@@ -35,10 +35,8 @@ export const LoginForm = ({
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      // setBtnDisabled(true);
       setErrorMsg("");
       submitForm(values);
-      // formik.resetForm();
     },
     validateOnChange: (value) => {},
   });
