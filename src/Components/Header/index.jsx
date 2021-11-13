@@ -10,7 +10,13 @@ import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MoreIcon from "@mui/icons-material/MoreVert";
-import { Add, Logout, Person } from "@mui/icons-material";
+import {
+  Add,
+  AddCircleOutlined,
+  Input,
+  Logout,
+  Person,
+} from "@mui/icons-material";
 import Cookies from "js-cookie";
 import { Divider, ListItemIcon } from "@mui/material";
 import { useHistory } from "react-router";
@@ -76,8 +82,19 @@ export default function Header({ onCreateClass }) {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleCreateClass}>Create new class</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Join a class</MenuItem>
+      <MenuItem onClick={handleCreateClass}>
+        <ListItemIcon>
+          <AddCircleOutlined fontSize="small" />
+        </ListItemIcon>
+        Create new class
+      </MenuItem>
+      <Divider />
+      <MenuItem onClick={handleMenuClose}>
+        <ListItemIcon>
+          <Input fontSize="small" />
+        </ListItemIcon>
+        Join a class
+      </MenuItem>
     </Menu>
   );
   const renderProfileMenu = (
@@ -130,23 +147,30 @@ export default function Header({ onCreateClass }) {
       onClose={handleMobileMenuClose}
     >
       <div>
-        <MenuItem>
-          <IconButton size="large" aria-label="Profile" color="inherit">
-            <AccountCircle />
-          </IconButton>
-          <p>Profile</p>
+        <MenuItem onClick={handleCreateClass}>
+          <ListItemIcon>
+            <AddCircleOutlined />
+          </ListItemIcon>
+          Create new class
         </MenuItem>
-        <MenuItem onClick={handleAddMenuOpen}>
-          <IconButton
-            size="large"
-            aria-label="account of current user"
-            aria-controls="primary-search-account-menu"
-            aria-haspopup="true"
-            color="inherit"
-          >
-            <Add />
-          </IconButton>
-          <p>Add</p>
+        <MenuItem onClick={handleMenuClose}>
+          <ListItemIcon>
+            <Input />
+          </ListItemIcon>
+          Join a class
+        </MenuItem>
+        <Divider />
+        <MenuItem>
+          <ListItemIcon>
+            <Person fontSize="small" />
+          </ListItemIcon>
+          Profile
+        </MenuItem>
+        <MenuItem onClick={handleLogout}>
+          <ListItemIcon>
+            <Logout />
+          </ListItemIcon>
+          Logout
         </MenuItem>
       </div>
     </Menu>
@@ -156,15 +180,6 @@ export default function Header({ onCreateClass }) {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
           <Typography
             variant="h6"
             noWrap
