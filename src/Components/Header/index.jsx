@@ -10,16 +10,23 @@ import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MoreIcon from "@mui/icons-material/MoreVert";
-import { Add, Login, BorderColor } from "@mui/icons-material";
-import { Link } from "react-router-dom";
+import { Add, Logout, Person } from "@mui/icons-material";
 import Cookies from "js-cookie";
+import { Divider, ListItemIcon } from "@mui/material";
+import { useHistory } from "react-router";
 
 export default function Header({ onCreateClass }) {
+  const history = useHistory();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-  const [loggedIn, setLoggedIn] = React.useState(
-    Cookies.get("access_token") ? true : false
-  );
+  const [anchorElProfile, setAnchorElProfile] = React.useState(null);
+  const openProfileMenu = Boolean(anchorElProfile);
+  const handleClickProfile = (event) => {
+    setAnchorElProfile(event.currentTarget);
+  };
+  const handleCloseProfile = () => {
+    setAnchorElProfile(null);
+  };
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -46,12 +53,18 @@ export default function Header({ onCreateClass }) {
     onCreateClass();
   };
 
+  function handleLogout() {
+    Cookies.remove("access_token");
+    Cookies.remove("refresh_token");
+    history.push("/login");
+  }
+
   const menuId = "primary-search-account-menu";
-  const renderMenu = (
+  const renderAddMenu = (
     <Menu
       anchorEl={anchorEl}
       anchorOrigin={{
-        vertical: "top",
+        vertical: "bottom",
         horizontal: "right",
       }}
       id={menuId}
@@ -67,13 +80,44 @@ export default function Header({ onCreateClass }) {
       <MenuItem onClick={handleMenuClose}>Join a class</MenuItem>
     </Menu>
   );
+  const renderProfileMenu = (
+    <Menu
+      anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "right",
+      }}
+      keepMounted
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      anchorEl={anchorElProfile}
+      open={openProfileMenu}
+      onClose={handleCloseProfile}
+      onClick={handleCloseProfile}
+    >
+      <MenuItem>
+        <ListItemIcon>
+          <Person fontSize="small" />
+        </ListItemIcon>
+        Profile
+      </MenuItem>
+      <Divider />
+      <MenuItem onClick={handleLogout}>
+        <ListItemIcon>
+          <Logout fontSize="small" />
+        </ListItemIcon>
+        Logout
+      </MenuItem>
+    </Menu>
+  );
 
   const mobileMenuId = "primary-search-account-menu-mobile";
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
       anchorOrigin={{
-        vertical: "top",
+        vertical: "bottom",
         horizontal: "right",
       }}
       id={mobileMenuId}
@@ -85,80 +129,27 @@ export default function Header({ onCreateClass }) {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      {loggedIn ? (
-        <div>
-          <MenuItem>
-            <IconButton size="large" aria-label="Profile" color="inherit">
-              <AccountCircle />
-            </IconButton>
-            <p>Profile</p>
-          </MenuItem>
-          <MenuItem onClick={handleAddMenuOpen}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="primary-search-account-menu"
-              aria-haspopup="true"
-              color="inherit"
-            >
-              <Add />
-            </IconButton>
-            <p>Add</p>
-          </MenuItem>
-        </div>
-      ) : (
-        <div>
-          <MenuItem>
-            <IconButton size="large" aria-label="Login" color="inherit">
-              <Login />
-            </IconButton>
-            <p>Login</p>
-          </MenuItem>
-          <MenuItem onClick={handleAddMenuOpen}>
-            <IconButton
-              size="large"
-              aria-label="register"
-              aria-haspopup="true"
-              color="inherit"
-            >
-              <BorderColor />
-            </IconButton>
-            <p>Register</p>
-          </MenuItem>
-        </div>
-      )}
+      <div>
+        <MenuItem>
+          <IconButton size="large" aria-label="Profile" color="inherit">
+            <AccountCircle />
+          </IconButton>
+          <p>Profile</p>
+        </MenuItem>
+        <MenuItem onClick={handleAddMenuOpen}>
+          <IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="primary-search-account-menu"
+            aria-haspopup="true"
+            color="inherit"
+          >
+            <Add />
+          </IconButton>
+          <p>Add</p>
+        </MenuItem>
+      </div>
     </Menu>
-  );
-
-  const LoggedInButtons = (
-    <Box sx={{ display: { xs: "none", md: "flex" } }}>
-      <IconButton
-        size="large"
-        edge="end"
-        aria-label="account of current user"
-        aria-controls={menuId}
-        aria-haspopup="true"
-        onClick={handleAddMenuOpen}
-        color="inherit"
-      >
-        <Add />
-      </IconButton>
-      <IconButton size="large" aria-label="Account" color="inherit">
-        <AccountCircle />
-      </IconButton>
-    </Box>
-  );
-  const NotLoggedInButtons = (
-    <Box sx={{ display: { xs: "none", md: "flex" } }}>
-      <Link to="/login">
-        <Button style={{ color: "white" }}>Login</Button>
-      </Link>
-      <Link to="/register">
-        <Button variant="contained" color="secondary">
-          Register
-        </Button>
-      </Link>
-    </Box>
   );
 
   return (
@@ -183,7 +174,27 @@ export default function Header({ onCreateClass }) {
             Gradebook
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          {loggedIn ? LoggedInButtons : NotLoggedInButtons}
+          <Box sx={{ display: { xs: "none", md: "flex" } }}>
+            <IconButton
+              size="large"
+              edge="end"
+              aria-label="account of current user"
+              aria-controls={menuId}
+              aria-haspopup="true"
+              onClick={handleAddMenuOpen}
+              color="inherit"
+            >
+              <Add />
+            </IconButton>
+            <IconButton
+              onClick={handleClickProfile}
+              size="large"
+              aria-label="Account"
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
+          </Box>
 
           <Box sx={{ display: { xs: "flex", md: "none" } }}>
             <IconButton
@@ -199,8 +210,9 @@ export default function Header({ onCreateClass }) {
           </Box>
         </Toolbar>
       </AppBar>
+      {renderProfileMenu}
+      {renderAddMenu}
       {renderMobileMenu}
-      {renderMenu}
     </Box>
   );
 }

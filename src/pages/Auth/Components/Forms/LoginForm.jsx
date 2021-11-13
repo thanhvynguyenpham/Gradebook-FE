@@ -50,12 +50,16 @@ export const LoginForm = ({
     const body = {
       token: response.tokenId,
     };
-    post("/api/auth/google", JSON.stringify(body))
+    post("/auth/google", JSON.stringify(body))
       .then((response) => {
         closeLoadingScreen();
         if (response.status === 200) {
-          Cookies.set("access_token", response.data.accessToken);
-          Cookies.set("refresh_token", response.data.refreshToken);
+          Cookies.set("access_token", response.data.accessToken, {
+            expires: 1,
+          });
+          Cookies.set("refresh_token", response.data.refreshToken, {
+            expires: 1,
+          });
           history.goBack();
         }
       })
@@ -75,12 +79,16 @@ export const LoginForm = ({
       email: values.email,
       password: values.password,
     };
-    post("/api/auth", JSON.stringify(body))
+    post("/auth", JSON.stringify(body))
       .then((response) => {
         closeLoadingScreen();
         if (response.status === 200) {
-          Cookies.set("access_token", response.data.accessToken);
-          Cookies.set("refresh_token", response.data.refreshToken);
+          Cookies.set("access_token", response.data.accessToken, {
+            expires: 1,
+          });
+          Cookies.set("refresh_token", response.data.refreshToken, {
+            expires: 1,
+          });
           history.goBack();
         }
       })

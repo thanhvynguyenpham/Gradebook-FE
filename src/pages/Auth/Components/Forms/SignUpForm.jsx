@@ -79,7 +79,7 @@ export const SignUpForm = ({
     const body = {
       token: response.tokenId,
     };
-    post("/api/auth/google", JSON.stringify(body))
+    post("/auth/google", JSON.stringify(body))
       .then((response) => {
         closeLoadingScreen();
         if (response.status === 200) {
