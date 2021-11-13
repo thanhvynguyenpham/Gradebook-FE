@@ -10,9 +10,9 @@ export default function Main(props) {
         {Array.from(props.classList).map((value, key) => (
           <Grid item xs={12} sm={6} md={4} key={key}>
             <Class
-              name={value.name}
-              owner={value.ownerName}
-              description={value.description}
+              name={value.class.name}
+              owner={value.class.createdUser.name}
+              description={value.class.description}
             />
           </Grid>
         ))}
