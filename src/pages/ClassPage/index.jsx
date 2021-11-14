@@ -7,10 +7,13 @@ import { getAuth } from "../../Utils/httpHelpers";
 import { getLocalUser } from "../../Utils/localStorageGetSet";
 import "../Home/Main/index.scss";
 import DashBoard from "./Dashboard";
+import Members from "./Members";
 
 const ClassPage = () => {
   const [value, setValue] = React.useState(0);
   const [classDetails, setClassDetails] = useState([]);
+  const [studentsList, setStudentsList] = useState([]);
+  const [teachersList, setTeachersList] = useState([]);
   const { id } = useParams();
   const user = getLocalUser();
   const history = useHistory();
@@ -37,7 +40,6 @@ const ClassPage = () => {
 
   useEffect(() => {
     const getClassDetails = () => {
-      console.log("entered");
       getAuth(`/class/${id}/`)
         .then((response) => {
           if (response.status === 200) {
@@ -49,8 +51,22 @@ const ClassPage = () => {
           history.push("/login");
         });
     };
+    const getMemberList = () => {
+      getAuth(`/class/${id}/list-member`)
+        .then((response) => {
+          if (response.status === 200) {
+            console.log(response.data);
+            setStudentsList(response.data.students);
+            setTeachersList(response.data.teachers);
+          }
+        })
+        .catch((error) => {
+          history.push("/login");
+        });
+    };
     console.log(id);
     getClassDetails();
+    getMemberList();
   }, [id, history]);
 
   return (
@@ -58,14 +74,20 @@ const ClassPage = () => {
       <Header />
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs value={value} onChange={handleChange} centered>
-          <Tab label="Dashboard" />
-          <Tab label="Members" />
+          <Tab label="Dashboard" key="tab-1" />
+          <Tab label="Members" key="tab-2" />
         </Tabs>
       </Box>
       <DashBoard
+        hidden={value !== 0}
         classDetails={classDetails}
         user={user}
         listPosts={exampleListPost}
+      />
+      <Members
+        hidden={value !== 1}
+        teachersList={teachersList}
+        studentsList={studentsList}
       />
     </div>
   );
