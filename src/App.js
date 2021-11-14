@@ -1,24 +1,20 @@
-import logo from './logo.svg';
-import './App.css';
+import { ThemeProvider } from "@mui/material";
+import PrivateRoute from "./Components/Routes/PrivateRoute";
+import PublicRoute from "./Components/Routes/PublicRoute";
+import Home from "./Pages/Home";
+import Login from "./Pages/Auth/Login";
+import SignUp from "./Pages/Auth/SignUp";
+import theme from "./theme";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <div className="App">
+        <PrivateRoute exact path="/" component={Home} />
+        <PublicRoute exact path="/login" component={Login} />
+        <PublicRoute exact path="/register" component={SignUp} />
+      </div>
+    </ThemeProvider>
   );
 }
 

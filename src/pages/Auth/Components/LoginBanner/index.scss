@@ -1,0 +1,28 @@
+.left-banner {
+  padding: 10px;
+  height: 100%;
+  &__background {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    background-image: url("/assets/img/background_login.jpg");
+    border-radius: 15px;
+    height: 100%;
+    margin: 0 5%;
+  }
+  &__character {
+    width: 400px;
+    align-items: center;
+  }
+  &__logo {
+    font-weight: bold;
+    font-size: 48px;
+    line-height: 65px;
+    color: #ffffff;
+    text-align: left;
+    width: 400px;
+    margin-top: 50px;
+  }
+}

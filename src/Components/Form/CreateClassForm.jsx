@@ -7,7 +7,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { post } from "../../Utils/httpHelpers";
+import { postAuth } from "../../Utils/httpHelpers";
 
 const validationSchema = yup.object({
   classname: yup
@@ -18,7 +18,13 @@ const validationSchema = yup.object({
     .required("Description is required"),
 });
 
-const CreateClassForm = ({ isShow, reloadFucntion, handleClose }) => {
+const CreateClassForm = ({
+  isShow,
+  reloadFucntion,
+  handleClose,
+  onCreateSuccess,
+  onCreateFailed,
+}) => {
   const [btnDisabled, setBtnDisabled] = useState(false);
 
   const formik = useFormik({
@@ -42,17 +48,17 @@ const CreateClassForm = ({ isShow, reloadFucntion, handleClose }) => {
     const body = {
       name: values.classname,
       description: values.description,
-      ownerID: 1,
     };
-    post("class", body)
+    postAuth("/", body)
       .then((response) => {
-        if (response.status === 200) {
-          reloadFucntion();
-          handleClose();
-        }
+        reloadFucntion();
+        handleClose();
+        onCreateSuccess();
       })
       .catch((error) => {
         console.log(error);
+        onCreateFailed();
+        setBtnDisabled(false);
       });
   }
 
@@ -68,6 +74,7 @@ const CreateClassForm = ({ isShow, reloadFucntion, handleClose }) => {
           <DialogTitle>Create A Class</DialogTitle>
           <DialogContent>
             <TextField
+              disabled={btnDisabled}
               autoFocus
               margin="dense"
               id="classname"
@@ -83,6 +90,7 @@ const CreateClassForm = ({ isShow, reloadFucntion, handleClose }) => {
               helperText={formik.touched.classname && formik.errors.classname}
             />
             <TextField
+              disabled={btnDisabled}
               margin="dense"
               id="description"
               label="Description"
