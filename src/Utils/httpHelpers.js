@@ -1,6 +1,11 @@
 import axios from "axios";
-import Cookies from "js-cookie";
+import {
+  getLocalAccessToken,
+  getLocalRefreshToken,
+  setLocalAccessToken,
+} from "./localStorageGetSet";
 const endpoint = process.env.REACT_APP_API_LINK;
+
 export function get(url) {
   return axios.get(endpoint + url, {
     headers: {
@@ -16,16 +21,6 @@ export function post(url, body) {
       "Content-Type": "application/json; charset=utf-8",
     },
   });
-}
-
-function getLocalAccessToken() {
-  const accessToken = Cookies.get("access_token");
-  return accessToken;
-}
-
-function getLocalRefreshToken() {
-  const refreshToken = Cookies.get("refresh_token");
-  return refreshToken;
 }
 
 const instance = axios.create({
@@ -64,7 +59,7 @@ instance.interceptors.response.use(
         try {
           const rs = await refreshToken();
           const { accessToken } = rs.data;
-          Cookies.set("access_token", accessToken);
+          setLocalAccessToken(accessToken);
           instance.defaults.headers.common["x-access-token"] = accessToken;
 
           return instance(originalConfig);
