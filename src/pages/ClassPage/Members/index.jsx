@@ -7,28 +7,13 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
-  Snackbar,
   Stack,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 import { nameToAvatar } from "../../../Utils/converters";
 
 const Members = ({ hidden, teachersList, studentsList }) => {
-  //   const [openMessage, setOpenMessage] = useState(false);
-  //   const [message, setMessage] = useState("");
-  //   const copyToClipBoard = () => {
-  //     navigator.clipboard
-  //       .writeText("key")
-  //       .then(() => {
-  //         setMessage("Copied code to clipboard!");
-  //         setOpenMessage(true);
-  //       })
-  //       .catch(() => {
-  //         setMessage("Cannot copy code. Please try again or copy manually.");
-  //         setOpenMessage(true);
-  //       });
-  //   };
   return (
     <div hidden={hidden}>
       <Container>
@@ -75,12 +60,6 @@ const Members = ({ hidden, teachersList, studentsList }) => {
           </Grid>
         </Grid>
       </Container>
-      {/* <Snackbar
-        open={openMessage}
-        autoHideDuration={4000}
-        onClose={() => setOpenMessage(false)}
-        message={message}
-      /> */}
     </div>
   );
 };
