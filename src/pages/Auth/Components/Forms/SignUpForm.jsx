@@ -289,9 +289,9 @@ export const SignUpForm = ({
               <span>Already have an account?</span>
               <span style={{ float: "right" }}>
                 <Link to="/login" replace>
-                  <a style={{ color: "white", textDecoration: "none" }}>
-                    <b>Login</b>
-                  </a>
+                  <b style={{ color: "white", textDecoration: "none" }}>
+                    Login
+                  </b>
                 </Link>
               </span>
             </div>

@@ -195,9 +195,7 @@ export const LoginForm = ({
             <span>Haven't had an account yet?</span>
             <span style={{ float: "right" }}>
               <Link to="/register">
-                <a style={{ color: "white" }}>
-                  <b>Sign Up</b>
-                </a>
+                <b style={{ color: "white" }}>Sign Up</b>
               </Link>
             </span>
           </div>
