@@ -106,7 +106,7 @@ export const SignUpForm = ({
       firstName: values.firstname,
       lastName: values.lastname,
     };
-    post("/api/user", JSON.stringify(body))
+    post("/register/", JSON.stringify(body))
       .then((response) => {
         closeLoadingScreen();
         setShowSignUpSuccessAlert(true);
