@@ -49,7 +49,7 @@ const CreateClassForm = ({
       name: values.classname,
       description: values.description,
     };
-    postAuth("/", body)
+    postAuth("/classes", body)
       .then((response) => {
         reloadFucntion();
         handleClose();
