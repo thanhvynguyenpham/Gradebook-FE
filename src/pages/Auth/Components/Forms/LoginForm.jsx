@@ -8,8 +8,12 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
 import GoogleLogin from "react-google-login";
 import { useHistory } from "react-router-dom";
-import Cookies from "js-cookie";
 import { post } from "../../../../Utils/httpHelpers";
+import {
+  setLocalAccessToken,
+  setLocalRefreshToken,
+  setLocalUser,
+} from "../../../../Utils/localStorageGetSet";
 
 const validationSchema = yup.object({
   email: yup
@@ -54,13 +58,17 @@ export const LoginForm = ({
       .then((response) => {
         closeLoadingScreen();
         if (response.status === 200) {
-          Cookies.set("access_token", response.data.accessToken, {
-            expires: 1,
-          });
-          Cookies.set("refresh_token", response.data.refreshToken, {
-            expires: 1,
-          });
-          history.goBack();
+          const user = {
+            id: response.data._id,
+            firstName: response.data.firstName,
+            lastName: response.data.lastName,
+            name: response.data.name,
+            email: response.data.email,
+          };
+          setLocalAccessToken(response.data.accessToken);
+          setLocalRefreshToken(response.data.refreshToken);
+          setLocalUser(user);
+          history.push("/");
         }
       })
       .catch((error) => {
@@ -83,13 +91,17 @@ export const LoginForm = ({
       .then((response) => {
         closeLoadingScreen();
         if (response.status === 200) {
-          Cookies.set("access_token", response.data.accessToken, {
-            expires: 1,
-          });
-          Cookies.set("refresh_token", response.data.refreshToken, {
-            expires: 1,
-          });
-          history.goBack();
+          const user = {
+            id: response.data._id,
+            firstName: response.data.firstName,
+            lastName: response.data.lastName,
+            name: response.data.name,
+            email: response.data.email,
+          };
+          setLocalAccessToken(response.data.accessToken);
+          setLocalRefreshToken(response.data.refreshToken);
+          setLocalUser(user);
+          history.push("/");
         }
       })
       .catch((error) => {
