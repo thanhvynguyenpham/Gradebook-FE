@@ -1,5 +1,4 @@
 import { ThemeProvider } from "@mui/material";
-import { Route } from "react-router";
 import PrivateRoute from "./components/Routes/PrivateRoute";
 import PublicRoute from "./components/Routes/PublicRoute";
 import Login from "./pages/Auth/Login";

@@ -7,7 +7,7 @@ import "./index.scss";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
 import GoogleLogin from "react-google-login";
-import { post, refreshToken } from "../../../../utils/httpHelpers";
+import { post } from "../../../../utils/httpHelpers";
 import { useHistory } from "react-router-dom";
 import Cookies from "js-cookie";
 
