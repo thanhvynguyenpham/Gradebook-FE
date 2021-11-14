@@ -36,7 +36,7 @@ export default function Home() {
 
   async function getClassList() {
     setOpenLoadingScreen(true);
-    getAuth("/")
+    getAuth("/classes")
       .then((response) => {
         if (response.status === 200) {
           var arr = [...response.data];

@@ -6,6 +6,7 @@ import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import "./class.scss";
+import { Link } from "react-router-dom";
 
 export default function Class(props) {
   return (
@@ -30,7 +31,9 @@ export default function Class(props) {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small">Enter Class</Button>
+        <Link to={`/class/${props.id}`}>
+          <Button size="small">Enter Class</Button>
+        </Link>
       </CardActions>
     </Card>
   );
