@@ -15,8 +15,8 @@ import { useState } from "react";
 import GoogleLogin from "react-google-login";
 import { useHistory } from "react-router";
 import Cookies from "js-cookie";
-import { post } from "../../../../utils/httpHelpers";
-import AlertDialog from "../../../../components/Alert/AlertDialog";
+import { post } from "../../../../Utils/httpHelpers";
+import AlertDialog from "../../../../Components/Alert/AlertDialog";
 
 const validationSchema = yup.object({
   firstname: yup

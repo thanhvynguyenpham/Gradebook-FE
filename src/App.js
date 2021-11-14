@@ -1,9 +1,9 @@
 import { ThemeProvider } from "@mui/material";
-import PrivateRoute from "./components/Routes/PrivateRoute";
-import PublicRoute from "./components/Routes/PublicRoute";
-import Login from "./pages/Auth/Login";
-import SignUp from "./pages/Auth/SignUp";
-import Home from "./pages/Home";
+import PrivateRoute from "./Components/Routes/PrivateRoute";
+import PublicRoute from "./Components/Routes/PublicRoute";
+import Login from "./Pages/Auth/Login";
+import SignUp from "./Pages/Auth/SignUp";
+import Home from "./Pages/Home";
 import theme from "./theme";
 
 function App() {

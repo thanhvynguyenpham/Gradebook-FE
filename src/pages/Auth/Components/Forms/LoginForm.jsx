@@ -7,9 +7,9 @@ import "./index.scss";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
 import GoogleLogin from "react-google-login";
-import { post } from "../../../../utils/httpHelpers";
 import { useHistory } from "react-router-dom";
 import Cookies from "js-cookie";
+import { post } from "../../../../Utils/httpHelpers";
 
 const validationSchema = yup.object({
   email: yup

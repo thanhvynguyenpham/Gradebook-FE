@@ -1,6 +1,6 @@
 import { Backdrop, CircularProgress, Grid } from "@mui/material";
 import React, { useState } from "react";
-import AlertDialog from "../../../components/Alert/AlertDialog";
+import AlertDialog from "../../../Components/Alert/AlertDialog";
 import { LoginForm } from "../Components/Forms/LoginForm";
 
 import "./index.scss";

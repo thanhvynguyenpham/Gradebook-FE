@@ -1,8 +1,9 @@
 import { Alert, Backdrop, CircularProgress, Snackbar } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import CreateClassForm from "../../components/Form/CreateClassForm";
-import Header from "../../components/Header";
-import { getAuth } from "../../utils/httpHelpers";
+import CreateClassForm from "../../Components/Form/CreateClassForm";
+
+import Header from "../../Components/Header";
+import { getAuth } from "../../Utils/httpHelpers";
 import Main from "./Main";
 
 export default function Home() {
