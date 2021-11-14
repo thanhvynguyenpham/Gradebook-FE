@@ -15,9 +15,9 @@ import {
   Logout,
   Person,
 } from "@mui/icons-material";
-import Cookies from "js-cookie";
 import { Divider, ListItemIcon } from "@mui/material";
 import { useHistory } from "react-router";
+import { clearLocalStorage } from "../../Utils/localStorageGetSet";
 
 export default function Header({ onCreateClass }) {
   const history = useHistory();
@@ -58,8 +58,7 @@ export default function Header({ onCreateClass }) {
   };
 
   function handleLogout() {
-    Cookies.remove("access_token");
-    Cookies.remove("refresh_token");
+    clearLocalStorage();
     history.push("/login");
   }
 

@@ -19,7 +19,7 @@ import {
 import React, { useState } from "react";
 import "./index.scss";
 
-const DashBoard = ({ classDetails, user, listPosts }) => {
+const DashBoard = ({ classDetails, user, listPosts, hidden }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const isMenuOpen = Boolean(anchorEl);
   const [openMessage, setOpenMessage] = useState(false);
@@ -62,8 +62,8 @@ const DashBoard = ({ classDetails, user, listPosts }) => {
     </Menu>
   );
   return (
-    <div>
-      <Container>
+    <div hidden={hidden}>
+      <Container className="dashboard">
         <Grid container spacing={3}>
           <Grid container item>
             <Grid item xs={12}>
