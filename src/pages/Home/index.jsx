@@ -60,7 +60,7 @@ export default function Home() {
         onCreateSuccess={onCreateSuccess}
         onCreateFailed={onCreateFailed}
       />
-      <Header onCreateClass={handleCreateClass} />
+      <Header onCreateClass={handleCreateClass} isAtMainPage={true} />
       <Main classList={classList} />
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}

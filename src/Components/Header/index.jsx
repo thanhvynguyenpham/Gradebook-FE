@@ -18,8 +18,9 @@ import {
 import { Divider, ListItemIcon } from "@mui/material";
 import { useHistory } from "react-router";
 import { clearLocalStorage } from "../../Utils/localStorageGetSet";
+import { Link } from "react-router-dom";
 
-export default function Header({ onCreateClass }) {
+export default function Header({ onCreateClass, isAtMainPage }) {
   const history = useHistory();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -144,19 +145,23 @@ export default function Header({ onCreateClass }) {
       onClose={handleMobileMenuClose}
     >
       <div>
-        <MenuItem onClick={handleCreateClass}>
-          <ListItemIcon>
-            <AddCircleOutlined />
-          </ListItemIcon>
-          Create new class
-        </MenuItem>
-        <MenuItem onClick={handleMenuClose}>
-          <ListItemIcon>
-            <Input />
-          </ListItemIcon>
-          Join a class
-        </MenuItem>
-        <Divider />
+        {isAtMainPage && (
+          <div>
+            <MenuItem onClick={handleCreateClass}>
+              <ListItemIcon>
+                <AddCircleOutlined />
+              </ListItemIcon>
+              Create new class
+            </MenuItem>
+            <MenuItem onClick={handleMenuClose}>
+              <ListItemIcon>
+                <Input />
+              </ListItemIcon>
+              Join a class
+            </MenuItem>
+            <Divider />
+          </div>
+        )}
         <MenuItem>
           <ListItemIcon>
             <Person fontSize="small" />
@@ -177,27 +182,32 @@ export default function Header({ onCreateClass }) {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ display: { xs: "none", sm: "block" } }}
-          >
-            Gradebook
-          </Typography>
-          <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleAddMenuOpen}
-              color="inherit"
+          <Link to="/" style={{ color: "white" }}>
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ display: { xs: "none", sm: "block" } }}
             >
-              <Add />
-            </IconButton>
+              Gradebook
+            </Typography>
+          </Link>
+          <Box sx={{ flexGrow: 1 }} />
+
+          <Box sx={{ display: { xs: "none", md: "flex" } }}>
+            {isAtMainPage && (
+              <IconButton
+                size="large"
+                edge="end"
+                aria-label="account of current user"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={handleAddMenuOpen}
+                color="inherit"
+              >
+                <Add />
+              </IconButton>
+            )}
             <IconButton
               onClick={handleClickProfile}
               size="large"

@@ -71,7 +71,7 @@ const ClassPage = () => {
 
   return (
     <div>
-      <Header />
+      <Header isAtMainPage={false} />
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs value={value} onChange={handleChange} centered>
           <Tab label="Dashboard" key="tab-1" />
