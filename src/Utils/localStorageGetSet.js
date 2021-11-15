@@ -9,7 +9,7 @@ export function getLocalRefreshToken() {
 }
 
 export function getLocalUser() {
-  const user = localStorage.getItem("user");
+  const user = JSON.parse(localStorage.getItem("user"));
   return user;
 }
 
@@ -22,7 +22,20 @@ export function setLocalRefreshToken(value) {
 }
 
 export function setLocalUser(value) {
-  localStorage.setItem("user", value);
+  localStorage.setItem("user", JSON.stringify(value));
+}
+
+export function setLocalUserName(value) {
+  const curUser = getLocalUser();
+  if (!value || !curUser) return;
+  const updatedUser = {
+    id: curUser.id,
+    email: curUser.email,
+    firstName: value.firstName,
+    lastName: value.lastName,
+    name: value.firstName + " " + value.lastName,
+  };
+  localStorage.setItem("user", JSON.stringify(updatedUser));
 }
 
 export function clearLocalStorage() {
