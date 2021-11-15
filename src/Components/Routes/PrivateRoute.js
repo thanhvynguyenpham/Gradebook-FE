@@ -1,14 +1,18 @@
 import React from "react";
-import { Redirect, Route } from "react-router-dom";
+import { Redirect, Route, withRouter } from "react-router-dom";
 import { getLocalAccessToken } from "../../Utils/localStorageGetSet";
-
-export const PrivateRoute = ({ component: Component, ...restOfProps }) => (
+const PrivateRoute = ({ component: Component, ...restOfProps }) => (
   <Route
     {...restOfProps}
     render={(props) => {
       let isLoggedIn = getLocalAccessToken() ? true : false;
       if (!isLoggedIn) {
-        return <Redirect to="/login" />;
+        sessionStorage.setItem("lastLocation", JSON.stringify(props.location));
+        return (
+          <Redirect
+            to={{ pathname: "/login", state: { from: props.location } }}
+          />
+        );
       } else {
         return <Component {...props} />;
       }
@@ -16,4 +20,4 @@ export const PrivateRoute = ({ component: Component, ...restOfProps }) => (
   />
 );
 
-export default PrivateRoute;
+export default withRouter(PrivateRoute);

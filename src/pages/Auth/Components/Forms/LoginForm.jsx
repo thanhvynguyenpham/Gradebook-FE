@@ -49,6 +49,15 @@ export const LoginForm = ({
     const newStatus = !showPassword;
     setShowPassword(newStatus);
   }
+  const navigate = () => {
+    const lastLocation = JSON.parse(sessionStorage.getItem("lastLocation"));
+    if (lastLocation) {
+      sessionStorage.removeItem("lastLocation");
+      history.push(lastLocation);
+    } else {
+      history.push("/");
+    }
+  };
   const onGoogleLoginSuccess = (response) => {
     showLoadingScreen();
     const body = {
@@ -68,7 +77,7 @@ export const LoginForm = ({
           setLocalAccessToken(response.data.accessToken);
           setLocalRefreshToken(response.data.refreshToken);
           setLocalUser(user);
-          history.push("/");
+          navigate();
         }
       })
       .catch((error) => {
@@ -101,8 +110,7 @@ export const LoginForm = ({
           setLocalAccessToken(response.data.accessToken);
           setLocalRefreshToken(response.data.refreshToken);
           setLocalUser(user);
-
-          history.push("/");
+          navigate();
         }
       })
       .catch((error) => {
