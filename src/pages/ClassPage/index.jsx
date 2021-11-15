@@ -88,6 +88,7 @@ const ClassPage = () => {
         hidden={value !== 1}
         teachersList={teachersList}
         studentsList={studentsList}
+        classDetails={classDetails}
       />
     </div>
   );
