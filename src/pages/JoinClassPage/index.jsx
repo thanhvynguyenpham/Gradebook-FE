@@ -27,6 +27,7 @@ export const JoinClassPage = () => {
   let query = useQuery();
   const history = useHistory();
   const [failedMessage, setFailedMessage] = useState(false);
+  const [disable, setDisable] = useState(false);
   useEffect(() => {
     const checkAlreadyInClass = () => {
       getAuth(`/class/${id}`)
@@ -41,11 +42,13 @@ export const JoinClassPage = () => {
   }, []);
   function handleJoinClass() {
     const code = query.get("cjc");
+    setDisable(true);
     getAuth(`/class/${id}/key/${code}`)
       .then((response) => {
         history.replace(`/class/${id}`);
       })
       .catch((error) => {
+        setDisable(false);
         setFailedMessage(true);
       });
   }
@@ -98,6 +101,7 @@ export const JoinClassPage = () => {
                       color="primary"
                       variant="contained"
                       onClick={handleJoinClass}
+                      disabled={disable}
                     >
                       Join Class
                     </Button>
