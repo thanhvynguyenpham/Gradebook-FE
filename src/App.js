@@ -6,6 +6,7 @@ import Login from "./pages/Auth/Login";
 import SignUp from "./pages/Auth/SignUp";
 import theme from "./theme";
 import ClassPage from "./pages/ClassPage";
+import { ProfilePage } from "./pages/Profile";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <PublicRoute exact path="/login" component={Login} />
         <PublicRoute exact path="/register" component={SignUp} />
         <PrivateRoute exact path="/class/:id" component={ClassPage} />
+        <PrivateRoute exact path="/profile" component={ProfilePage} />
       </div>
     </ThemeProvider>
   );

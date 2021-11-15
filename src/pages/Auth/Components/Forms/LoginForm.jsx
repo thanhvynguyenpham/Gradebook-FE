@@ -101,6 +101,7 @@ export const LoginForm = ({
           setLocalAccessToken(response.data.accessToken);
           setLocalRefreshToken(response.data.refreshToken);
           setLocalUser(user);
+
           history.push("/");
         }
       })
@@ -148,10 +149,8 @@ export const LoginForm = ({
             type={showPassword ? "text" : "password"}
             value={formik.values.password}
             onChange={formik.handleChange}
-            error={
-              formik.touched.description && Boolean(formik.errors.description)
-            }
-            helperText={formik.touched.description && formik.errors.description}
+            error={formik.touched.password && Boolean(formik.errors.password)}
+            helperText={formik.touched.password && formik.errors.password}
             endAdornment={
               <InputAdornment position="end">
                 <IconButton
