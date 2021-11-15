@@ -95,3 +95,7 @@ export function getAuth(url) {
 export function postAuth(url, body) {
   return instance.post(endpoint + url, body);
 }
+
+export function patchAuth(url, body) {
+  return instance.patch(endpoint + url, body);
+}
