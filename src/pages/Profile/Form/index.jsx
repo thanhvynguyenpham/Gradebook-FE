@@ -92,7 +92,6 @@ export const ProfileForm = ({
     };
     patchAuth("/user/password", JSON.stringify(body))
       .then((response) => {
-        console.log("Password Updated");
         setChangePassword(false);
         showSuccessAlert();
         setDisabledBtn(false);

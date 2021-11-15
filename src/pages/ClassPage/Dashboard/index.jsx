@@ -16,7 +16,9 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { getAuth } from "../../../Utils/httpHelpers";
+import { ChangeIDForm } from "./Components/ChangeIDForm";
 import "./index.scss";
 
 const DashBoard = ({ classDetails, user, listPosts, hidden }) => {
@@ -24,6 +26,24 @@ const DashBoard = ({ classDetails, user, listPosts, hidden }) => {
   const isMenuOpen = Boolean(anchorEl);
   const [openMessage, setOpenMessage] = useState(false);
   const [message, setMessage] = useState("");
+  const [studentID, setStudentID] = useState(null);
+  useEffect(() => {
+    const getStudentID = () => {
+      getAuth(`/class/${classDetails._id}/studentID`)
+        .then((response) => {
+          if (response.status === 200) {
+            setStudentID(response.data.studentId);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+    if (classDetails.role === "student") {
+      getStudentID();
+    }
+  }, [classDetails._id, classDetails.role]);
+
   const copyToClipBoard = () => {
     navigator.clipboard
       .writeText(classDetails.key)
@@ -61,6 +81,11 @@ const DashBoard = ({ classDetails, user, listPosts, hidden }) => {
       <MenuItem onClick={handleMenuClose}>Create invite link</MenuItem>
     </Menu>
   );
+
+  function showAlert(message) {
+    setMessage(message);
+    setOpenMessage(true);
+  }
   return (
     <div hidden={hidden}>
       <Container className="dashboard">
@@ -114,9 +139,19 @@ const DashBoard = ({ classDetails, user, listPosts, hidden }) => {
                       Student ID
                     </Typography>
                     <br />
-                    <Typography variant="h5" component="div">
-                      <b>12345678</b>
-                    </Typography>
+                    {studentID ? (
+                      <Typography variant="h5" component="div">
+                        <b>{studentID}</b>
+                      </Typography>
+                    ) : (
+                      <ChangeIDForm
+                        classDetails={classDetails}
+                        setStudentID={setStudentID}
+                        showAlertMessage={() =>
+                          showAlert("Something went wrong, please try again!")
+                        }
+                      />
+                    )}
                   </CardContent>
                   {/* <CardActions>
                   <Button size="small">Learn More</Button>
