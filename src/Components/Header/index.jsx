@@ -15,16 +15,21 @@ import {
   Logout,
   Person,
 } from "@mui/icons-material";
-import { Divider, ListItemIcon } from "@mui/material";
+import { Avatar, Divider, ListItemIcon } from "@mui/material";
 import { useHistory } from "react-router";
-import { clearLocalStorage } from "../../Utils/localStorageGetSet";
+import {
+  clearLocalStorage,
+  getLocalUser,
+} from "../../Utils/localStorageGetSet";
 import { Link } from "react-router-dom";
+import { nameToAvatar } from "../../Utils/converters";
 
 export default function Header({ onCreateClass, isAtMainPage }) {
   const history = useHistory();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [anchorElProfile, setAnchorElProfile] = React.useState(null);
+  const user = getLocalUser();
   const openProfileMenu = Boolean(anchorElProfile);
   const handleClickProfile = (event) => {
     setAnchorElProfile(event.currentTarget);
@@ -61,6 +66,10 @@ export default function Header({ onCreateClass, isAtMainPage }) {
   function handleLogout() {
     clearLocalStorage();
     history.push("/login");
+  }
+
+  function handleProfileClick() {
+    history.push("/profile");
   }
 
   const menuId = "primary-search-account-menu";
@@ -111,7 +120,7 @@ export default function Header({ onCreateClass, isAtMainPage }) {
       onClose={handleCloseProfile}
       onClick={handleCloseProfile}
     >
-      <MenuItem>
+      <MenuItem onClick={handleProfileClick}>
         <ListItemIcon>
           <Person fontSize="small" />
         </ListItemIcon>
@@ -162,7 +171,7 @@ export default function Header({ onCreateClass, isAtMainPage }) {
             <Divider />
           </div>
         )}
-        <MenuItem>
+        <MenuItem onClick={handleProfileClick}>
           <ListItemIcon>
             <Person fontSize="small" />
           </ListItemIcon>
@@ -214,7 +223,7 @@ export default function Header({ onCreateClass, isAtMainPage }) {
               aria-label="Account"
               color="inherit"
             >
-              <AccountCircle />
+              <Avatar aria-label="recipe">{nameToAvatar(user.name)}</Avatar>
             </IconButton>
           </Box>
 
