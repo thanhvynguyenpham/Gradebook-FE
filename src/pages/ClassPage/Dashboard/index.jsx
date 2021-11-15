@@ -44,18 +44,30 @@ const DashBoard = ({ classDetails, user, listPosts, hidden }) => {
     }
   }, [classDetails._id, classDetails.role]);
 
-  const copyToClipBoard = () => {
+  const copyToClipBoard = (value, type) => {
     navigator.clipboard
-      .writeText(classDetails.key)
+      .writeText(value)
       .then(() => {
-        setMessage("Copied code to clipboard!");
+        setMessage("Copied " + type + " to clipboard!");
         setOpenMessage(true);
       })
       .catch(() => {
-        setMessage("Cannot copy code. Please try again or copy manually.");
+        setMessage(
+          "Cannot copy " + type + ". Please try again or copy manually."
+        );
         setOpenMessage(true);
       });
   };
+  const copyCodeToClipBoard = () => {
+    copyToClipBoard(classDetails.key, "code");
+  };
+  const copyLinkToClipBoard = () => {
+    const link =
+      window.location.host +
+      `/class/join/${classDetails._id}?cjc=${classDetails.key}`;
+    copyToClipBoard(link, "link");
+  };
+
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -77,8 +89,8 @@ const DashBoard = ({ classDetails, user, listPosts, hidden }) => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={copyToClipBoard}>Copy code</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Create invite link</MenuItem>
+      <MenuItem onClick={copyCodeToClipBoard}>Copy code</MenuItem>
+      <MenuItem onClick={copyLinkToClipBoard}>Create invite link</MenuItem>
     </Menu>
   );
 
