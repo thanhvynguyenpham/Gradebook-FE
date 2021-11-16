@@ -22,6 +22,7 @@ function App() {
           <PrivateRoute exact path="/class/:id" component={ClassPage} />
           <PrivateRoute exact path="/profile" component={ProfilePage} />
           <PrivateRoute path="/class/join/:id" component={JoinClassPage} />
+          <Route path="/404/:message" component={NotFoundPage} />
           <Route path="/404" component={NotFoundPage} />
           <Redirect to="/404" />
         </Switch>

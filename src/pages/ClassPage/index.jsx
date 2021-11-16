@@ -48,7 +48,11 @@ const ClassPage = () => {
           }
         })
         .catch((error) => {
-          history.push("/login");
+          if (user) {
+            history.push("/404/" + "Class Not Found");
+          } else {
+            history.push("/login");
+          }
         });
     };
     const getMemberList = () => {
@@ -61,13 +65,17 @@ const ClassPage = () => {
           }
         })
         .catch((error) => {
-          history.push("/login");
+          if (user) {
+            history.push("/404/" + "Class Not Found");
+          } else {
+            history.push("/login");
+          }
         });
     };
     console.log(id);
     getClassDetails();
     getMemberList();
-  }, [id, history]);
+  }, [id, history, user]);
 
   return (
     <div>

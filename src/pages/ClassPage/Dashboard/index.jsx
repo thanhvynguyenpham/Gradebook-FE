@@ -95,59 +95,53 @@ const DashBoard = ({ classDetails, user, listPosts, hidden }) => {
     </Menu>
   );
 
-  const ClassCodeBar = () => {
-    if (!classDetails.role) {
-      return (
-        <Card>
-          <CardContent>
-            <Skeleton variant="text" />
-            <Skeleton variant="text" />
-          </CardContent>
-        </Card>
-      );
-    } else if (classDetails.role === "teacher") {
-      return (
-        <Card>
-          <CardHeader
-            action={
-              <IconButton aria-label="settings" onClick={handleMenuOpen}>
-                <MoreVert />
-              </IconButton>
-            }
-            title="Class code"
+  const renderClassCodeBar = (
+    <Card>
+      <CardHeader
+        action={
+          <IconButton aria-label="settings" onClick={handleMenuOpen}>
+            <MoreVert />
+          </IconButton>
+        }
+        title="Class code"
+      />
+      {renderMenu}
+      <CardContent>
+        <Typography variant="h5" component="div">
+          <b>{classDetails.key}</b>
+        </Typography>
+      </CardContent>
+    </Card>
+  );
+  const renderSkeleton = (
+    <Card>
+      <CardContent>
+        <Skeleton variant="text" />
+        <Skeleton variant="text" />
+      </CardContent>
+    </Card>
+  );
+  const renderStudentIDBar = (
+    <Card>
+      <CardContent>
+        <Typography variant="h6" component="div">
+          Student ID
+        </Typography>
+        <br />
+        {studentID ? (
+          <Typography variant="h5" component="div">
+            <b>{studentID}</b>
+          </Typography>
+        ) : (
+          <ChangeIDForm
+            classDetails={classDetails}
+            setStudentID={setStudentID}
+            showAlertMessage={(message) => showAlert(message)}
           />
-          {renderMenu}
-          <CardContent>
-            <Typography variant="h5" component="div">
-              <b>{classDetails.key}</b>
-            </Typography>
-          </CardContent>
-        </Card>
-      );
-    } else if (classDetails.role === "student") {
-      return (
-        <Card>
-          <CardContent>
-            <Typography variant="h6" component="div">
-              Student ID
-            </Typography>
-            <br />
-            {studentID ? (
-              <Typography variant="h5" component="div">
-                <b>{studentID}</b>
-              </Typography>
-            ) : (
-              <ChangeIDForm
-                classDetails={classDetails}
-                setStudentID={setStudentID}
-                showAlertMessage={(message) => showAlert(message)}
-              />
-            )}
-          </CardContent>
-        </Card>
-      );
-    }
-  };
+        )}
+      </CardContent>
+    </Card>
+  );
 
   function showAlert(message) {
     setMessage(message);
@@ -179,7 +173,9 @@ const DashBoard = ({ classDetails, user, listPosts, hidden }) => {
           </Grid>
           <Grid container item xs={12} sm={4}>
             <Stack spacing={2} width={"100%"}>
-              <ClassCodeBar />
+              {!classDetails.role && renderSkeleton}
+              {classDetails.role === "teacher" && renderClassCodeBar}
+              {classDetails.role === "student" && renderStudentIDBar}
               <Card>
                 <CardContent>
                   <Typography variant="h6" component="div">
