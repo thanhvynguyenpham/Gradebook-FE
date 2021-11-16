@@ -28,6 +28,9 @@ export const JoinClassPage = () => {
   const history = useHistory();
   const [failedMessage, setFailedMessage] = useState(false);
   const [disable, setDisable] = useState(false);
+  const [alertMessage, setAlertMessage] = useState(
+    "Something went wrong. Please try again."
+  );
   const code = query.get("cjc");
   const token = query.get("token");
   const role = query.get("role");
@@ -53,6 +56,7 @@ export const JoinClassPage = () => {
     } else if (token && role) {
       joinClassByToken();
     } else {
+      setAlertMessage("This invitation link is invalid.");
       setFailedMessage(true);
     }
   }
@@ -63,6 +67,11 @@ export const JoinClassPage = () => {
         history.replace(`/class/${id}`);
       })
       .catch((error) => {
+        if (error.response.status === 500) {
+          setAlertMessage("Something went wrong. Please try again later.");
+        } else {
+          setAlertMessage("This invitation link is expired or invalid.");
+        }
         setDisable(false);
         setFailedMessage(true);
       });
@@ -78,6 +87,13 @@ export const JoinClassPage = () => {
         history.replace(`/class/${id}`);
       })
       .catch((error) => {
+        if (error.response.status === 500) {
+          setAlertMessage("Something went wrong. Please try again later.");
+        } else {
+          setAlertMessage(
+            "This invitation link is expired or you are using the wrong email to sign up for this class."
+          );
+        }
         setDisable(false);
         setFailedMessage(true);
       });
@@ -153,7 +169,7 @@ export const JoinClassPage = () => {
           severity="error"
           sx={{ width: "100%" }}
         >
-          Something went wrong. Please try again.
+          {alertMessage}
         </Alert>
       </Snackbar>
     </div>
