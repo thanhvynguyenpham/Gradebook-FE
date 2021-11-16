@@ -16,9 +16,11 @@ export default function Home() {
     getClassList();
   }, []);
 
-  useEffect(() => {
-    getClassList();
-  }, [showCreateForm]);
+  // useEffect(() => {
+  //   if (showCreateForm === false) {
+  //     getClassList();
+  //   }
+  // }, [showCreateForm]);
 
   function handleCreateClass() {
     setShowCreateForm(true);

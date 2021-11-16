@@ -7,13 +7,7 @@ import Typography from "@mui/material/Typography";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import MoreIcon from "@mui/icons-material/MoreVert";
-import {
-  Add,
-  AddCircleOutlined,
-  Input,
-  Logout,
-  Person,
-} from "@mui/icons-material";
+import { Add, AddCircleOutlined, Logout, Person } from "@mui/icons-material";
 import { Avatar, Divider, ListItemIcon } from "@mui/material";
 import { useHistory } from "react-router";
 import {
@@ -94,13 +88,13 @@ export default function Header({ onCreateClass, isAtMainPage }) {
         </ListItemIcon>
         Create new class
       </MenuItem>
-      <Divider />
+      {/* <Divider />
       <MenuItem onClick={handleMenuClose}>
         <ListItemIcon>
           <Input fontSize="small" />
         </ListItemIcon>
         Join a class
-      </MenuItem>
+      </MenuItem> */}
     </Menu>
   );
   const renderProfileMenu = (
@@ -161,12 +155,12 @@ export default function Header({ onCreateClass, isAtMainPage }) {
               </ListItemIcon>
               Create new class
             </MenuItem>
-            <MenuItem onClick={handleMenuClose}>
+            {/* <MenuItem onClick={handleMenuClose}>
               <ListItemIcon>
                 <Input />
               </ListItemIcon>
               Join a class
-            </MenuItem>
+            </MenuItem> */}
             <Divider />
           </div>
         )}
