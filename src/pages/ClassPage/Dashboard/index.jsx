@@ -22,7 +22,7 @@ import { getAuth } from "../../../Utils/httpHelpers";
 import { ChangeIDForm } from "./Components/ChangeIDForm";
 import "./index.scss";
 
-const DashBoard = ({ classDetails, user, listPosts, hidden }) => {
+const DashBoard = ({ classDetails, user, listPosts, hidden, loading }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const isMenuOpen = Boolean(anchorEl);
   const [openMessage, setOpenMessage] = useState(false);
@@ -173,22 +173,30 @@ const DashBoard = ({ classDetails, user, listPosts, hidden }) => {
           </Grid>
           <Grid container item xs={12} sm={4}>
             <Stack spacing={2} width={"100%"}>
-              {!classDetails.role && renderSkeleton}
+              {loading && renderSkeleton}
               {classDetails.role === "teacher" && renderClassCodeBar}
               {classDetails.role === "student" && renderStudentIDBar}
               <Card>
                 <CardContent>
-                  <Typography variant="h6" component="div">
-                    Description
-                  </Typography>
+                  {loading ? (
+                    <Skeleton variant="text" />
+                  ) : (
+                    <Typography variant="h6" component="div">
+                      Description
+                    </Typography>
+                  )}
                   <br />
-                  <Typography
-                    sx={{ fontSize: 14 }}
-                    color="text.secondary"
-                    gutterBottom
-                  >
-                    {classDetails.description}
-                  </Typography>
+                  {loading ? (
+                    <Skeleton variant="text" />
+                  ) : (
+                    <Typography
+                      sx={{ fontSize: 14 }}
+                      color="text.secondary"
+                      gutterBottom
+                    >
+                      {classDetails.description}
+                    </Typography>
+                  )}
                   {/* <Typography sx={{ mb: 1.5 }} color="text.secondary">
                     10:00 PM – Midterm project
                   </Typography> */}
@@ -203,28 +211,42 @@ const DashBoard = ({ classDetails, user, listPosts, hidden }) => {
                   <Card>
                     <CardHeader
                       avatar={
-                        <Avatar sx={{ bgcolor: "red" }} aria-label="recipe">
-                          {value.firstName.slice(0, 1) +
-                            value.lastName.slice(0, 1)}
-                        </Avatar>
+                        loading ? (
+                          <Skeleton variant="circular" width={40} height={40} />
+                        ) : (
+                          <Avatar sx={{ bgcolor: "red" }} aria-label="recipe">
+                            {value.firstName.slice(0, 1) +
+                              value.lastName.slice(0, 1)}
+                          </Avatar>
+                        )
                       }
                       action={
-                        <IconButton aria-label="settings">
-                          <MoreVert />
-                        </IconButton>
+                        !loading && (
+                          <IconButton aria-label="settings">
+                            <MoreVert />
+                          </IconButton>
+                        )
                       }
-                      title={value.name}
-                      subheader={value.postDate}
+                      title={loading ? <Skeleton variant="text" /> : value.name}
+                      subheader={
+                        loading ? <Skeleton variant="text" /> : value.postDate
+                      }
                     />
                     <CardContent>
                       <Typography variant="body2" color="text.secondary">
-                        {value.postContent}
+                        {loading ? (
+                          <Skeleton variant="text" />
+                        ) : (
+                          value.postContent
+                        )}
                       </Typography>
                     </CardContent>
                     <CardActions disableSpacing>
-                      <IconButton aria-label="add to favorites">
-                        <Favorite />
-                      </IconButton>
+                      {!loading && (
+                        <IconButton aria-label="add to favorites">
+                          <Favorite />
+                        </IconButton>
+                      )}
                     </CardActions>
                   </Card>
                 ))}
