@@ -9,6 +9,7 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
+  Snackbar,
   Stack,
   Typography,
 } from "@mui/material";
@@ -23,6 +24,8 @@ const Members = ({ classDetails, hidden, teachersList, studentsList }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [role, setRole] = useState("");
   const [disableButton, setDisableButton] = useState(false);
+  const [openAlertMessage, setOpenAlertMessage] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
   const handleSendEmail = (email) => {
     setDisableButton(true);
@@ -32,18 +35,22 @@ const Members = ({ classDetails, hidden, teachersList, studentsList }) => {
     };
     postAuth(`/class/${classDetails._id}/send-invite-email`, body)
       .then((response) => {
+        setAlertMessage("Send email successfully");
+        setOpenAlertMessage(true);
         setOpenDialog(false);
         setDisableButton(false);
       })
       .catch((error) => {
         console.log(error);
+        setAlertMessage("Cannot send email. Please try again!");
+        setOpenAlertMessage(true);
         setDisableButton(false);
       });
   };
   const handleShowTeacherEmailDialog = () => {
     setTitle("Invite Teacher");
     setMessage(
-      "We will send this email an invitation link. Please inform the owner to check their email."
+      "We will send this email an invitation link. Please inform the email's owner to check their email and confirm in 48 hours."
     );
     setRole("teacher");
     setOpenDialog(true);
@@ -51,7 +58,7 @@ const Members = ({ classDetails, hidden, teachersList, studentsList }) => {
   const handleShowStudentEmailDialog = () => {
     setTitle("Invite Student");
     setMessage(
-      "We will send this email an invitation link. Please inform the owner to check their email."
+      "We will send this email an invitation link. Please inform the email's owner to check their email and confirm in 48 hours."
     );
     setOpenDialog(true);
     setRole("student");
@@ -151,6 +158,12 @@ const Members = ({ classDetails, hidden, teachersList, studentsList }) => {
         handleClose={() => setOpenDialog(false)}
         handleAction={handleSendEmail}
         btnDisable={disableButton}
+      />
+      <Snackbar
+        open={openAlertMessage}
+        autoHideDuration={4000}
+        onClose={() => setOpenAlertMessage(false)}
+        message={alertMessage}
       />
     </div>
   );

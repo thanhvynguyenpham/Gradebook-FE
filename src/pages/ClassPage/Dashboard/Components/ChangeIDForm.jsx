@@ -40,7 +40,12 @@ export const ChangeIDForm = ({
       })
       .catch((error) => {
         console.log(error);
-        showAlertMessage();
+        if (error.response.status === 400) {
+          showAlertMessage(error.response.data.message);
+        } else {
+          showAlertMessage("We cannot change your ID now. Please try again!");
+        }
+
         setDisable(false);
       });
   }

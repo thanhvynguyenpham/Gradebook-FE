@@ -15,7 +15,7 @@ import React, { useEffect, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import Header from "../../Components/Header";
-import { getAuth } from "../../Utils/httpHelpers";
+import { getAuth, postAuth } from "../../Utils/httpHelpers";
 import "./index.scss";
 function useQuery() {
   const { search } = useLocation();
@@ -28,6 +28,9 @@ export const JoinClassPage = () => {
   const history = useHistory();
   const [failedMessage, setFailedMessage] = useState(false);
   const [disable, setDisable] = useState(false);
+  const code = query.get("cjc");
+  const token = query.get("token");
+  const role = query.get("role");
   useEffect(() => {
     const checkAlreadyInClass = () => {
       getAuth(`/class/${id}`)
@@ -39,11 +42,38 @@ export const JoinClassPage = () => {
         });
     };
     checkAlreadyInClass();
-  }, []);
+    if (!code && !token) {
+      history.push("/404");
+    }
+  }, [code, history, id, token]);
   function handleJoinClass() {
-    const code = query.get("cjc");
     setDisable(true);
+    if (code) {
+      joinClassByCode();
+    } else if (token && role) {
+      joinClassByToken();
+    } else {
+      setFailedMessage(true);
+    }
+  }
+
+  function joinClassByCode() {
     getAuth(`/class/${id}/key/${code}`)
+      .then((response) => {
+        history.replace(`/class/${id}`);
+      })
+      .catch((error) => {
+        setDisable(false);
+        setFailedMessage(true);
+      });
+  }
+
+  function joinClassByToken() {
+    const body = {
+      token: token,
+    };
+    console.log(body);
+    postAuth(`/class/${id}/confirm-invite-email`, body)
       .then((response) => {
         history.replace(`/class/${id}`);
       })
@@ -84,14 +114,15 @@ export const JoinClassPage = () => {
                         component="div"
                         textAlign="center"
                       >
-                        Class name
+                        Join a new class
                       </Typography>
                       <Typography
                         variant="body2"
                         color="text.secondary"
                         textAlign="center"
                       >
-                        You are invited to this class as a student
+                        You are invited to this class as a{" "}
+                        {role !== undefined ? role : "student"}
                       </Typography>
                     </CardContent>
                   </CardActionArea>
