@@ -14,6 +14,8 @@ const ClassPage = () => {
   const [classDetails, setClassDetails] = useState([]);
   const [studentsList, setStudentsList] = useState([]);
   const [teachersList, setTeachersList] = useState([]);
+  const [dashBoardLoading, setDashBoardLoading] = useState(true);
+  const [memberListLoading, setMemberListLoading] = useState(true);
   const { id } = useParams();
   const user = getLocalUser();
   const history = useHistory();
@@ -37,38 +39,46 @@ const ClassPage = () => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
   useEffect(() => {
-    const getClassDetails = () => {
-      getAuth(`/class/${id}/`)
-        .then((response) => {
-          if (response.status === 200) {
-            console.log(response.data);
-            setClassDetails(response.data);
-          }
-        })
-        .catch((error) => {
-          history.push("/login");
-        });
-    };
-    const getMemberList = () => {
-      getAuth(`/class/${id}/list-member`)
-        .then((response) => {
-          if (response.status === 200) {
-            console.log(response.data);
-            setStudentsList(response.data.students);
-            setTeachersList(response.data.teachers);
-          }
-        })
-        .catch((error) => {
-          history.push("/login");
-        });
-    };
-    console.log(id);
     getClassDetails();
     getMemberList();
-  }, [id, history]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const getClassDetails = () => {
+    getAuth(`/class/${id}/`)
+      .then((response) => {
+        if (response.status === 200) {
+          console.log(response.data);
+          setClassDetails(response.data);
+          setDashBoardLoading(false);
+        }
+      })
+      .catch((error) => {
+        if (user) {
+          history.push("/404/Class Not Found");
+        } else {
+          history.push("/login");
+        }
+      });
+  };
+  const getMemberList = () => {
+    getAuth(`/class/${id}/list-member`)
+      .then((response) => {
+        if (response.status === 200) {
+          console.log(response.data);
+          setStudentsList(response.data.students);
+          setTeachersList(response.data.teachers);
+          setMemberListLoading(false);
+        }
+      })
+      .catch((error) => {
+        if (user) {
+          history.push("/404/Class Not Found");
+        } else {
+          history.push("/login");
+        }
+      });
+  };
   return (
     <div>
       <Header isAtMainPage={false} />
@@ -83,11 +93,14 @@ const ClassPage = () => {
         classDetails={classDetails}
         user={user}
         listPosts={exampleListPost}
+        loading={dashBoardLoading}
       />
       <Members
         hidden={value !== 1}
         teachersList={teachersList}
         studentsList={studentsList}
+        classDetails={classDetails}
+        loading={memberListLoading}
       />
     </div>
   );
