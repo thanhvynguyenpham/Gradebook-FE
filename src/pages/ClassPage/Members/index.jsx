@@ -42,7 +42,11 @@ const Members = ({ classDetails, hidden, teachersList, studentsList }) => {
       })
       .catch((error) => {
         console.log(error);
-        setAlertMessage("Cannot send email. Please try again!");
+        if (error.response.status === 404) {
+          setAlertMessage(error.response.data.err);
+        } else {
+          setAlertMessage("Cannot send email. Please try again!");
+        }
         setOpenAlertMessage(true);
         setDisableButton(false);
       });
