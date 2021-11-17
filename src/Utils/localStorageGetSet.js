@@ -9,6 +9,7 @@ export function getLocalRefreshToken() {
 }
 
 export function getLocalUser() {
+  if (!localStorage.getItem("user")) return null;
   const user = JSON.parse(localStorage.getItem("user"));
   return user;
 }
