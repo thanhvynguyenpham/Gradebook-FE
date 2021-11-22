@@ -118,8 +118,9 @@ const ClassPage = () => {
         listPosts={exampleListPost}
         loading={dashBoardLoading}
       />
+      <Grading hidden={value !== 1} />
       <Members
-        hidden={value !== 1}
+        hidden={value !== 2}
         teachersList={teachersList}
         studentsList={studentsList}
         classDetails={classDetails}
