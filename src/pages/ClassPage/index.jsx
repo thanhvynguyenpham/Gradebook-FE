@@ -7,6 +7,7 @@ import { getAuth } from "../../Utils/httpHelpers";
 import { getLocalUser } from "../../Utils/localStorageGetSet";
 import "../Home/Main/index.scss";
 import DashBoard from "./Dashboard";
+import Grading from "./Grading";
 import Members from "./Members";
 
 const ClassPage = () => {
@@ -85,7 +86,8 @@ const ClassPage = () => {
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs value={value} onChange={handleChange} centered>
           <Tab label="Dashboard" key="tab-1" />
-          <Tab label="Members" key="tab-2" />
+          <Tab label="Grading" key="tab-2" />
+          <Tab label="Members" key="tab-3" />
         </Tabs>
       </Box>
       <DashBoard
@@ -95,8 +97,9 @@ const ClassPage = () => {
         listPosts={exampleListPost}
         loading={dashBoardLoading}
       />
+      <Grading hidden={value !== 1} />
       <Members
-        hidden={value !== 1}
+        hidden={value !== 2}
         teachersList={teachersList}
         studentsList={studentsList}
         classDetails={classDetails}
