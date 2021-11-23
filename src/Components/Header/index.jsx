@@ -216,7 +216,9 @@ export default function Header({ onCreateClass, isAtMainPage }) {
               aria-label="Account"
               color="inherit"
             >
-              <Avatar aria-label="recipe">{nameToAvatar(user.name)}</Avatar>
+              <Avatar aria-label="recipe">
+                {user && nameToAvatar(user.name)}
+              </Avatar>
             </IconButton>
           </Box>
 
