@@ -46,7 +46,6 @@ const ClassPage = () => {
   useEffect(() => {
     getClassDetails();
     getMemberList();
-    getGradeStructure();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const getClassDetails = () => {
@@ -119,13 +118,8 @@ const ClassPage = () => {
         listPosts={exampleListPost}
         loading={dashBoardLoading}
       />
-      <Grading
-        hidden={value !== 1}
-        gradeStructure={gradeStructure}
-        classDetails={classDetails}
-      />
       <Members
-        hidden={value !== 2}
+        hidden={value !== 1}
         teachersList={teachersList}
         studentsList={studentsList}
         classDetails={classDetails}
