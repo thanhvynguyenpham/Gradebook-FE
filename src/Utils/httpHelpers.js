@@ -1,5 +1,6 @@
 import axios from "axios";
 import {
+  clearLocalStorage,
   getLocalAccessToken,
   getLocalRefreshToken,
   setLocalAccessToken,
@@ -73,6 +74,8 @@ instance.interceptors.response.use(
       }
 
       if (err.response.status === 403 && err.response.data) {
+        clearLocalStorage();
+        window.location.replace("/login");
         return Promise.reject(err.response.data);
       }
     }

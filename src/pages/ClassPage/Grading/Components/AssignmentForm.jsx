@@ -10,9 +10,8 @@ const validationSchema = yup.object({
     .required("Enter an assignment name"),
   point: yup
     .number()
-    .integer()
-    .min(0)
-    .max(MAX_SCORE)
+    .moreThan(0)
+    .max(MAX_SCORE, "Point must below 10")
     .required("Point is required"),
 });
 const AssignmentForm = ({
