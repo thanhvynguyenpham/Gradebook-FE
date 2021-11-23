@@ -45,7 +45,6 @@ const ClassPage = () => {
   useEffect(() => {
     getClassDetails();
     getMemberList();
-    getGradeStructure();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const getClassDetails = () => {
@@ -55,6 +54,9 @@ const ClassPage = () => {
           console.log(response.data);
           setClassDetails(response.data);
           setDashBoardLoading(false);
+          if (response.data.role === "teacher") {
+            getGradeStructure();
+          }
         }
       })
       .catch((error) => {
@@ -105,8 +107,10 @@ const ClassPage = () => {
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs value={value} onChange={handleChange} centered>
           <Tab label="Dashboard" key="tab-1" />
-          <Tab label="Grading" key="tab-2" />
-          <Tab label="Members" key="tab-3" />
+          <Tab label="Members" key="tab-2" />
+          {classDetails && classDetails.role === "teacher" && (
+            <Tab label="Grading" key="tab-3" />
+          )}
         </Tabs>
       </Box>
       <DashBoard
@@ -116,18 +120,20 @@ const ClassPage = () => {
         listPosts={exampleListPost}
         loading={dashBoardLoading}
       />
-      <Grading
-        hidden={value !== 1}
-        gradeStructure={gradeStructure}
-        classDetails={classDetails}
-      />
       <Members
-        hidden={value !== 2}
+        hidden={value !== 1}
         teachersList={teachersList}
         studentsList={studentsList}
         classDetails={classDetails}
         loading={memberListLoading}
       />
+      {classDetails && classDetails.role === "teacher" && (
+        <Grading
+          hidden={value !== 2}
+          gradeStructure={gradeStructure}
+          classDetails={classDetails}
+        />
+      )}
     </div>
   );
 };
