@@ -3,6 +3,7 @@ import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router";
 import Header from "../../Components/Header";
+import { addID } from "../../Utils/converters";
 import { getAuth } from "../../Utils/httpHelpers";
 import { getLocalUser } from "../../Utils/localStorageGetSet";
 import "../Home/Main/index.scss";
@@ -15,6 +16,7 @@ const ClassPage = () => {
   const [classDetails, setClassDetails] = useState([]);
   const [studentsList, setStudentsList] = useState([]);
   const [teachersList, setTeachersList] = useState([]);
+  const [gradeStructure, setGradeStructure] = useState([]);
   const [dashBoardLoading, setDashBoardLoading] = useState(true);
   const [memberListLoading, setMemberListLoading] = useState(true);
   const { id } = useParams();
@@ -43,6 +45,7 @@ const ClassPage = () => {
   useEffect(() => {
     getClassDetails();
     getMemberList();
+    getGradeStructure();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const getClassDetails = () => {
@@ -80,6 +83,22 @@ const ClassPage = () => {
         }
       });
   };
+  const getGradeStructure = () => {
+    getAuth(`/class/${id}/grade-structure`)
+      .then((response) => {
+        console.log("grade:", response.data);
+        const data = addID(response.data.gradeStructure, "assignment");
+        console.log(data);
+        setGradeStructure(data);
+      })
+      .catch((error) => {
+        if (user) {
+          history.push("/404/Class Not Found");
+        } else {
+          history.push("/login");
+        }
+      });
+  };
   return (
     <div>
       <Header isAtMainPage={false} />
@@ -97,7 +116,11 @@ const ClassPage = () => {
         listPosts={exampleListPost}
         loading={dashBoardLoading}
       />
-      <Grading hidden={value !== 1} />
+      <Grading
+        hidden={value !== 1}
+        gradeStructure={gradeStructure}
+        classDetails={classDetails}
+      />
       <Members
         hidden={value !== 2}
         teachersList={teachersList}
