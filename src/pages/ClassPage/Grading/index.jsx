@@ -76,6 +76,25 @@ function Grading({
             setOpenAlertMessage={setOpenAlertMessage}
           />
         </Grid>
+        <Dialog
+          open={openDialogMessage}
+          onClose={handleCloseDialog}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{dialogTitle}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {dialogMessage}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>Cancel</Button>
+            <Button onClick={handleUpdateAssignments} autoFocus>
+              Update
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Container>
       <Snackbar
         open={openAlertMessage}
