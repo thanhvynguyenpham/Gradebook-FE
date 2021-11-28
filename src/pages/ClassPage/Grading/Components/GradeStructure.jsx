@@ -125,7 +125,6 @@ function GradeStructure({
       handleUpdateAssignments();
     }
   };
-
   const handleUpdateAssignments = () => {
     setDisableButton(true);
     setOpenDialogMessage(false);
