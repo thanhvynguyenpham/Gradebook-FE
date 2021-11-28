@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import XLSX from "xlsx";
 
-const Marks = ({ hidden }) => {
+const StudentList = ({ hidden }) => {
   const [students, setStudents] = useState([]);
   const [cols, setCols] = useState([]);
 
@@ -16,7 +16,7 @@ const Marks = ({ hidden }) => {
     reader.onload = (e) => {
       /* Parse data */
       const bstr = e.target.result;
-      const wb = XLSX.read(bstr, { type: rABS ? "binary" : "array" });
+      const wb = XLSX.read(bstr, { type: "binary" });
       /* Get first worksheet */
       const wsname = wb.SheetNames[0];
       const ws = wb.Sheets[wsname];
@@ -25,6 +25,11 @@ const Marks = ({ hidden }) => {
       const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
       /* Update state */
       setCols(data[0]);
+      console.log(data[0]);
+      const body = {
+        studentList: JSON.stringify(data.slice(1)),
+      };
+      console.log(body);
       setStudents(data.slice(1));
     };
     if (rABS) reader.readAsBinaryString(file);
@@ -45,17 +50,6 @@ const Marks = ({ hidden }) => {
             </Button>
           </Link>
         </Grid>
-        <Grid item xs={4}>
-          <Link
-            to="/assets/templates/point-template.xlsx"
-            target="_blank"
-            download
-          >
-            <Button size="small" variant="outlined">
-              Point Template
-            </Button>
-          </Link>
-        </Grid>
         <Grid item xs={12}>
           <Input type="file" onChange={handleFile} />
         </Grid>
@@ -64,4 +58,4 @@ const Marks = ({ hidden }) => {
   );
 };
 
-export default Marks;
+export default StudentList;
