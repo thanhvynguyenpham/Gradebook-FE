@@ -3,6 +3,32 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import XLSX from "xlsx";
 
+
+const convertToJson = (csv) =>{
+  var lines = csv.split("\n");
+
+  var result = [];
+
+  //var headers = lines[0].split(",");
+  const headers = ['studentId','fullName'];
+
+  for (var i = 1; i < lines.length&&lines[i]; i++) {
+    console.log("Line:",lines[i]);
+    var obj = {};
+    var currentline = lines[i].split(",");
+
+    for (var j = 0; j < headers.length; j++) {
+      obj[headers[j]] = currentline[j];
+    }
+
+    result.push(obj);
+  }
+
+  //return result; //JavaScript object
+  return JSON.stringify(result); //JSON
+}
+
+
 const Marks = ({ hidden }) => {
   const [students, setStudents] = useState([]);
   const [cols, setCols] = useState([]);
@@ -22,15 +48,18 @@ const Marks = ({ hidden }) => {
       const ws = wb.Sheets[wsname];
       console.log(rABS, wb);
       /* Convert array of arrays */
-      const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
+      //const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
+      const data = XLSX.utils.sheet_to_csv(ws, { header: 1 });
       /* Update state */
-      setCols(data[0]);
-      setStudents(data.slice(1));
+      //setCols(data[0]);
+      //setStudents(data.slice(1));
+      console.log("Data>>>" + data);// shows that excel data is read
+      console.log(convertToJson(data));
     };
     if (rABS) reader.readAsBinaryString(file);
     else reader.readAsArrayBuffer(file);
   };
-
+  
   return (
     <Grid item xs={12} sm={10} hidden={hidden}>
       <Grid container item xs={12} justifyContent="flex-end">
