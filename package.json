@@ -24,6 +24,7 @@
     "react-scripts": "4.0.3",
     "sass": "^1.43.4",
     "web-vitals": "^1.1.2",
+    "xlsx": "^0.17.4",
     "yup": "^0.32.11"
   },
   "scripts": {
