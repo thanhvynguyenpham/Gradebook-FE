@@ -17,10 +17,11 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import XLSX from "xlsx";
 import { convertToJson } from "../../../../Utils/converters";
+import { postAuth } from "../../../../Utils/httpHelpers";
 
 const UploadGradeForm = ({
   openDialog,
@@ -32,7 +33,10 @@ const UploadGradeForm = ({
 }) => {
   const [gradeList, setGradeList] = useState([]);
   const [assignment, setAssignment] = useState("");
+  const [btnDisabled, setBtnDisabled] = useState(false);
+
   const handleFile = (e) => {
+    setGradeList([]);
     const files = e.target.files;
     if (!files || !files[0]) return;
     const file = files[0];
@@ -56,6 +60,41 @@ const UploadGradeForm = ({
 
   const handleChangeAssignment = (event) => {
     setAssignment(event.target.value);
+  };
+
+  const uploadAssignmentGrade = () => {
+    setBtnDisabled(true);
+    if (assignment === "") {
+      setAlertMessage("Please choose an assignment.");
+      setOpenAlertMessage(true);
+      setBtnDisabled(false);
+      return;
+    }
+    if (gradeList.length === 0) {
+      setAlertMessage("Please a file to upload.");
+      setOpenAlertMessage(true);
+      setBtnDisabled(false);
+      return;
+    }
+    const body = {
+      identity: assignment,
+      grades: gradeList,
+    };
+    postAuth(`/class/${classDetails._id}/student-grades`, body)
+      .then((response) => {
+        setBtnDisabled(false);
+        setAlertMessage("Update grade successfully.");
+        setOpenAlertMessage(true);
+      })
+      .catch((error) => {
+        setBtnDisabled(false);
+        if (error.response.data.err) {
+          setAlertMessage(error.response.data.err);
+        } else {
+          setAlertMessage("Cannot update right now. Please try again!");
+        }
+        setOpenAlertMessage(true);
+      });
   };
   return (
     <Dialog
@@ -135,8 +174,12 @@ const UploadGradeForm = ({
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Close</Button>
-        <Button onClick={handleClose} autoFocus>
-          Agree
+        <Button
+          onClick={uploadAssignmentGrade}
+          autoFocus
+          disabled={btnDisabled}
+        >
+          Update
         </Button>
       </DialogActions>
     </Dialog>

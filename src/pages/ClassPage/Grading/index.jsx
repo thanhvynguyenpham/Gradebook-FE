@@ -1,4 +1,11 @@
-import { Container, Grid, Snackbar, Tabs, Tab } from "@mui/material";
+import {
+  Container,
+  Grid,
+  Snackbar,
+  Tabs,
+  Tab,
+  useMediaQuery,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import GradeStructure from "./Components/GradeStructure";
 import Marks from "./Components/Marks";
@@ -16,6 +23,7 @@ function Grading({
   const [openAlertMessage, setOpenAlertMessage] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [students, setStudents] = useState([]);
+  const smDown = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
   useEffect(() => {
     setAssignments(gradeStructure);
@@ -30,7 +38,7 @@ function Grading({
         <Grid container spacing={2} xs={12} justifyContent="center">
           <Grid item sm={2}>
             <Tabs
-              orientation="vertical"
+              orientation={smDown ? "horizontal" : "vertical"}
               aria-label="Vertical tabs"
               sx={{ borderRight: 1, borderColor: "divider" }}
               value={value}
@@ -56,7 +64,6 @@ function Grading({
             classDetails={classDetails}
             setAlertMessage={setAlertMessage}
             setOpenAlertMessage={setOpenAlertMessage}
-            students={students}
           />
           <StudentList
             hidden={value !== 2}
