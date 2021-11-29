@@ -11,7 +11,7 @@ import {
   DialogContentText,
   DialogActions,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AssignmentForm from "./AssignmentForm";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { AddCircleOutlined } from "@mui/icons-material";
@@ -125,6 +125,7 @@ function GradeStructure({
       handleUpdateAssignments();
     }
   };
+
   const handleUpdateAssignments = () => {
     setDisableButton(true);
     setOpenDialogMessage(false);
