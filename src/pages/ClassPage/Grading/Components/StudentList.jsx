@@ -1,8 +1,7 @@
-import { Download } from "@mui/icons-material";
+import { Download, UploadFile } from "@mui/icons-material";
 import {
   Button,
   Grid,
-  Input,
   Paper,
   Stack,
   Table,
@@ -30,6 +29,7 @@ const StudentList = ({
   const [studentLists, setStudentLists] = useState(students);
   const [btnDisabled, setBtnDisabled] = useState(false);
   const handleFile = (e) => {
+    setStudentLists([]);
     const files = e.target.files;
     if (!files || !files[0]) return;
     const file = files[0];
@@ -54,9 +54,9 @@ const StudentList = ({
   const onUpdateStudents = () => {
     setBtnDisabled(true);
     const body = {
-      listStudents: JSON.stringify(studentLists),
+      listStudents: studentLists,
     };
-    postAuth(`/class/${classDetails.id}/list-students`, body)
+    postAuth(`/class/${classDetails._id}/list-students`, body)
       .then((response) => {
         setBtnDisabled(false);
         setStudents(response.data);
@@ -65,7 +65,11 @@ const StudentList = ({
       })
       .catch((error) => {
         setBtnDisabled(false);
-        setAlertMessage(error.response.error);
+        if (error.response.data.err) {
+          setAlertMessage(error.response.data.err);
+        } else {
+          setAlertMessage("Cannot update right now. Please try again!");
+        }
         setOpenAlertMessage(true);
       });
   };
@@ -77,15 +81,19 @@ const StudentList = ({
             container
             item
             xs={12}
-            justifyContent="space-between"
+            justifyContent="space-evenly"
             padding="20px"
+            spacing={2}
           >
             <Grid item>
-              <Input
-                type="file"
-                onChange={handleFile}
-                style={{ color: "white" }}
-              />
+              <Button
+                variant="contained"
+                component="label"
+                startIcon={<UploadFile />}
+              >
+                Upload File
+                <input type="file" hidden onChange={handleFile} />
+              </Button>
             </Grid>
             <Grid item>
               <Link
