@@ -16,3 +16,23 @@ export function addID(arrays, keyword) {
   });
   return arrays;
 }
+
+export const convertToJson = (csv) => {
+  var lines = csv.split("\n");
+
+  var result = [];
+  const headers = ["studentId", "fullName"];
+
+  for (var i = 1; i < lines.length && lines[i]; i++) {
+    console.log("Line:", lines[i]);
+    var obj = {};
+    var currentline = lines[i].split(",");
+
+    for (var j = 0; j < headers.length; j++) {
+      obj[headers[j]] = currentline[j];
+    }
+
+    result.push(obj);
+  }
+  return result;
+};

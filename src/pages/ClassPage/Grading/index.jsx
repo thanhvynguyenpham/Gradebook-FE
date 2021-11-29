@@ -2,6 +2,7 @@ import { Container, Grid, Snackbar, Tabs, Tab } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import GradeStructure from "./Components/GradeStructure";
 import Marks from "./Components/Marks";
+import StudentList from "./Components/StudentList";
 
 import "./index.scss";
 function Grading({ hidden, gradeStructure, classDetails }) {
@@ -9,6 +10,7 @@ function Grading({ hidden, gradeStructure, classDetails }) {
   const [assignments, setAssignments] = useState(gradeStructure);
   const [openAlertMessage, setOpenAlertMessage] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
+  const [students, setStudents] = useState([]);
 
   useEffect(() => {
     setAssignments(gradeStructure);
@@ -31,6 +33,7 @@ function Grading({ hidden, gradeStructure, classDetails }) {
             >
               <Tab label="Grade Structure" key="tab-1" />
               <Tab label="Marks" key="tab-2" />
+              <Tab label="Student List" key="tab-3" />
             </Tabs>
           </Grid>
           <GradeStructure
@@ -42,6 +45,14 @@ function Grading({ hidden, gradeStructure, classDetails }) {
             setOpenAlertMessage={setOpenAlertMessage}
           />
           <Marks hidden={value !== 1} />
+          <StudentList
+            hidden={value !== 2}
+            students={students}
+            setStudents={setStudents}
+            classDetails={classDetails}
+            setAlertMessage={setAlertMessage}
+            setOpenAlertMessage={setOpenAlertMessage}
+          />
         </Grid>
       </Container>
       <Snackbar
