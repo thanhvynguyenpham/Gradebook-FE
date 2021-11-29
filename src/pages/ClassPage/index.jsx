@@ -88,10 +88,7 @@ const ClassPage = () => {
   const getGradeStructure = () => {
     getAuth(`/class/${id}/grade-structure`)
       .then((response) => {
-        console.log("grade:", response.data);
-        const data = addID(response.data.gradeStructure, "assignment");
-        console.log(data);
-        setGradeStructure(data);
+        updateGradeStructure(response.data.gradeStructure);
       })
       .catch((error) => {
         if (user) {
@@ -100,6 +97,10 @@ const ClassPage = () => {
           history.push("/login");
         }
       });
+  };
+  const updateGradeStructure = (value) => {
+    const data = addID(value, "assignment");
+    setGradeStructure(data);
   };
   return (
     <div>
@@ -132,6 +133,7 @@ const ClassPage = () => {
           hidden={value !== 2}
           gradeStructure={gradeStructure}
           classDetails={classDetails}
+          updateGradeStructure={updateGradeStructure}
         />
       )}
     </div>

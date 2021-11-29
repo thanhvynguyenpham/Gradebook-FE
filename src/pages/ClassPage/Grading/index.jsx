@@ -5,7 +5,12 @@ import Marks from "./Components/Marks";
 import StudentList from "./Components/StudentList";
 
 import "./index.scss";
-function Grading({ hidden, gradeStructure, classDetails }) {
+function Grading({
+  hidden,
+  gradeStructure,
+  classDetails,
+  updateGradeStructure,
+}) {
   const [value, setValue] = useState(0);
   const [assignments, setAssignments] = useState(gradeStructure);
   const [openAlertMessage, setOpenAlertMessage] = useState(false);
@@ -40,13 +45,14 @@ function Grading({ hidden, gradeStructure, classDetails }) {
             hidden={value !== 0}
             assignments={assignments}
             updateAssignments={setAssignments}
+            updateGradeStructure={updateGradeStructure}
             classDetails={classDetails}
             setAlertMessage={setAlertMessage}
             setOpenAlertMessage={setOpenAlertMessage}
           />
           <Marks
             hidden={value !== 1}
-            assignments={assignments}
+            assignments={gradeStructure}
             classDetails={classDetails}
             setAlertMessage={setAlertMessage}
             setOpenAlertMessage={setOpenAlertMessage}
