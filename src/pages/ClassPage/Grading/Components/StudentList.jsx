@@ -46,8 +46,7 @@ const StudentList = ({
       /* Convert array of arrays */
       const data = XLSX.utils.sheet_to_csv(ws, { header: 1 });
       /* Update state */
-      setStudentLists(convertToJson(data));
-      console.log(convertToJson(data));
+      setStudentLists(convertToJson(data, ["studentId", "fullName"]));
     };
     if (rABS) reader.readAsBinaryString(file);
     else reader.readAsArrayBuffer(file);

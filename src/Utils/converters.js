@@ -17,11 +17,10 @@ export function addID(arrays, keyword) {
   return arrays;
 }
 
-export const convertToJson = (csv) => {
+export const convertToJson = (csv, headers) => {
   var lines = csv.split("\n");
 
   var result = [];
-  const headers = ["studentId", "fullName"];
 
   for (var i = 1; i < lines.length && lines[i]; i++) {
     console.log("Line:", lines[i]);
