@@ -11,7 +11,7 @@ import {
   DialogContentText,
   DialogActions,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AssignmentForm from "./AssignmentForm";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { AddCircleOutlined } from "@mui/icons-material";
@@ -28,6 +28,7 @@ function GradeStructure({
   updateAssignments,
   setAlertMessage,
   setOpenAlertMessage,
+  updateGradeStructure,
 }) {
   const [focusForm, setFocusForm] = useState("");
   const [disableButton, setDisableButton] = useState(false);
@@ -78,10 +79,18 @@ function GradeStructure({
     const newAsgList = [];
     assignments.forEach((item, index) => {
       if (item.name.length !== 0) {
-        newAsgList.push({
-          name: item.name,
-          point: item.point,
-        });
+        if (item.identity) {
+          newAsgList.push({
+            name: item.name,
+            point: item.point,
+            identity: item.identity,
+          });
+        } else {
+          newAsgList.push({
+            name: item.name,
+            point: item.point,
+          });
+        }
       } else {
         onRemove(index);
       }
@@ -91,7 +100,6 @@ function GradeStructure({
 
   const validate = () => {
     let sum = 0;
-    console.log("validate");
     assignments.forEach((item) => {
       if (item.name.length !== 0) {
         sum += item.point;
@@ -117,6 +125,7 @@ function GradeStructure({
       handleUpdateAssignments();
     }
   };
+
   const handleUpdateAssignments = () => {
     setDisableButton(true);
     setOpenDialogMessage(false);
@@ -125,12 +134,14 @@ function GradeStructure({
     };
     patchAuth(`/class/${classDetails._id}/grade-structure`, body)
       .then((response) => {
+        updateAssignments([]);
+        updateGradeStructure(response.data.gradeStructure);
+
         setAlertMessage("Update grade structure successfully");
         setOpenAlertMessage(true);
         setDisableButton(false);
       })
       .catch((error) => {
-        console.log(error);
         if (error.response.status === 404 || error.response.status === 400) {
           setAlertMessage(error.response.data.err);
         } else {

@@ -45,7 +45,6 @@ const UploadGradeForm = ({
       /* Get first worksheet */
       const wsname = wb.SheetNames[0];
       const ws = wb.Sheets[wsname];
-      console.log(rABS, wb);
       /* Convert array of arrays */
       const data = XLSX.utils.sheet_to_csv(ws, { header: 1 });
       /* Update state */
@@ -54,10 +53,6 @@ const UploadGradeForm = ({
     if (rABS) reader.readAsBinaryString(file);
     else reader.readAsArrayBuffer(file);
   };
-
-  useEffect(() => {
-    console.log(assignments);
-  }, [assignments]);
 
   const handleChangeAssignment = (event) => {
     setAssignment(event.target.value);

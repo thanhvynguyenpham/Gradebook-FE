@@ -1,4 +1,4 @@
-import { Download, UploadFile } from "@mui/icons-material";
+import { UploadFile } from "@mui/icons-material";
 import { Button, Grid, Paper, Stack, Typography } from "@mui/material";
 import React, { useState } from "react";
 import UploadGradeForm from "./UploadGradeForm";
