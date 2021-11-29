@@ -1,8 +1,24 @@
-import { UploadFile } from "@mui/icons-material";
+import { Download, UploadFile } from "@mui/icons-material";
 import { Button, Grid, Paper, Stack, Typography } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
+import UploadGradeForm from "./UploadGradeForm";
 
-const Marks = ({ hidden }) => {
+const Marks = ({
+  hidden,
+  students,
+  assignments,
+  classDetails,
+  setAlertMessage,
+  setOpenAlertMessage,
+}) => {
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
   return (
     <Grid item xs={12} sm={10} hidden={hidden}>
       <Stack spacing={3} width={"100%"}>
@@ -23,22 +39,22 @@ const Marks = ({ hidden }) => {
                 size="small"
                 variant="contained"
                 startIcon={<UploadFile />}
+                onClick={handleOpenDialog}
               >
                 Upload Marksheet
               </Button>
             </Grid>
-            {/* <Link
-              to="/assets/templates/point-template.xlsx"
-              target="_blank"
-              download
-            >
-              <Button size="small" variant="contained" startIcon={<Download />}>
-                Point Template
-              </Button>
-            </Link> */}
           </Grid>
         </Paper>
       </Stack>
+      <UploadGradeForm
+        openDialog={openDialog}
+        assignments={assignments}
+        classDetails={classDetails}
+        setAlertMessage={setAlertMessage}
+        setOpenAlertMessage={setOpenAlertMessage}
+        handleClose={handleCloseDialog}
+      />
     </Grid>
   );
 };
