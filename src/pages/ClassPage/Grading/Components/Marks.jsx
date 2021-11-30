@@ -13,27 +13,9 @@ import {
   TableRow,
   Input,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { getAuth, patchAuth } from "../../../../Utils/httpHelpers";
 import UploadGradeForm from "./UploadGradeForm";
-const data = [
-  {
-    studentId: "18127127",
-    account: null,
-    grades: [
-      {
-        name: "Midterm",
-        identity: "718786868",
-        point: 10,
-      },
-      {
-        name: "Final",
-        identity: "718786868",
-        point: 10,
-      },
-    ],
-    total: 5,
-  },
-];
 const Marks = ({
   hidden,
   assignments,
@@ -42,26 +24,57 @@ const Marks = ({
   setOpenAlertMessage,
 }) => {
   const [openDialog, setOpenDialog] = useState(false);
-  const [studentList, setStudentList] = useState(data);
-  const [oldValue, setOldValue] = useState("");
+  const [studentList, setStudentList] = useState([]);
+  const [oldValue, setOldValue] = useState();
 
-  const handleBlur = (event, student, index) => {
+  useEffect(() => {
+    getGradeBoard();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const getGradeBoard = () => {
+    getAuth(`/class/${classDetails._id}/grades-board`)
+      .then((response) => {
+        setStudentList(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handleBlur = (event, student, index, identity) => {
     if (event.target.value > 10 || event.target.value < 0) {
       event.target.value = oldValue;
     }
     if (event.target.value === oldValue) {
       return;
     }
-    updatePoint(event.target.value, student, index);
+    if (!updatePoint(event.target.value, student, index, identity)) {
+      event.target.value = oldValue;
+    }
   };
   const handleOnFocus = (event) => {
     setOldValue(event.target.value);
   };
 
-  const updatePoint = (point, student, index) => {};
+  const updatePoint = (point, student, index, identity) => {
+    const body = {
+      studentId: student.studentId,
+      identity: identity,
+      point: parseInt(point),
+    };
+    patchAuth(`/class/${classDetails._id}/cell-grades-board`, body)
+      .then((response) => {
+        updateStudent(response.data, index);
+      })
+      .catch((error) => {
+        console.log(error);
+        return false;
+      });
+    return true;
+  };
 
   const updateStudent = (student, index) => {
-    let newList = studentList;
+    let newList = [...studentList];
     if (newList[index]) {
       newList[index] = student;
       setStudentList(newList);
@@ -102,14 +115,14 @@ const Marks = ({
           </Grid>
         </Paper>
         <Paper elevation={2} style={{ padding: "20px" }}>
-          {data.length !== 0 && (
+          {studentList.length !== 0 && (
             <TableContainer>
               <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
                   <TableRow>
                     <TableCell>Student ID</TableCell>
                     <TableCell>Student Name</TableCell>
-                    {data[0].grades.map((assignment, index) => (
+                    {studentList[0].grades.map((assignment, index) => (
                       <TableCell key={`header-${index}`}>
                         {assignment.name}
                       </TableCell>
@@ -143,20 +156,32 @@ const Marks = ({
                         ></TableCell>
                       )}
 
-                      {studentList[0].grades.map((assignment, i) => (
-                        <TableCell key={`point-${i}`}>
-                          <Input
-                            defaultValue={assignment.point}
-                            style={{ width: "50px" }}
-                            onBlur={(event) =>
-                              handleBlur(event, student, index)
-                            }
-                            onFocus={handleOnFocus}
-                            type="number"
-                          />
+                      {student.grades.map((assignment, i) => (
+                        <TableCell key={`point-${student.studentId}-${i}`}>
+                          <div key={assignment.point}>
+                            <Input
+                              defaultValue={assignment.point}
+                              style={{ width: "50px" }}
+                              onBlur={(event) =>
+                                handleBlur(
+                                  event,
+                                  student,
+                                  index,
+                                  assignment.identity
+                                )
+                              }
+                              onFocus={handleOnFocus}
+                              n
+                              type="number"
+                            />
+                          </div>
                         </TableCell>
                       ))}
-                      <TableCell component="th" scope="row">
+                      <TableCell
+                        component="th"
+                        scope="row"
+                        key={`point-${student.studentId}-total`}
+                      >
                         {student.total}
                       </TableCell>
                     </TableRow>
@@ -174,6 +199,7 @@ const Marks = ({
         setAlertMessage={setAlertMessage}
         setOpenAlertMessage={setOpenAlertMessage}
         handleClose={handleCloseDialog}
+        getGradeBoard={getGradeBoard}
       />
     </Grid>
   );

@@ -30,6 +30,7 @@ const UploadGradeForm = ({
   classDetails,
   setAlertMessage,
   setOpenAlertMessage,
+  getGradeBoard,
 }) => {
   const [gradeList, setGradeList] = useState([]);
   const [assignment, setAssignment] = useState("");
@@ -83,8 +84,10 @@ const UploadGradeForm = ({
     postAuth(`/class/${classDetails._id}/student-grades`, body)
       .then((response) => {
         setBtnDisabled(false);
+        getGradeBoard();
         setAlertMessage("Update grade successfully.");
         setOpenAlertMessage(true);
+        handleClose();
       })
       .catch((error) => {
         setBtnDisabled(false);
