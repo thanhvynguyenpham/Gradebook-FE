@@ -1,6 +1,7 @@
 import { PersonAddAlt } from "@mui/icons-material";
 import {
   Avatar,
+  Chip,
   Container,
   Divider,
   Grid,
@@ -148,6 +149,9 @@ const Members = ({ classDetails, hidden, teachersList, studentsList }) => {
                       </Avatar>
                     </ListItemAvatar>
                     <ListItemText primary={value.user.name} />
+                    {classDetails.role === "teacher" && value.studentId && (
+                      <Chip label={value.studentId} color="primary" />
+                    )}
                   </ListItem>
                 ))}
               </List>

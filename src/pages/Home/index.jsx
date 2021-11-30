@@ -43,7 +43,6 @@ export default function Home() {
         if (response.status === 200) {
           var arr = [...response.data];
           setClassList(arr);
-          console.log(arr);
         }
         setOpenLoadingScreen(false);
       })

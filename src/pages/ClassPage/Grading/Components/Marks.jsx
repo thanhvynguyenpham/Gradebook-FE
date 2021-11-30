@@ -121,7 +121,7 @@ const Marks = ({
                 <TableHead>
                   <TableRow>
                     <TableCell>Student ID</TableCell>
-                    <TableCell>Student Name</TableCell>
+                    <TableCell>Student Account</TableCell>
                     {studentList[0].grades.map((assignment, index) => (
                       <TableCell key={`header-${index}`}>
                         {assignment.name}

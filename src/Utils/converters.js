@@ -25,7 +25,9 @@ export const convertToJson = (csv, headers) => {
   for (var i = 1; i < lines.length && lines[i]; i++) {
     var obj = {};
     var currentline = lines[i].split(",");
-
+    if (currentline[0] === "") {
+      break;
+    }
     for (var j = 0; j < headers.length; j++) {
       obj[headers[j]] = currentline[j];
     }
