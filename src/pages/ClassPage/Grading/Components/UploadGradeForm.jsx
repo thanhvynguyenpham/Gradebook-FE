@@ -88,6 +88,8 @@ const UploadGradeForm = ({
         setAlertMessage("Update grade successfully.");
         setOpenAlertMessage(true);
         handleClose();
+        setGradeList([]);
+        setAssignment("");
       })
       .catch((error) => {
         setBtnDisabled(false);
