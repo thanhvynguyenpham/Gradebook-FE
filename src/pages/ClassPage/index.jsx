@@ -51,7 +51,6 @@ const ClassPage = () => {
     getAuth(`/class/${id}/`)
       .then((response) => {
         if (response.status === 200) {
-          console.log(response.data);
           setClassDetails(response.data);
           setDashBoardLoading(false);
           if (response.data.role === "teacher") {
@@ -71,7 +70,6 @@ const ClassPage = () => {
     getAuth(`/class/${id}/list-member`)
       .then((response) => {
         if (response.status === 200) {
-          console.log(response.data);
           setStudentsList(response.data.students);
           setTeachersList(response.data.teachers);
           setMemberListLoading(false);
