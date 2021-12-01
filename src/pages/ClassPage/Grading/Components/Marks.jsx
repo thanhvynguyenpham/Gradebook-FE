@@ -19,6 +19,7 @@ import UploadGradeForm from "./UploadGradeForm";
 const Marks = ({
   hidden,
   assignments,
+  students,
   classDetails,
   setAlertMessage,
   setOpenAlertMessage,
@@ -26,10 +27,6 @@ const Marks = ({
   const [openDialog, setOpenDialog] = useState(false);
   const [studentList, setStudentList] = useState([]);
   const [oldValue, setOldValue] = useState();
-
-  useEffect(() => {
-    getGradeBoard();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const getGradeBoard = () => {
     getAuth(`/class/${classDetails._id}/grades-board`)
@@ -40,6 +37,13 @@ const Marks = ({
         console.log(error);
       });
   };
+  useEffect(() => {
+    getGradeBoard();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    getGradeBoard();
+  }, [assignments, students]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleBlur = (event, student, index, identity) => {
     if (event.target.value > 10 || event.target.value < 0) {
