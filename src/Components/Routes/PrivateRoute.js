@@ -1,6 +1,10 @@
 import React from "react";
 import { Redirect, Route, withRouter } from "react-router-dom";
-import { getLocalAccessToken } from "../../Utils/localStorageGetSet";
+import AdminDashboard from "../../pages/Admin";
+import {
+  getLocalAccessToken,
+  getLocalUser,
+} from "../../Utils/localStorageGetSet";
 const PrivateRoute = ({ component: Component, ...restOfProps }) => (
   <Route
     {...restOfProps}
@@ -14,6 +18,10 @@ const PrivateRoute = ({ component: Component, ...restOfProps }) => (
           />
         );
       } else {
+        const user = getLocalUser();
+        if (user.role === "admin") {
+          return <AdminDashboard />;
+        }
         return <Component {...props} />;
       }
     }}
