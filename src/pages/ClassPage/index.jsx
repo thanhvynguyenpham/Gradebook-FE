@@ -10,6 +10,7 @@ import "../Home/Main/index.scss";
 import DashBoard from "./Dashboard";
 import Grading from "./Grading";
 import Members from "./Members";
+import StudentGrading from "./StudentGrading";
 
 const ClassPage = () => {
   const [value, setValue] = React.useState(0);
@@ -107,9 +108,7 @@ const ClassPage = () => {
         <Tabs value={value} onChange={handleChange} centered>
           <Tab label="Dashboard" key="tab-1" />
           <Tab label="Members" key="tab-2" />
-          {classDetails && classDetails.role === "teacher" && (
-            <Tab label="Grading" key="tab-3" />
-          )}
+          <Tab label="Grading" key="tab-3" />
         </Tabs>
       </Box>
       <DashBoard
@@ -126,13 +125,15 @@ const ClassPage = () => {
         classDetails={classDetails}
         loading={memberListLoading}
       />
-      {classDetails && classDetails.role === "teacher" && (
+      {classDetails && classDetails.role === "teacher" ? (
         <Grading
           hidden={value !== 2}
           gradeStructure={gradeStructure}
           classDetails={classDetails}
           updateGradeStructure={updateGradeStructure}
         />
+      ) : (
+        <StudentGrading hidden={value !== 2} classDetails={classDetails} />
       )}
     </div>
   );
