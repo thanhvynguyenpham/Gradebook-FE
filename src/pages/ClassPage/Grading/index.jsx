@@ -61,6 +61,7 @@ function Grading({
           <Marks
             hidden={value !== 1}
             assignments={gradeStructure}
+            updateGradeStructure={updateGradeStructure}
             students={students}
             classDetails={classDetails}
             setAlertMessage={setAlertMessage}

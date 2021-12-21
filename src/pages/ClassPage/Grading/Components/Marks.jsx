@@ -24,6 +24,7 @@ const Marks = ({
   classDetails,
   setAlertMessage,
   setOpenAlertMessage,
+  updateGradeStructure,
 }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [studentList, setStudentList] = useState([]);
@@ -76,6 +77,15 @@ const Marks = ({
         return false;
       });
     return true;
+  };
+
+  const finalizeGrade = (index) => {
+    console.log(assignments[index].identity);
+    let newArray = [...assignments];
+    newArray[index].finalized = true;
+    updateGradeStructure(newArray);
+    setAlertMessage("Finalized this assignment.");
+    setOpenAlertMessage(true);
   };
 
   const updateStudent = (student, index) => {
@@ -132,7 +142,7 @@ const Marks = ({
                   <TableRow>
                     <TableCell>Student ID</TableCell>
                     <TableCell>Student Account</TableCell>
-                    {studentList[0].grades.map((assignment, index) => (
+                    {assignments.map((assignment, index) => (
                       <TableCell key={`header-${index}`}>
                         {assignment.name}
                       </TableCell>
@@ -196,6 +206,24 @@ const Marks = ({
                       </TableCell>
                     </TableRow>
                   ))}
+                  <TableRow>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    {assignments &&
+                      assignments.map((assignment, index) => (
+                        <TableCell key={assignment.name}>
+                          <Button
+                            size="small"
+                            variant="outlined"
+                            onClick={() => finalizeGrade(index)}
+                            disabled={assignment.finalized}
+                          >
+                            Finalize
+                          </Button>
+                        </TableCell>
+                      ))}
+                    <TableCell></TableCell>
+                  </TableRow>
                 </TableBody>
               </Table>
             </TableContainer>
