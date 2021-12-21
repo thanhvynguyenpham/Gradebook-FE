@@ -23,6 +23,7 @@ const nameValidationSchema = yup.object({
   lastname: yup
     .string("Enter your last name")
     .required("Last name is required"),
+  studentID: yup.string("Enter your student ID"),
 });
 const passwordValidationSchema = yup.object({
   oldPassword: yup.string().required("Please enter your old password."),
@@ -47,6 +48,7 @@ export const ProfileForm = ({
     initialValues: {
       firstname: userProfile.firstName,
       lastname: userProfile.lastName,
+      studentID: "",
     },
     validationSchema: nameValidationSchema,
     onSubmit: (values) => {
@@ -72,6 +74,7 @@ export const ProfileForm = ({
     const body = {
       firstName: values.firstname,
       lastName: values.lastname,
+      studentID: values.studentID,
     };
     patchAuth("/user/profile", JSON.stringify(body))
       .then((response) => {
@@ -182,6 +185,22 @@ export const ProfileForm = ({
                 label="Email"
                 value={userProfile.email}
                 fullWidth
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                id="studentID"
+                label="Student ID"
+                fullWidth
+                value={nameFormik.values.studentID}
+                onChange={nameFormik.handleChange}
+                error={
+                  nameFormik.touched.studentID &&
+                  Boolean(nameFormik.errors.studentID)
+                }
+                helperText={
+                  nameFormik.touched.studentID && nameFormik.errors.studentID
+                }
               />
             </Grid>
             <Grid container item xs={12} justifyContent="flex-end">
