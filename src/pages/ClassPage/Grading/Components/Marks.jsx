@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { getAuth, patchAuth } from "../../../../Utils/httpHelpers";
+import ExportGradeForm from "./ExportGradeForm";
 import UploadGradeForm from "./UploadGradeForm";
 const Marks = ({
   hidden,
@@ -106,15 +107,20 @@ const Marks = ({
             <Grid item>
               <Typography variant="h5">Class Mark</Typography>
             </Grid>
-            <Grid item>
-              <Button
-                size="small"
-                variant="contained"
-                startIcon={<UploadFile />}
-                onClick={handleOpenDialog}
-              >
-                Upload Marksheet
-              </Button>
+            <Grid container item spacing={2} width={"fit-content"}>
+              <Grid item>
+                <ExportGradeForm csvData={studentList} fileName="point" />
+              </Grid>
+              <Grid item>
+                <Button
+                  size="small"
+                  variant="contained"
+                  startIcon={<UploadFile />}
+                  onClick={handleOpenDialog}
+                >
+                  Upload Marksheet
+                </Button>
+              </Grid>
             </Grid>
           </Grid>
         </Paper>
