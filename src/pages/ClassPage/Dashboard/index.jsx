@@ -133,11 +133,9 @@ const DashBoard = ({ classDetails, user, listPosts, hidden, loading }) => {
             <b>{studentID}</b>
           </Typography>
         ) : (
-          <ChangeIDForm
-            classDetails={classDetails}
-            setStudentID={setStudentID}
-            showAlertMessage={(message) => showAlert(message)}
-          />
+          <Typography variant="body1" component="div">
+            Please update your student ID in Profile page.
+          </Typography>
         )}
       </CardContent>
     </Card>
