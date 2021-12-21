@@ -19,8 +19,12 @@ const PrivateRoute = ({ component: Component, ...restOfProps }) => (
         );
       } else {
         const user = getLocalUser();
-        if (user.role === "admin") {
-          return <AdminDashboard />;
+        if (user.role !== "admin") {
+          if (props.location.pathname === "/") {
+            return <AdminDashboard />;
+          } else {
+            return <Redirect to="/" />;
+          }
         }
         return <Component {...props} />;
       }
