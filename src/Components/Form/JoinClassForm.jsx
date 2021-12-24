@@ -8,13 +8,18 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { postAuth } from "../../Utils/httpHelpers";
+import { useHistory } from "react-router-dom";
 
 const validationSchema = yup.object({
-  code: yup.string("Enter a class code").required("Class code is required"),
+  code: yup
+    .string("Enter a class code")
+    .max(10, "Class code is no more than 10 characters")
+    .required("Class code is required"),
 });
 
 const JoinClassForm = ({ isShow, handleClose, onJoinFailed }) => {
   const [btnDisabled, setBtnDisabled] = useState(false);
+  const history = useHistory();
 
   const formik = useFormik({
     initialValues: {
@@ -33,12 +38,9 @@ const JoinClassForm = ({ isShow, handleClose, onJoinFailed }) => {
   }, [isShow]);
 
   function submitForm(values) {
-    const body = {
-      code: values.classcode,
-    };
-    postAuth("/classes", body)
+    postAuth(`/classes/join?code=${values.code}`)
       .then((response) => {
-        // move to classpage
+        history.push(`/class/${response.data._id}`);
       })
       .catch((error) => {
         console.log(error);
