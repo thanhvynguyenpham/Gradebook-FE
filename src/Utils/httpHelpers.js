@@ -102,3 +102,7 @@ export function postAuth(url, body) {
 export function patchAuth(url, body) {
   return instance.patch(endpoint + url, body);
 }
+
+export function deleteAuth(url) {
+  return instance.delete(endpoint + url);
+}

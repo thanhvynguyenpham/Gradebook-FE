@@ -35,6 +35,7 @@ export function setLocalUserName(value) {
     firstName: value.firstName,
     lastName: value.lastName,
     name: value.firstName + " " + value.lastName,
+    role: curUser.role,
   };
   localStorage.setItem("user", JSON.stringify(updatedUser));
 }

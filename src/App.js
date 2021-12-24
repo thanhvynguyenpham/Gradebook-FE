@@ -10,6 +10,7 @@ import ClassPage from "./pages/ClassPage";
 import { ProfilePage } from "./pages/Profile";
 import { JoinClassPage } from "./pages/JoinClassPage";
 import NotFoundPage from "./pages/PageNotFound/PageNotFound";
+import AdminDashboard from "./pages/Admin";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <div className="App">
         <Switch>
           <PrivateRoute exact path="/" component={Home} />
+          <PrivateRoute exact path="/admin" component={AdminDashboard} />
           <PublicRoute exact path="/login" component={Login} />
           <PublicRoute exact path="/register" component={SignUp} />
           <PrivateRoute exact path="/class/:id" component={ClassPage} />
