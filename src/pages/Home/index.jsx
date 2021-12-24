@@ -1,6 +1,7 @@
 import { Alert, Backdrop, CircularProgress, Snackbar } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CreateClassForm from "../../Components/Form/CreateClassForm";
+import JoinClassForm from "../../Components/Form/JoinClassForm";
 
 import Header from "../../Components/Header";
 import { getAuth } from "../../Utils/httpHelpers";
@@ -8,31 +9,39 @@ import Main from "./Main";
 
 export default function Home() {
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [showJoinForm, setShowJoinForm] = useState(false);
   const [classList, setClassList] = useState([]);
   const [openLoadingScreen, setOpenLoadingScreen] = useState(false);
-  const [createSuccess, setCreateSuccess] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [message, setMessage] = useState("");
   const [openSnackBar, setOpenSnackBar] = useState(false);
   useEffect(() => {
     getClassList();
   }, []);
 
-  // useEffect(() => {
-  //   if (showCreateForm === false) {
-  //     getClassList();
-  //   }
-  // }, [showCreateForm]);
-
   function handleCreateClass() {
     setShowCreateForm(true);
   }
 
+  function handleJoinClass() {
+    setShowJoinForm(true);
+  }
+
   function onCreateSuccess() {
-    setCreateSuccess(true);
+    setSuccess(true);
+    setMessage("Created class successfully");
     setOpenSnackBar(true);
   }
 
   function onCreateFailed() {
-    setCreateSuccess(false);
+    setSuccess(false);
+    setMessage("Cannot create class, please try again.");
+    setOpenSnackBar(true);
+  }
+
+  function onJoinFailed(message) {
+    setSuccess(false);
+    setMessage(message);
     setOpenSnackBar(true);
   }
 
@@ -61,7 +70,16 @@ export default function Home() {
         onCreateSuccess={onCreateSuccess}
         onCreateFailed={onCreateFailed}
       />
-      <Header onCreateClass={handleCreateClass} isAtMainPage={true} />
+      <JoinClassForm
+        isShow={showJoinForm}
+        handleClose={() => setShowJoinForm(false)}
+        onJoinFailed={onJoinFailed}
+      />
+      <Header
+        onCreateClass={handleCreateClass}
+        onJoinClass={handleJoinClass}
+        isAtMainPage={true}
+      />
       <Main classList={classList} />
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -76,12 +94,10 @@ export default function Home() {
       >
         <Alert
           onClose={() => setOpenSnackBar(false)}
-          severity={createSuccess ? "success" : "error"}
+          severity={success ? "success" : "error"}
           sx={{ width: "100%" }}
         >
-          {createSuccess
-            ? "Created class successfully"
-            : "Cannot create class, please try again."}
+          {message}
         </Alert>
       </Snackbar>
     </div>

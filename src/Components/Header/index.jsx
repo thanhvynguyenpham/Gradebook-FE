@@ -7,7 +7,13 @@ import Typography from "@mui/material/Typography";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import MoreIcon from "@mui/icons-material/MoreVert";
-import { Add, AddCircleOutlined, Logout, Person } from "@mui/icons-material";
+import {
+  Add,
+  AddCircleOutlined,
+  Input,
+  Logout,
+  Person,
+} from "@mui/icons-material";
 import { Avatar, Divider, ListItemIcon } from "@mui/material";
 import { useHistory } from "react-router";
 import {
@@ -17,7 +23,7 @@ import {
 import { Link } from "react-router-dom";
 import { nameToAvatar } from "../../Utils/converters";
 
-export default function Header({ onCreateClass, isAtMainPage }) {
+export default function Header({ onCreateClass, onJoinClass, isAtMainPage }) {
   const history = useHistory();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -56,6 +62,11 @@ export default function Header({ onCreateClass, isAtMainPage }) {
     onCreateClass();
   };
 
+  const handleJoinClass = () => {
+    handleMenuClose();
+    onJoinClass();
+  };
+
   function handleLogout() {
     clearLocalStorage();
     history.push("/login");
@@ -88,13 +99,13 @@ export default function Header({ onCreateClass, isAtMainPage }) {
         </ListItemIcon>
         Create new class
       </MenuItem>
-      {/* <Divider />
-      <MenuItem onClick={handleMenuClose}>
+      <Divider />
+      <MenuItem onClick={handleJoinClass}>
         <ListItemIcon>
           <Input fontSize="small" />
         </ListItemIcon>
         Join a class
-      </MenuItem> */}
+      </MenuItem>
     </Menu>
   );
   const renderProfileMenu = (
@@ -155,12 +166,12 @@ export default function Header({ onCreateClass, isAtMainPage }) {
               </ListItemIcon>
               Create new class
             </MenuItem>
-            {/* <MenuItem onClick={handleMenuClose}>
+            <MenuItem onClick={handleJoinClass}>
               <ListItemIcon>
                 <Input />
               </ListItemIcon>
               Join a class
-            </MenuItem> */}
+            </MenuItem>
             <Divider />
           </div>
         )}
