@@ -11,8 +11,8 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import React, { useState } from "react";
-import { patchAuth } from "../../../Utils/httpHelpers";
+import React, { useEffect, useState } from "react";
+import { getAuth, patchAuth } from "../../../Utils/httpHelpers";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { setLocalUserName } from "../../../Utils/localStorageGetSet";
 
@@ -33,6 +33,16 @@ const passwordValidationSchema = yup.object({
     .oneOf([yup.ref("password"), null], "Passwords must match")
     .required("Please re-enter your password"),
 });
+const IDValidationSchema = yup.object({
+  studentID: yup
+    .string()
+    .max(20, "ID must be no longer than 20 characters.")
+    .required("Enter your studentID.")
+    .matches(
+      /^[aA-zZ0-9]+$/,
+      "Student ID must only contains alphabets and numbers"
+    ),
+});
 export const ProfileForm = ({
   showSuccessAlert,
   showFailedAlert,
@@ -43,12 +53,31 @@ export const ProfileForm = ({
   const [showOldPassword, setShowOldPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
   const [disabledBtn, setDisabledBtn] = useState(false);
+  const [disabledIDForm, setDisabledIDForm] = useState(true);
   const [wrongPassword, setWrongPassword] = useState(false);
+  const [studentID, setStudentID] = useState("");
+  useEffect(() => {
+    const getStudentID = () => {
+      getAuth(`/user/studentid`)
+        .then((response) => {
+          if (response.status === 200 && response.data.studentId) {
+            setStudentID(response.data.studentId);
+          } else {
+            setDisabledIDForm(false);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+    getStudentID();
+  }, []);
+
+  // Name form
   const nameFormik = useFormik({
     initialValues: {
       firstname: userProfile.firstName,
       lastname: userProfile.lastName,
-      studentID: "",
     },
     validationSchema: nameValidationSchema,
     onSubmit: (values) => {
@@ -57,19 +86,7 @@ export const ProfileForm = ({
     },
     validateOnChange: (value) => {},
   });
-  const passwordFormik = useFormik({
-    initialValues: {
-      oldPassword: "",
-      password: "",
-      confirmPassword: "",
-    },
-    validationSchema: passwordValidationSchema,
-    onSubmit: (values) => {
-      setDisabledBtn(true);
-      submitPasswordForm(values);
-    },
-    validateOnChange: (value) => {},
-  });
+
   const submitNameForm = (values) => {
     const body = {
       firstName: values.firstname,
@@ -88,6 +105,54 @@ export const ProfileForm = ({
         setDisabledBtn(false);
       });
   };
+
+  // ID Form
+  const idFormik = useFormik({
+    initialValues: {
+      studentID: "",
+    },
+    validationSchema: IDValidationSchema,
+    onSubmit: (values) => {
+      setDisabledIDForm(true);
+      submitIDForm(values);
+    },
+    validateOnChange: (value) => {},
+  });
+
+  function submitIDForm(values) {
+    const body = {
+      studentId: values.studentID,
+    };
+    patchAuth(`/user/studentid`, body)
+      .then((response) => {
+        showSuccessAlert();
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.response.status === 400) {
+          showFailedAlert(error.response.data.message);
+        } else {
+          showFailedAlert();
+        }
+        setDisabledIDForm(false);
+      });
+  }
+
+  // Password form
+  const passwordFormik = useFormik({
+    initialValues: {
+      oldPassword: "",
+      password: "",
+      confirmPassword: "",
+    },
+    validationSchema: passwordValidationSchema,
+    onSubmit: (values) => {
+      setDisabledBtn(true);
+      submitPasswordForm(values);
+    },
+    validateOnChange: (value) => {},
+  });
+
   const submitPasswordForm = (values) => {
     const body = {
       curPass: values.oldPassword,
@@ -187,22 +252,6 @@ export const ProfileForm = ({
                 fullWidth
               />
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                id="studentID"
-                label="Student ID"
-                fullWidth
-                value={nameFormik.values.studentID}
-                onChange={nameFormik.handleChange}
-                error={
-                  nameFormik.touched.studentID &&
-                  Boolean(nameFormik.errors.studentID)
-                }
-                helperText={
-                  nameFormik.touched.studentID && nameFormik.errors.studentID
-                }
-              />
-            </Grid>
             <Grid container item xs={12} justifyContent="flex-end">
               <Grid item>
                 <Button
@@ -210,12 +259,62 @@ export const ProfileForm = ({
                   type="submit"
                   disabled={disabledBtn}
                 >
-                  Save
+                  Update
                 </Button>
               </Grid>
             </Grid>
           </Grid>
         </form>
+        <form id="id-form" onSubmit={idFormik.handleSubmit}>
+          <Grid container xs={12} spacing={2} justifyContent="space-between">
+            <Grid item xs={12}>
+              <Typography variant="h6" component="div">
+                Student ID
+              </Typography>
+            </Grid>
+            {studentID.length !== 0 ? (
+              <Grid item xs={8}>
+                <TextField
+                  id="studentID"
+                  label="Student ID"
+                  fullWidth
+                  value={studentID}
+                  disabled
+                  helperText="You can only change your ID one time."
+                />
+              </Grid>
+            ) : (
+              <Grid item xs={8}>
+                <TextField
+                  id="studentID"
+                  label="Student ID"
+                  fullWidth
+                  value={idFormik.values.studentID}
+                  onChange={idFormik.handleChange}
+                  error={
+                    idFormik.touched.studentID &&
+                    Boolean(idFormik.errors.studentID)
+                  }
+                  helperText={
+                    (idFormik.touched.studentID && idFormik.errors.studentID) ||
+                    "You can only change your ID one time."
+                  }
+                  disabled={disabledIDForm}
+                />
+              </Grid>
+            )}
+            <Grid item xs={2} alignSelf={"center"}>
+              <Button
+                variant="contained"
+                type="submit"
+                disabled={disabledIDForm}
+              >
+                Save
+              </Button>
+            </Grid>
+          </Grid>
+        </form>
+        <br />
         <form id="password-form" onSubmit={passwordFormik.handleSubmit}>
           <Grid container xs={12} spacing={2} justifyContent="center">
             <Grid item xs={12}>

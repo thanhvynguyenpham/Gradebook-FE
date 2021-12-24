@@ -10,6 +10,24 @@ export const ProfilePage = () => {
   const userProfile = getLocalUser();
   const [successMessage, setSuccessMessage] = useState(false);
   const [failedMessage, setFailedMessage] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const handleSuccessMessage = (message) => {
+    if (message) {
+      setMessage(message);
+    } else {
+      setMessage("Updated successfully.");
+    }
+    setSuccessMessage(true);
+  };
+  const handleFailedMessage = (message) => {
+    if (message) {
+      setMessage(message);
+    } else {
+      setMessage("Something went wrong. Please try again.");
+    }
+    setFailedMessage(true);
+  };
   return (
     <div>
       <Header isAtMainPage={false} />
@@ -20,8 +38,8 @@ export const ProfilePage = () => {
               {userProfile ? (
                 <ProfileForm
                   userProfile={userProfile}
-                  showSuccessAlert={() => setSuccessMessage(true)}
-                  showFailedAlert={() => setFailedMessage(true)}
+                  showSuccessAlert={handleSuccessMessage}
+                  showFailedAlert={handleFailedMessage}
                 />
               ) : (
                 <Redirect to="/login" />
@@ -40,7 +58,7 @@ export const ProfilePage = () => {
           severity="success"
           sx={{ width: "100%" }}
         >
-          Updated successfully.
+          {message}
         </Alert>
       </Snackbar>
       <Snackbar
@@ -53,7 +71,7 @@ export const ProfilePage = () => {
           severity="error"
           sx={{ width: "100%" }}
         >
-          Something went wrong. Please try again.
+          {message}
         </Alert>
       </Snackbar>
     </div>
