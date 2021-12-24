@@ -13,11 +13,7 @@ import {
   TablePagination,
 } from "@mui/material";
 import { DoDisturbOff, DoDisturbOn } from "@mui/icons-material";
-
-// Generate Student Data
-function createData(email, firstname, lastname, studentID, status) {
-  return { email, firstname, lastname, studentID, status };
-}
+import { getAuth } from "../../Utils/httpHelpers";
 
 export default function Accounts() {
   const [page, setPage] = React.useState(0);
@@ -28,15 +24,14 @@ export default function Accounts() {
   React.useEffect(() => {
     const fetchData = () => {
       setIsLoading(true);
-      const rows = [
-        createData("email@gmail.com", "Elton", "John", "12345678", true),
-        createData("email@gmail.com", "Elton", "John", "12345678", false),
-        createData("email@gmail.com", "Elton", "John", "12345678", false),
-        createData("email@gmail.com", "Elton", "John", "12345678", true),
-        createData("email@gmail.com", "Elton", "John", "12345678", true),
-      ];
-      setData(rows);
-      setIsLoading(false);
+      getAuth("/admin/users")
+        .then((response) => {
+          setData(response.data);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     };
     fetchData();
   }, []);
@@ -83,9 +78,9 @@ export default function Accounts() {
                     return (
                       <TableRow key={index}>
                         <TableCell>{row.email}</TableCell>
-                        <TableCell>{row.firstname}</TableCell>
-                        <TableCell>{row.lastname}</TableCell>
-                        <TableCell>{row.studentID}</TableCell>
+                        <TableCell>{row.firstName}</TableCell>
+                        <TableCell>{row.lastName}</TableCell>
+                        <TableCell>{row.studentId}</TableCell>
                         <TableCell align="right">
                           {row.status ? (
                             <Button

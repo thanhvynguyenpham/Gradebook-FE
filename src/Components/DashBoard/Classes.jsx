@@ -13,11 +13,7 @@ import {
   TablePagination,
 } from "@mui/material";
 import { DoDisturbOff, DoDisturbOn } from "@mui/icons-material";
-
-// Generate Student Data
-function createData(name, owner, numOfTeachers, numOfStudents, status) {
-  return { name, owner, numOfTeachers, numOfStudents, status };
-}
+import { getAuth } from "../../Utils/httpHelpers";
 
 export default function Classes() {
   const [page, setPage] = React.useState(0);
@@ -28,16 +24,14 @@ export default function Classes() {
   React.useEffect(() => {
     const fetchData = () => {
       setIsLoading(true);
-      const rows = [
-        createData("PTUDWNC", "Elton John", 1, 10, true),
-        createData("PTUDWNC", "Elton John", 1, 10, true),
-        createData("PTUDWNC", "Elton John", 1, 10, false),
-        createData("PTUDWNC", "Elton John", 1, 10, true),
-        createData("PTUDWNC", "Elton John", 1, 10, false),
-        createData("PTUDWNC", "Elton John", 1, 10, false),
-      ];
-      setData(rows);
-      setIsLoading(false);
+      getAuth("/admin/classes")
+        .then((response) => {
+          setData(response.data);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     };
     fetchData();
   }, []);
@@ -84,7 +78,7 @@ export default function Classes() {
                     return (
                       <TableRow key={index}>
                         <TableCell>{row.name}</TableCell>
-                        <TableCell>{row.owner}</TableCell>
+                        <TableCell>{row.createdUser.name}</TableCell>
                         <TableCell>{row.numOfTeachers}</TableCell>
                         <TableCell>{row.numOfStudents}</TableCell>
                         <TableCell align="right">

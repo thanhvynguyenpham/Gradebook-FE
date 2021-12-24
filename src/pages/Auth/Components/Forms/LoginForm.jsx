@@ -73,6 +73,7 @@ export const LoginForm = ({
             lastName: response.data.lastName,
             name: response.data.name,
             email: response.data.email,
+            role: response.data.role,
           };
           setLocalAccessToken(response.data.accessToken);
           setLocalRefreshToken(response.data.refreshToken);
@@ -106,6 +107,7 @@ export const LoginForm = ({
             lastName: response.data.lastName,
             name: response.data.name,
             email: response.data.email,
+            role: response.data.role,
           };
           setLocalAccessToken(response.data.accessToken);
           setLocalRefreshToken(response.data.refreshToken);
