@@ -21,6 +21,8 @@ import PeopleIcon from "@mui/icons-material/People";
 import Classes from "../../Components/DashBoard/Classes";
 import { useHistory } from "react-router-dom";
 import { clearLocalStorage } from "../../Utils/localStorageGetSet";
+import { getAuth } from "../../Utils/httpHelpers";
+import { useState } from "react";
 
 const drawerWidth = 240;
 
@@ -70,8 +72,12 @@ const Drawer = styled(MuiDrawer, {
 
 function DashboardContent() {
   const history = useHistory();
-  const [open, setOpen] = React.useState(true);
-  const [tab, setTab] = React.useState(0);
+  const [open, setOpen] = useState(true);
+  const [tab, setTab] = useState(0);
+  const [classes, setClasses] = useState([]);
+  const [users, setUsers] = React.useState([]);
+  const [isLoadingClasses, setIsLoadingClasses] = useState(true);
+  const [isLoadingUsers, setIsLoadingUsers] = useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -80,6 +86,33 @@ function DashboardContent() {
     clearLocalStorage();
     history.push("/login");
   }
+
+  React.useEffect(() => {
+    const fetchClassesData = () => {
+      setIsLoadingClasses(true);
+      getAuth("/admin/classes")
+        .then((response) => {
+          setClasses(response.data);
+          setIsLoadingClasses(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+    const fetchUsersData = () => {
+      setIsLoadingUsers(true);
+      getAuth("/admin/users")
+        .then((response) => {
+          setUsers(response.data);
+          setIsLoadingUsers(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+    fetchUsersData();
+    fetchClassesData();
+  }, []);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -163,7 +196,19 @@ function DashboardContent() {
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              {tab === 0 ? <Accounts /> : <Classes />}
+              {tab === 0 ? (
+                <Accounts
+                  users={users}
+                  isLoading={isLoadingUsers}
+                  setUsers={setUsers}
+                />
+              ) : (
+                <Classes
+                  classes={classes}
+                  isLoading={isLoadingClasses}
+                  setClasses={setClasses}
+                />
+              )}
             </Grid>
           </Grid>
         </Container>

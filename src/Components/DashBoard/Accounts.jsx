@@ -13,28 +13,11 @@ import {
   TablePagination,
 } from "@mui/material";
 import { DoDisturbOff, DoDisturbOn } from "@mui/icons-material";
-import { getAuth } from "../../Utils/httpHelpers";
+import { deleteAuth, postAuth } from "../../Utils/httpHelpers";
 
-export default function Accounts() {
+export default function Accounts({ users, setUsers, isLoading }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [data, setData] = React.useState([]);
-  const [isLoading, setIsLoading] = React.useState(true);
-
-  React.useEffect(() => {
-    const fetchData = () => {
-      setIsLoading(true);
-      getAuth("/admin/users")
-        .then((response) => {
-          setData(response.data);
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    };
-    fetchData();
-  }, []);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -44,6 +27,32 @@ export default function Accounts() {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
+  };
+
+  const updateStatus = (index, status) => {
+    let newList = [...users];
+    newList[index].status = status;
+    setUsers(newList);
+  };
+
+  const handleBlock = (index, id) => {
+    deleteAuth(`/admin/users/${id}`)
+      .then(() => {
+        updateStatus(index, "unable");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handleUnblock = (index, id) => {
+    postAuth(`/admin/users/${id}`)
+      .then(() => {
+        updateStatus(index, "enable");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   return (
     <Paper
@@ -57,7 +66,7 @@ export default function Accounts() {
     >
       <Title>Accounts</Title>
       {isLoading ? (
-        Array.from({ length: 7 }, (_, i) => <Skeleton height={50} />)
+        Array.from({ length: 7 }, (_, i) => <Skeleton key={i} height={50} />)
       ) : (
         <>
           <TableContainer>
@@ -72,7 +81,7 @@ export default function Accounts() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data
+                {users
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
                     return (
@@ -82,11 +91,12 @@ export default function Accounts() {
                         <TableCell>{row.lastName}</TableCell>
                         <TableCell>{row.studentId}</TableCell>
                         <TableCell align="right">
-                          {row.status ? (
+                          {row.status === "enable" ? (
                             <Button
                               variant="outlined"
                               style={{ width: "120px" }}
                               startIcon={<DoDisturbOn />}
+                              onClick={() => handleBlock(index, row._id)}
                             >
                               Block
                             </Button>
@@ -95,6 +105,7 @@ export default function Accounts() {
                               variant="contained"
                               style={{ width: "120px" }}
                               startIcon={<DoDisturbOff />}
+                              onClick={() => handleUnblock(index, row._id)}
                             >
                               Unblock
                             </Button>
@@ -109,7 +120,7 @@ export default function Accounts() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 50]}
             component="div"
-            count={data.length}
+            count={users.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

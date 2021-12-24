@@ -13,28 +13,11 @@ import {
   TablePagination,
 } from "@mui/material";
 import { DoDisturbOff, DoDisturbOn } from "@mui/icons-material";
-import { getAuth } from "../../Utils/httpHelpers";
+import { deleteAuth, postAuth } from "../../Utils/httpHelpers";
 
-export default function Classes() {
+export default function Classes({ classes, setClasses, isLoading }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [data, setData] = React.useState([]);
-  const [isLoading, setIsLoading] = React.useState(true);
-
-  React.useEffect(() => {
-    const fetchData = () => {
-      setIsLoading(true);
-      getAuth("/admin/classes")
-        .then((response) => {
-          setData(response.data);
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    };
-    fetchData();
-  }, []);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -44,6 +27,32 @@ export default function Classes() {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
+  };
+
+  const updateStatus = (index, status) => {
+    let newList = [...classes];
+    newList[index].status = status;
+    setClasses(newList);
+  };
+
+  const handleBlock = (index, id) => {
+    deleteAuth(`/admin/classes/${id}`)
+      .then(() => {
+        updateStatus(index, "unable");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handleUnblock = (index, id) => {
+    postAuth(`/admin/classes/${id}`)
+      .then(() => {
+        updateStatus(index, "enable");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   return (
     <Paper
@@ -72,7 +81,7 @@ export default function Classes() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data
+                {classes
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
                     return (
@@ -82,11 +91,12 @@ export default function Classes() {
                         <TableCell>{row.numOfTeachers}</TableCell>
                         <TableCell>{row.numOfStudents}</TableCell>
                         <TableCell align="right">
-                          {row.status ? (
+                          {row.status === "enable" ? (
                             <Button
                               variant="outlined"
                               style={{ width: "120px" }}
                               startIcon={<DoDisturbOn />}
+                              onClick={() => handleBlock(index, row._id)}
                             >
                               Block
                             </Button>
@@ -95,6 +105,7 @@ export default function Classes() {
                               variant="contained"
                               style={{ width: "120px" }}
                               startIcon={<DoDisturbOff />}
+                              onClick={() => handleUnblock(index, row._id)}
                             >
                               Unblock
                             </Button>
@@ -109,7 +120,7 @@ export default function Classes() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 50]}
             component="div"
-            count={data.length}
+            count={classes.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
