@@ -19,7 +19,6 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { getAuth } from "../../../Utils/httpHelpers";
-import { ChangeIDForm } from "./Components/ChangeIDForm";
 import "./index.scss";
 
 const DashBoard = ({ classDetails, user, listPosts, hidden, loading }) => {
@@ -30,7 +29,7 @@ const DashBoard = ({ classDetails, user, listPosts, hidden, loading }) => {
   const [studentID, setStudentID] = useState(null);
   useEffect(() => {
     const getStudentID = () => {
-      getAuth(`/class/${classDetails._id}/studentID`)
+      getAuth(`/user/studentid`)
         .then((response) => {
           if (response.status === 200) {
             setStudentID(response.data.studentId);
@@ -133,11 +132,9 @@ const DashBoard = ({ classDetails, user, listPosts, hidden, loading }) => {
             <b>{studentID}</b>
           </Typography>
         ) : (
-          <ChangeIDForm
-            classDetails={classDetails}
-            setStudentID={setStudentID}
-            showAlertMessage={(message) => showAlert(message)}
-          />
+          <Typography variant="body1" component="div">
+            Please update your student ID in Profile page.
+          </Typography>
         )}
       </CardContent>
     </Card>
