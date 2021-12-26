@@ -76,8 +76,10 @@ function DashboardContent() {
   const [tab, setTab] = useState(0);
   const [classes, setClasses] = useState([]);
   const [users, setUsers] = React.useState([]);
+  const [admins, setAdmins] = React.useState([]);
   const [isLoadingClasses, setIsLoadingClasses] = useState(true);
   const [isLoadingUsers, setIsLoadingUsers] = useState(true);
+  const [isLoadingAdmins, setIsLoadingAdmins] = useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -101,7 +103,7 @@ function DashboardContent() {
     };
     const fetchUsersData = () => {
       setIsLoadingUsers(true);
-      getAuth("/admin/users")
+      getAuth("/admin/users?role=member")
         .then((response) => {
           setUsers(response.data);
           setIsLoadingUsers(false);
@@ -110,8 +112,20 @@ function DashboardContent() {
           console.log(error);
         });
     };
+    const fetchAdminsData = () => {
+      setIsLoadingAdmins(true);
+      getAuth("/admin/users?role=admin")
+        .then((response) => {
+          setAdmins(response.data);
+          setIsLoadingAdmins(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
     fetchUsersData();
     fetchClassesData();
+    fetchAdminsData();
   }, []);
 
   return (
@@ -199,8 +213,11 @@ function DashboardContent() {
               {tab === 0 ? (
                 <Accounts
                   users={users}
-                  isLoading={isLoadingUsers}
+                  isLoadingUser={isLoadingUsers}
                   setUsers={setUsers}
+                  admins={admins}
+                  setAdmins={setAdmins}
+                  isLoadingAdmin={isLoadingAdmins}
                 />
               ) : (
                 <Classes

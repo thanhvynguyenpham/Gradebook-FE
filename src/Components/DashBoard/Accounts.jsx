@@ -1,33 +1,20 @@
 import * as React from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Title from "./Title";
-import {
-  Button,
-  Paper,
-  Skeleton,
-  TableContainer,
-  TablePagination,
-} from "@mui/material";
-import { DoDisturbOff, DoDisturbOn } from "@mui/icons-material";
+import { Alert, Snackbar, Stack } from "@mui/material";
 import { deleteAuth, postAuth } from "../../Utils/httpHelpers";
+import { useState } from "react";
+import UsersList from "./UsersList";
 
-export default function Accounts({ users, setUsers, isLoading }) {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-    console.log(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
+export default function Accounts({
+  users,
+  setUsers,
+  isLoadingUser,
+  admins,
+  setAdmins,
+  isLoadingAdmin,
+}) {
+  const [successMessage, setSuccessMessage] = useState(false);
+  const [failedMessage, setFailedMessage] = useState(false);
+  const [message, setMessage] = useState("");
 
   const updateStatus = (index, status) => {
     let newList = [...users];
@@ -54,80 +41,77 @@ export default function Accounts({ users, setUsers, isLoading }) {
         console.log(error);
       });
   };
+  const handleSuccessMessage = (message) => {
+    if (message) {
+      setMessage(message);
+    } else {
+      setMessage("Updated successfully.");
+    }
+    setSuccessMessage(true);
+  };
+  const handleFailedMessage = (message) => {
+    if (message) {
+      setMessage(message);
+    } else {
+      setMessage("Something went wrong. Please try again.");
+    }
+    setFailedMessage(true);
+  };
+
+  React.useEffect(() => {
+    console.log(users);
+  }, [users]);
+
   return (
-    <Paper
-      sx={{
-        width: "100%",
-        overflow: "hidden",
-        p: 2,
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <Title>Accounts</Title>
-      {isLoading ? (
-        Array.from({ length: 7 }, (_, i) => <Skeleton key={i} height={50} />)
-      ) : (
-        <>
-          <TableContainer>
-            <Table stickyHeader aria-label="sticky table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Email</TableCell>
-                  <TableCell>First Name</TableCell>
-                  <TableCell>Last Name</TableCell>
-                  <TableCell>StudentID</TableCell>
-                  <TableCell></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {users
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row, index) => {
-                    return (
-                      <TableRow key={index}>
-                        <TableCell>{row.email}</TableCell>
-                        <TableCell>{row.firstName}</TableCell>
-                        <TableCell>{row.lastName}</TableCell>
-                        <TableCell>{row.studentId}</TableCell>
-                        <TableCell align="right">
-                          {row.status === "enable" ? (
-                            <Button
-                              variant="outlined"
-                              style={{ width: "120px" }}
-                              startIcon={<DoDisturbOn />}
-                              onClick={() => handleBlock(index, row._id)}
-                            >
-                              Block
-                            </Button>
-                          ) : (
-                            <Button
-                              variant="contained"
-                              style={{ width: "120px" }}
-                              startIcon={<DoDisturbOff />}
-                              onClick={() => handleUnblock(index, row._id)}
-                            >
-                              Unblock
-                            </Button>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 50]}
-            component="div"
-            count={users.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </>
-      )}
-    </Paper>
+    <>
+      <Stack spacing={3}>
+        <UsersList
+          isAdmin={true}
+          isLoading={isLoadingAdmin}
+          users={admins}
+          setUsers={setAdmins}
+          handleBlock={handleBlock}
+          handleUnblock={handleUnblock}
+          handleSuccessMessage={handleSuccessMessage}
+          handleFailedMessage={handleFailedMessage}
+        />
+        <UsersList
+          isAdmin={false}
+          isLoading={isLoadingUser}
+          users={users}
+          setUsers={users}
+          handleBlock={handleBlock}
+          handleUnblock={handleUnblock}
+          handleSuccessMessage={handleSuccessMessage}
+          handleFailedMessage={handleFailedMessage}
+        />
+      </Stack>
+      <Snackbar
+        open={successMessage}
+        autoHideDuration={4000}
+        onClose={() => setSuccessMessage(false)}
+      >
+        <Alert
+          onClose={() => setSuccessMessage(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {message}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={failedMessage}
+        autoHideDuration={4000}
+        onClose={() => setFailedMessage(false)}
+      >
+        <Alert
+          onClose={() => setFailedMessage(false)}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {message}
+        </Alert>
+      </Snackbar>
+    </>
   );
 }
