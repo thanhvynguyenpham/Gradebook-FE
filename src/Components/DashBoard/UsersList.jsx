@@ -61,7 +61,6 @@ const UsersList = ({
             </Button>
           </Grid>
         )}
-
         <Grid item>
           {isLoading ? (
             Array.from({ length: 7 }, (_, i) => (
@@ -114,7 +113,9 @@ const UsersList = ({
                                   variant="outlined"
                                   style={{ width: "120px" }}
                                   startIcon={<DoDisturbOn />}
-                                  onClick={() => handleBlock(index, row._id)}
+                                  onClick={() =>
+                                    handleBlock(index, row._id, isAdmin)
+                                  }
                                 >
                                   Block
                                 </Button>
@@ -123,7 +124,9 @@ const UsersList = ({
                                   variant="contained"
                                   style={{ width: "120px" }}
                                   startIcon={<DoDisturbOff />}
-                                  onClick={() => handleUnblock(index, row._id)}
+                                  onClick={() =>
+                                    handleUnblock(index, row._id, isAdmin)
+                                  }
                                 >
                                   Unblock
                                 </Button>

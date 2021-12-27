@@ -16,16 +16,26 @@ export default function Accounts({
   const [failedMessage, setFailedMessage] = useState(false);
   const [message, setMessage] = useState("");
 
-  const updateStatus = (index, status) => {
+  const updateUsersStatus = (index, status) => {
     let newList = [...users];
     newList[index].status = status;
     setUsers(newList);
   };
 
-  const handleBlock = (index, id) => {
+  const updateAdminsStatus = (index, status) => {
+    let newList = [...admins];
+    newList[index].status = status;
+    setAdmins(newList);
+  };
+
+  const handleBlock = (index, id, isAdmin) => {
     deleteAuth(`/admin/users/${id}`)
       .then(() => {
-        updateStatus(index, "unable");
+        if (isAdmin) {
+          updateAdminsStatus(index, "unable");
+        } else {
+          updateUsersStatus(index, "unable");
+        }
       })
       .catch((error) => {
         if (error.response.status !== 500) {
@@ -36,10 +46,14 @@ export default function Accounts({
       });
   };
 
-  const handleUnblock = (index, id) => {
+  const handleUnblock = (index, id, isAdmin) => {
     postAuth(`/admin/users/${id}`)
       .then(() => {
-        updateStatus(index, "enable");
+        if (isAdmin) {
+          updateAdminsStatus(index, "enable");
+        } else {
+          updateUsersStatus(index, "enable");
+        }
       })
       .catch((error) => {
         if (error.response.status !== 500) {
