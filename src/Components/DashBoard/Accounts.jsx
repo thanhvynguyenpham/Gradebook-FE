@@ -28,7 +28,11 @@ export default function Accounts({
         updateStatus(index, "unable");
       })
       .catch((error) => {
-        console.log(error);
+        if (error.response.status !== 500) {
+          handleFailedMessage(error.response.data.message);
+        } else {
+          handleFailedMessage();
+        }
       });
   };
 
@@ -38,7 +42,11 @@ export default function Accounts({
         updateStatus(index, "enable");
       })
       .catch((error) => {
-        console.log(error);
+        if (error.response.status !== 500) {
+          handleFailedMessage(error.response.data.message);
+        } else {
+          handleFailedMessage();
+        }
       });
   };
   const handleSuccessMessage = (message) => {
