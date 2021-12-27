@@ -25,9 +25,11 @@ const UsersList = ({
   handleUnblock,
   handleFailedMessage,
   handleSuccessMessage,
+  handleOpenAdminCreateForm,
 }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
     console.log(newPage);
@@ -49,13 +51,13 @@ const UsersList = ({
           <Title>{isAdmin ? "Admins" : "Members"}</Title>
         </Grid>
         {isAdmin && (
-          <Grid item>
+          <Grid item alignSelf="flex-end">
             <Button
               variant="contained"
               sx={{
                 width: "150px",
               }}
-              color="secondary"
+              onClick={handleOpenAdminCreateForm}
             >
               Create Admin
             </Button>
@@ -69,7 +71,11 @@ const UsersList = ({
           ) : (
             <>
               <TableContainer>
-                <Table stickyHeader aria-label="sticky table">
+                <Table
+                  sx={{ minWidth: 800 }}
+                  stickyHeader
+                  aria-label="sticky table"
+                >
                   <TableHead>
                     <TableRow>
                       <TableCell>Email</TableCell>

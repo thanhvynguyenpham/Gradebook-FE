@@ -3,6 +3,7 @@ import { Alert, Snackbar, Stack } from "@mui/material";
 import { deleteAuth, postAuth } from "../../Utils/httpHelpers";
 import { useState } from "react";
 import UsersList from "./UsersList";
+import NewAdmin from "./NewAdmin";
 
 export default function Accounts({
   users,
@@ -15,6 +16,16 @@ export default function Accounts({
   const [successMessage, setSuccessMessage] = useState(false);
   const [failedMessage, setFailedMessage] = useState(false);
   const [message, setMessage] = useState("");
+  const [openCreateAdmin, setOpenCreateAdmin] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpenCreateAdmin(true);
+    console.log("openned");
+  };
+
+  const handleClose = () => {
+    setOpenCreateAdmin(false);
+  };
 
   const updateUsersStatus = (index, status) => {
     let newList = [...users];
@@ -96,6 +107,7 @@ export default function Accounts({
           handleUnblock={handleUnblock}
           handleSuccessMessage={handleSuccessMessage}
           handleFailedMessage={handleFailedMessage}
+          handleOpenAdminCreateForm={handleClickOpen}
         />
         <UsersList
           isAdmin={false}
@@ -108,6 +120,11 @@ export default function Accounts({
           handleFailedMessage={handleFailedMessage}
         />
       </Stack>
+      <NewAdmin
+        open={openCreateAdmin}
+        handleClose={handleClose}
+        showFailedScreen={handleFailedMessage}
+      />
       <Snackbar
         open={successMessage}
         autoHideDuration={4000}
