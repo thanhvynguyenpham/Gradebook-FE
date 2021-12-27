@@ -140,10 +140,10 @@ const DashBoard = ({ classDetails, user, listPosts, hidden, loading }) => {
     </Card>
   );
 
-  function showAlert(message) {
-    setMessage(message);
-    setOpenMessage(true);
-  }
+  // function showAlert(message) {
+  //   setMessage(message);
+  //   setOpenMessage(true);
+  // }
   return (
     <div hidden={hidden}>
       <Container className="dashboard">
