@@ -21,7 +21,7 @@ import CreateRequest from "./Components/CreateRequest";
 function StudentGrading({ hidden, classDetails }) {
   const [openAlertMessage, setOpenAlertMessage] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
-  const [assignments, setAssignments] = useState(null);
+  const [assignments, setAssignments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [openForm, setOpenForm] = useState(false);
   useEffect(() => {
@@ -87,10 +87,9 @@ function StudentGrading({ hidden, classDetails }) {
                         <TableHead>
                           <TableRow>
                             <TableCell></TableCell>
-                            {assignments &&
-                              assignments.grades.map((assignment) => (
-                                <TableCell>{assignment.name}</TableCell>
-                              ))}
+                            {assignments.grades.map((assignment) => (
+                              <TableCell>{assignment.name}</TableCell>
+                            ))}
                             <TableCell>Total</TableCell>
                           </TableRow>
                         </TableHead>
@@ -103,12 +102,11 @@ function StudentGrading({ hidden, classDetails }) {
                             <TableCell component="th" scope="row">
                               Grade Structure
                             </TableCell>
-                            {assignments &&
-                              assignments.grades.map((assignment, i) => (
-                                <TableCell key={`grade-structure-${i}`}>
-                                  {assignment.pointStructure}
-                                </TableCell>
-                              ))}
+                            {assignments.grades.map((assignment, i) => (
+                              <TableCell key={`grade-structure-${i}`}>
+                                {assignment.pointStructure}
+                              </TableCell>
+                            ))}
                             <TableCell
                               component="th"
                               scope="row"
@@ -125,16 +123,13 @@ function StudentGrading({ hidden, classDetails }) {
                             <TableCell component="th" scope="row">
                               Score
                             </TableCell>
-                            {assignments &&
-                              assignments.grades.map((assignment, i) => (
-                                <TableCell key={`point-${i}`}>
-                                  {assignment.point ?? ""}
-                                </TableCell>
-                              ))}
+                            {assignments.grades.map((assignment, i) => (
+                              <TableCell key={`point-${i}`}>
+                                {assignment.point ?? ""}
+                              </TableCell>
+                            ))}
                             <TableCell component="th" scope="row" key={`total`}>
-                              {assignments && assignments.total
-                                ? assignments.total
-                                : ""}
+                              {assignments.total ? assignments.total : ""}
                             </TableCell>
                           </TableRow>
                         </TableBody>
