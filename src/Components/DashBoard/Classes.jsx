@@ -96,7 +96,9 @@ export default function Classes({ classes, setClasses, isLoading }) {
                               variant="outlined"
                               style={{ width: "120px" }}
                               startIcon={<DoDisturbOn />}
-                              onClick={() => handleBlock(index, row._id)}
+                              onClick={() =>
+                                handleBlock(rowsPerPage * page + index, row._id)
+                              }
                             >
                               Block
                             </Button>
@@ -105,7 +107,12 @@ export default function Classes({ classes, setClasses, isLoading }) {
                               variant="contained"
                               style={{ width: "120px" }}
                               startIcon={<DoDisturbOff />}
-                              onClick={() => handleUnblock(index, row._id)}
+                              onClick={() =>
+                                handleUnblock(
+                                  rowsPerPage * page + index,
+                                  row._id
+                                )
+                              }
                             >
                               Unblock
                             </Button>
