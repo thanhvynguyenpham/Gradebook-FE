@@ -4,6 +4,7 @@ import {
   InputAdornment,
   TextField,
   Grid,
+  Alert,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
@@ -106,20 +107,21 @@ export const SignUpForm = ({
       firstName: values.firstname,
       lastName: values.lastname,
     };
-    post("/register/", JSON.stringify(body))
-      .then((response) => {
-        closeLoadingScreen();
-        setShowSignUpSuccessAlert(true);
-      })
-      .catch((error) => {
-        closeLoadingScreen();
-        if (error.response.status === 400) {
-          setErrorMsg(error.response.data.err);
-        } else {
-          showFailedScreen();
-          console.log(error);
-        }
-      });
+    setShowSignUpSuccessAlert(true);
+    // post("/register/", JSON.stringify(body))
+    //   .then((response) => {
+    //     closeLoadingScreen();
+    //     setShowSignUpSuccessAlert(true);
+    //   })
+    //   .catch((error) => {
+    //     closeLoadingScreen();
+    //     if (error.response.status === 400) {
+    //       setErrorMsg(error.response.data.err);
+    //     } else {
+    //       showFailedScreen();
+    //       console.log(error);
+    //     }
+    //   });
   };
 
   const onCloseSuccessScreen = () => {
@@ -299,8 +301,10 @@ export const SignUpForm = ({
         </div>
         <AlertDialog
           title="Sign Up Successfully"
-          message="You have successfully sign up with your email. Login now to use Gradebook's features."
+          message="You have successfully sign up with your email. Please check your email for confirmation link."
           handleClose={onCloseSuccessScreen}
+          action="Resend"
+          handleAction={onCloseSuccessScreen}
           show={showSignUpSuccessAlert}
         />
       </div>

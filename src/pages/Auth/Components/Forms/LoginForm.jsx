@@ -14,6 +14,8 @@ import {
   setLocalRefreshToken,
   setLocalUser,
 } from "../../../../Utils/localStorageGetSet";
+import AlertDialog from "../../../../Components/Alert/AlertDialog";
+import { useEffect } from "react";
 
 const validationSchema = yup.object({
   email: yup
@@ -42,9 +44,19 @@ export const LoginForm = ({
       setErrorMsg("");
       submitForm(values);
     },
-    validateOnChange: (value) => {},
   });
-  const [showPassword, setShowPassword] = React.useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showEmailConfirmAlert, setShowEmailAlert] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+
+  useEffect(() => {
+    if (alertMessage === "") {
+      setShowAlert(false);
+    } else {
+      setShowAlert(true);
+    }
+  }, [alertMessage]);
   function handleClickShowPassword() {
     const newStatus = !showPassword;
     setShowPassword(newStatus);
@@ -83,7 +95,21 @@ export const LoginForm = ({
       })
       .catch((error) => {
         closeLoadingScreen();
-        showFailedAlert();
+        switch (error.response.status) {
+          // login failed
+          case 401:
+            showFailedAlert();
+            break;
+          // account blocked
+          case 402:
+            setAlertMessage(
+              "Your account has been blocked. Please contact admin to unblock your account."
+            );
+            break;
+          default:
+            setAlertMessage("Something when wrong, please try again.");
+            break;
+        }
         console.log(error);
       });
   };
@@ -117,11 +143,36 @@ export const LoginForm = ({
       })
       .catch((error) => {
         closeLoadingScreen();
-        setErrorMsg("Invalid email or password");
+        switch (error.response.status) {
+          case 401:
+            setErrorMsg("Invalid email or password");
+            break;
+          case 402:
+            setAlertMessage(
+              "Your account has been blocked. Please contact admin to unblock your account."
+            );
+            break;
+          case 403:
+            setShowEmailAlert(true);
+            break;
+          default:
+            setAlertMessage("Something when wrong, please try again.");
+            break;
+        }
         console.log(error);
       });
   };
 
+  const handleCloseAlert = () => {
+    setAlertMessage("");
+  };
+
+  const handleCloseConfirmEmail = () => {
+    setShowEmailAlert(false);
+  };
+  const handleResend = () => {
+    setShowEmailAlert(false);
+  };
   return (
     <div className="authen-form">
       <div className="authen-section">
@@ -222,6 +273,20 @@ export const LoginForm = ({
           </div>
         </form>
       </div>
+      <AlertDialog
+        title="Confirm Email"
+        message="Your email hasn't been confirmed yet. Please check your email for confirmation link and login again."
+        handleClose={handleCloseConfirmEmail}
+        action="Resend"
+        handleAction={handleCloseConfirmEmail}
+        show={showEmailConfirmAlert}
+      />
+      <AlertDialog
+        title="Error"
+        message={alertMessage}
+        handleClose={handleCloseAlert}
+        show={showAlert}
+      />
     </div>
   );
 };
