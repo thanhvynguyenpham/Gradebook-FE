@@ -11,6 +11,7 @@ import { ProfilePage } from "./pages/Profile";
 import { JoinClassPage } from "./pages/JoinClassPage";
 import NotFoundPage from "./pages/PageNotFound/PageNotFound";
 import AdminDashboard from "./pages/Admin";
+import GradeReviews from "./pages/GradeReviews";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <PrivateRoute exact path="/class/:id" component={ClassPage} />
           <PrivateRoute exact path="/profile" component={ProfilePage} />
           <PrivateRoute path="/class/join/:id" component={JoinClassPage} />
+          <PrivateRoute exact path="/reviews" component={GradeReviews} />
           <Route path="/404/:message" component={NotFoundPage} />
           <Route path="/404" component={NotFoundPage} />
           <Redirect to="/404" />
