@@ -13,6 +13,7 @@ import { JoinClassPage } from "./pages/JoinClassPage";
 import NotFoundPage from "./pages/PageNotFound/PageNotFound";
 import AdminDashboard from "./pages/Admin";
 import GradeReviews from "./pages/GradeReviews";
+import ConfirmEmail from "./pages/Auth/ConfirmEmail";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             path="/changepassword"
             component={ChangePassword}
           />
+          <PublicRoute exact path="/confirmemail" component={ConfirmEmail} />
           <PrivateRoute exact path="/class/:id" component={ClassPage} />
           <PrivateRoute exact path="/profile" component={ProfilePage} />
           <PrivateRoute path="/class/join/:id" component={JoinClassPage} />
