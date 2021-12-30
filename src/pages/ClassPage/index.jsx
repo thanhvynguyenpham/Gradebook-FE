@@ -2,6 +2,7 @@ import { Tab, Tabs } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router";
+import AlertDialog from "../../Components/Alert/AlertDialog";
 import Header from "../../Components/Header";
 import { addID } from "../../Utils/converters";
 import { getAuth } from "../../Utils/httpHelpers";
@@ -13,6 +14,10 @@ import Members from "./Members";
 import StudentGrading from "./StudentGrading";
 
 const ClassPage = () => {
+  const { id } = useParams();
+  const user = getLocalUser();
+  const history = useHistory();
+
   const [value, setValue] = React.useState(0);
   const [classDetails, setClassDetails] = useState([]);
   const [studentsList, setStudentsList] = useState([]);
@@ -20,9 +25,22 @@ const ClassPage = () => {
   const [gradeStructure, setGradeStructure] = useState([]);
   const [dashBoardLoading, setDashBoardLoading] = useState(true);
   const [memberListLoading, setMemberListLoading] = useState(true);
-  const { id } = useParams();
-  const user = getLocalUser();
-  const history = useHistory();
+
+  // Alert
+  const [alertMessage, setAlertMessage] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
+  useEffect(() => {
+    if (alertMessage === "") {
+      setShowAlert(false);
+    } else {
+      setShowAlert(true);
+    }
+  }, [alertMessage]);
+
+  const handleCloseAlert = () => {
+    setAlertMessage("");
+    history.push("/");
+  };
 
   const exampleListPost = [
     {
@@ -60,10 +78,22 @@ const ClassPage = () => {
         }
       })
       .catch((error) => {
-        if (user) {
-          history.push("/404/Class Not Found");
-        } else {
-          history.push("/login");
+        switch (error.response.status) {
+          case 401:
+            if (user) {
+              setAlertMessage(
+                "You don't have permission to access this class."
+              );
+            } else {
+              history.push("/login");
+            }
+            break;
+          case 402:
+            setAlertMessage(error.response.data.message);
+            break;
+          default:
+            history.push("/404/Class Not Found");
+            break;
         }
       });
   };
@@ -77,10 +107,22 @@ const ClassPage = () => {
         }
       })
       .catch((error) => {
-        if (user) {
-          history.push("/404/Class Not Found");
-        } else {
-          history.push("/login");
+        switch (error.response.status) {
+          case 401:
+            if (user) {
+              setAlertMessage(
+                "You don't have permission to access this class."
+              );
+            } else {
+              history.push("/login");
+            }
+            break;
+          case 402:
+            setAlertMessage(error.response.data.message);
+            break;
+          default:
+            history.push("/404/Class Not Found");
+            break;
         }
       });
   };
@@ -90,10 +132,22 @@ const ClassPage = () => {
         updateGradeStructure(response.data.gradeStructure);
       })
       .catch((error) => {
-        if (user) {
-          history.push("/404/Class Not Found");
-        } else {
-          history.push("/login");
+        switch (error.response.status) {
+          case 401:
+            if (user) {
+              setAlertMessage(
+                "You don't have permission to access this class."
+              );
+            } else {
+              history.push("/login");
+            }
+            break;
+          case 402:
+            setAlertMessage(error.response.data.message);
+            break;
+          default:
+            history.push("/404/Class Not Found");
+            break;
         }
       });
   };
@@ -135,6 +189,12 @@ const ClassPage = () => {
       ) : (
         <StudentGrading hidden={value !== 2} classDetails={classDetails} />
       )}
+      <AlertDialog
+        title="Error"
+        message={alertMessage}
+        show={showAlert}
+        handleClose={handleCloseAlert}
+      />
     </div>
   );
 };

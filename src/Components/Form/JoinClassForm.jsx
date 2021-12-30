@@ -43,8 +43,18 @@ const JoinClassForm = ({ isShow, handleClose, onJoinFailed }) => {
         history.push(`/class/${response.data._id}`);
       })
       .catch((error) => {
-        console.log(error);
-        onJoinFailed("Cannot join class");
+        switch (error.response.status) {
+          case 400:
+            onJoinFailed("Cannot join class");
+            break;
+          case 401:
+            onJoinFailed("This class has been disable.");
+            break;
+          default:
+            onJoinFailed("Something went wrong. Please try again");
+            break;
+        }
+
         setBtnDisabled(false);
       });
   }
