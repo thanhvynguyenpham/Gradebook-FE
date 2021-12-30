@@ -14,16 +14,7 @@ function Login() {
         <title>Login</title>
         <meta property="og:title" content="Login" key="login" />
       </head>
-      <Grid
-        container
-        spacing={2}
-        className="authen"
-        style={{
-          backgroundImage: "url(assets/img/background_login.jpg)",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+      <Grid container spacing={2} className="authen">
         <Grid item xs={11} md={5} flexDirection="row">
           <LoginForm
             showFailedAlert={() => setShowGGLoginFailed(true)}
@@ -31,19 +22,19 @@ function Login() {
             closeLoadingScreen={() => setShowLoadingScreen(false)}
           />
         </Grid>
-        <AlertDialog
-          title="Failed"
-          message="Cannot login with your Google Account. Please try again!"
-          handleClose={() => setShowGGLoginFailed(false)}
-          show={showGGLoginFailed}
-        />
-        <Backdrop
-          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          open={showLoadingScreen}
-        >
-          <CircularProgress color="inherit" />
-        </Backdrop>
       </Grid>
+      <AlertDialog
+        title="Failed"
+        message="Cannot login with your Google Account. Please try again!"
+        handleClose={() => setShowGGLoginFailed(false)}
+        show={showGGLoginFailed}
+      />
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={showLoadingScreen}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </div>
   );
 }

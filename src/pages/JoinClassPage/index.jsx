@@ -133,7 +133,9 @@ export const JoinClassPage = () => {
                       />
                       <Link to="/">
                         <img
-                          src="/assets/img/logo_white.png"
+                          src="/assets/img/gradebook_bg.png"
+                          width="150px"
+                          height="150px"
                           alt="logo"
                           className="logo"
                         ></img>

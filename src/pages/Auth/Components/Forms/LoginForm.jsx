@@ -178,8 +178,10 @@ export const LoginForm = ({
       <div className="authen-section">
         <Link to="/">
           <img
-            src="assets/img/logo_white.png"
+            src="assets/img/gradebook_bg.png"
             alt="logo"
+            width="150px"
+            height="150px"
             className="logo"
           ></img>
         </Link>
@@ -188,7 +190,7 @@ export const LoginForm = ({
             <span>Login</span>
           </div>
           <TextField
-            color="secondary"
+            color="primary"
             autoFocus
             margin="dense"
             id="email"
@@ -202,7 +204,7 @@ export const LoginForm = ({
             helperText={formik.touched.email && formik.errors.email}
           />
           <TextField
-            color="secondary"
+            color="primary"
             margin="dense"
             fullWidth
             variant="standard"
@@ -229,7 +231,7 @@ export const LoginForm = ({
           <Button
             type="submit"
             variant="contained"
-            color="secondary"
+            color="primary"
             fullWidth
             style={{ marginTop: "20px" }}
           >
@@ -267,7 +269,7 @@ export const LoginForm = ({
             <span>Haven't had an account yet?</span>
             <span style={{ float: "right" }}>
               <Link to="/register">
-                <b style={{ color: "white" }}>Sign Up</b>
+                <b className="message">Sign Up</b>
               </Link>
             </span>
           </div>

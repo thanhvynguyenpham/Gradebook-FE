@@ -135,8 +135,10 @@ export const SignUpForm = ({
         <div className="authen-section">
           <Link to="/">
             <img
-              src="assets/img/logo_white.png"
+              src="assets/img/gradebook_bg.png"
               alt="logo"
+              width="100px"
+              height="100px"
               className="logo"
             ></img>
           </Link>
@@ -147,7 +149,7 @@ export const SignUpForm = ({
             <Grid container spacing={2}>
               <Grid item xs={4}>
                 <TextField
-                  color="warning"
+                  color="primary"
                   autoFocus
                   margin="dense"
                   id="firstname"
@@ -167,7 +169,7 @@ export const SignUpForm = ({
               </Grid>
               <Grid item xs={8}>
                 <TextField
-                  color="warning"
+                  color="primary"
                   margin="dense"
                   id="lastname"
                   label="Lastname"
@@ -184,7 +186,7 @@ export const SignUpForm = ({
               </Grid>
             </Grid>
             <TextField
-              color="warning"
+              color="primary"
               margin="dense"
               id="email"
               label="Email"
@@ -197,7 +199,7 @@ export const SignUpForm = ({
               helperText={formik.touched.email && formik.errors.email}
             />
             <TextField
-              color="warning"
+              color="primary"
               margin="dense"
               fullWidth
               variant="standard"
@@ -221,7 +223,7 @@ export const SignUpForm = ({
               label="Password"
             />
             <TextField
-              color="warning"
+              color="primary"
               margin="dense"
               fullWidth
               variant="standard"
@@ -253,7 +255,7 @@ export const SignUpForm = ({
             <Button
               type="submit"
               variant="contained"
-              color="warning"
+              color="primary"
               fullWidth
               style={{ marginTop: "20px" }}
             >
@@ -291,9 +293,7 @@ export const SignUpForm = ({
               <span>Already have an account?</span>
               <span style={{ float: "right" }}>
                 <Link to="/login" replace>
-                  <b style={{ color: "white", textDecoration: "none" }}>
-                    Login
-                  </b>
+                  <b className="message">Login</b>
                 </Link>
               </span>
             </div>
