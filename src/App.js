@@ -5,6 +5,7 @@ import PublicRoute from "./Components/Routes/PublicRoute";
 import Home from "./pages/Home";
 import Login from "./pages/Auth/Login";
 import SignUp from "./pages/Auth/SignUp";
+import ChangePassword from "./pages/Auth/ChangePassword";
 import theme from "./theme";
 import ClassPage from "./pages/ClassPage";
 import { ProfilePage } from "./pages/Profile";
@@ -22,6 +23,11 @@ function App() {
           <PrivateRoute exact path="/admin" component={AdminDashboard} />
           <PublicRoute exact path="/login" component={Login} />
           <PublicRoute exact path="/register" component={SignUp} />
+          <PublicRoute
+            exact
+            path="/changepassword"
+            component={ChangePassword}
+          />
           <PrivateRoute exact path="/class/:id" component={ClassPage} />
           <PrivateRoute exact path="/profile" component={ProfilePage} />
           <PrivateRoute path="/class/join/:id" component={JoinClassPage} />
