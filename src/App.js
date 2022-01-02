@@ -14,6 +14,7 @@ import NotFoundPage from "./pages/PageNotFound/PageNotFound";
 import AdminDashboard from "./pages/Admin";
 import GradeReviews from "./pages/GradeReviews";
 import ConfirmEmail from "./pages/Auth/ConfirmEmail";
+import RequestDetail from "./pages/GradeReviews/RequestDetail";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           <PrivateRoute exact path="/profile" component={ProfilePage} />
           <PrivateRoute path="/class/join/:id" component={JoinClassPage} />
           <PrivateRoute exact path="/reviews" component={GradeReviews} />
+          <PrivateRoute exact path="/reviews/:id" component={RequestDetail} />
           <Route path="/404/:message" component={NotFoundPage} />
           <Route path="/404" component={NotFoundPage} />
           <Redirect to="/404" />
