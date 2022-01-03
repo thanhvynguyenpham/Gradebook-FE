@@ -6,15 +6,38 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { post } from "../../../Utils/httpHelpers";
+import { useQuery } from "../../../Utils/utils";
 
 import "../Login/index.scss";
 
 function ConfirmEmail() {
+  const query = useQuery();
+  const token = query.get("token");
   const [showLoadingScreen, setShowLoadingScreen] = useState(false);
+  const history = useHistory();
   useEffect(() => {
+    const verify = (token) => {
+      const body = {
+        token: token,
+      };
+      post(`/auth/verify-email/confirm`, body)
+        .then((resonse, body) => {
+          setShowLoadingScreen(false);
+        })
+        .catch((error) => {
+          history.push("/404");
+        });
+    };
     setShowLoadingScreen(true);
+    verify(token);
   }, []);
+
+  const goToLogin = () => {
+    history.push("/login");
+  };
   return (
     <div>
       <head>
@@ -42,7 +65,9 @@ function ConfirmEmail() {
               </Typography>
               <br></br>
               <br></br>
-              <Button variant="contained">Go to login</Button>
+              <Button variant="contained" onClick={goToLogin}>
+                Go to login
+              </Button>
             </div>
           </div>
         </Grid>

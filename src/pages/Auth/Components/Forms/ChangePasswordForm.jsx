@@ -6,16 +6,11 @@ import React from "react";
 import "./index.scss";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
-import GoogleLogin from "react-google-login";
 import { useHistory } from "react-router-dom";
 import { patchAuth, post } from "../../../../Utils/httpHelpers";
-import {
-  setLocalAccessToken,
-  setLocalRefreshToken,
-  setLocalUser,
-} from "../../../../Utils/localStorageGetSet";
 import AlertDialog from "../../../../Components/Alert/AlertDialog";
 import { useEffect } from "react";
+import { useQuery } from "../../../../Utils/utils";
 
 const passwordValidationSchema = yup.object({
   password: yup.string().required("Please enter new password."),
@@ -29,11 +24,23 @@ export const ChangePasswordForm = ({
   showLoadingScreen,
   closeLoadingScreen,
 }) => {
+  const query = useQuery();
+  const token = query.get("token");
+  const email = query.get("email");
   const history = useHistory();
   const [showAlert, setShowAlert] = useState(false);
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
+
+  useEffect(() => {
+    if (alertMessage.length !== 0) {
+      setShowAlert(true);
+    } else {
+      setShowAlert(false);
+    }
+  }, [alertMessage]);
 
   // Password form
   const passwordFormik = useFormik({
@@ -51,23 +58,24 @@ export const ChangePasswordForm = ({
 
   const submitPasswordForm = (values) => {
     const body = {
-      curPass: values.oldPassword,
       newPass: values.password,
+      token: token,
     };
-    // patchAuth("/user/password", JSON.stringify(body))
-    //   .then((response) => {
-    //     closeLoadingScreen();
-    //     passwordFormik.resetForm();
-    //   })
-    //   .catch((error) => {
-    //     if (error.response.status === 401) {
-    //       showAlert();
-    //     } else {
-    //       showFailedAlert();
-    //     }
-    //     closeLoadingScreen();
-    //     passwordFormik.resetForm();
-    //   });
+    post("/auth/reset-pw/confirm", JSON.stringify(body))
+      .then((response) => {
+        closeLoadingScreen();
+        passwordFormik.resetForm();
+        setShowSuccessAlert(true);
+      })
+      .catch((error) => {
+        if (error.response.status !== 500) {
+          setAlertMessage(error.response.data.message);
+        } else {
+          setAlertMessage("Something went wrong, please try again.");
+        }
+        closeLoadingScreen();
+        passwordFormik.resetForm();
+      });
   };
   const handleCloseAlert = () => {
     setAlertMessage("");
@@ -80,6 +88,10 @@ export const ChangePasswordForm = ({
   const handleClickShowConfirmPassword = () => {
     const newStatus = !showConfirmPassword;
     setShowConfirmPassword(newStatus);
+  };
+
+  const handleCloseSuccessAlert = () => {
+    history.push("/login");
   };
   return (
     <div className="authen-form">
@@ -173,6 +185,12 @@ export const ChangePasswordForm = ({
         message={alertMessage}
         handleClose={handleCloseAlert}
         show={showAlert}
+      />
+      <AlertDialog
+        title="Success"
+        message="You have successfully change your password. Please login to continue."
+        handleClose={handleCloseSuccessAlert}
+        show={showSuccessAlert}
       />
     </div>
   );

@@ -17,6 +17,8 @@ import {
 import AlertDialog from "../../../../Components/Alert/AlertDialog";
 import { useEffect } from "react";
 
+const TIME_LIMIT = 10;
+
 const validationSchema = yup.object({
   email: yup
     .string("Enter your email.")
@@ -49,6 +51,9 @@ export const LoginForm = ({
   const [showEmailConfirmAlert, setShowEmailAlert] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
+  const [email, setEmail] = useState("");
+  const [seconds, setSeconds] = useState(TIME_LIMIT);
+  const [disableResend, setDisableResend] = useState(false);
 
   useEffect(() => {
     if (alertMessage === "") {
@@ -57,6 +62,13 @@ export const LoginForm = ({
       setShowAlert(true);
     }
   }, [alertMessage]);
+
+  useEffect(() => {
+    if (showEmailConfirmAlert) {
+      setDisableResend(true);
+      startCounter();
+    }
+  }, [showEmailConfirmAlert]);
   function handleClickShowPassword() {
     const newStatus = !showPassword;
     setShowPassword(newStatus);
@@ -123,6 +135,7 @@ export const LoginForm = ({
       email: values.email,
       password: values.password,
     };
+    setEmail(values.email);
     post("/auth", JSON.stringify(body))
       .then((response) => {
         closeLoadingScreen();
@@ -145,7 +158,12 @@ export const LoginForm = ({
         closeLoadingScreen();
         switch (error.response.status) {
           case 401:
-            setErrorMsg("Invalid email or password");
+            if (error.response.data.message === "Invalid email or password")
+              setErrorMsg("Invalid email or password");
+            else {
+              setShowEmailAlert(true);
+              sendEmail(email);
+            }
             break;
           case 402:
             setAlertMessage(
@@ -156,11 +174,51 @@ export const LoginForm = ({
             setShowEmailAlert(true);
             break;
           default:
-            setAlertMessage("Something when wrong, please try again.");
+            setAlertMessage("Something went wrong, please try again.");
             break;
         }
         console.log(error);
       });
+  };
+
+  const resendEmail = () => {
+    setShowEmailAlert(false);
+    showLoadingScreen();
+    sendEmail(email);
+  };
+
+  const sendEmail = (email) => {
+    const body = {
+      email: email,
+    };
+    post(`/auth/verify-email/send`, body)
+      .then((response) => {
+        closeLoadingScreen();
+        setShowEmailAlert(true);
+      })
+      .catch((error) => {
+        closeLoadingScreen();
+        if (error.response.status === 400) {
+          setErrorMsg(error.response.data.err);
+        } else {
+          setAlertMessage("Something went wrong, please try again.");
+          console.log(error);
+        }
+      });
+  };
+
+  const startCounter = () => {
+    setDisableResend(true);
+    setSeconds(TIME_LIMIT);
+    let count = TIME_LIMIT;
+    const interval = setInterval(() => {
+      count = count - 1;
+      setSeconds(count);
+      if (count <= 0) {
+        clearInterval(interval);
+        setDisableResend(false);
+      }
+    }, 1000);
   };
 
   const handleCloseAlert = () => {
@@ -227,13 +285,16 @@ export const LoginForm = ({
             }
             label="Password"
           />
+          <Link to="/changepassword">
+            <div className="forgot-password-msg">Forgot password</div>
+          </Link>
           <div className="error-msg">{errorMsg}</div>
           <Button
             type="submit"
             variant="contained"
             color="primary"
             fullWidth
-            style={{ marginTop: "20px" }}
+            style={{ marginTop: "10px" }}
           >
             Login
           </Button>
@@ -279,9 +340,10 @@ export const LoginForm = ({
         title="Confirm Email"
         message="Your email hasn't been confirmed yet. Please check your email for confirmation link and login again."
         handleClose={handleCloseConfirmEmail}
-        action="Resend"
-        handleAction={handleCloseConfirmEmail}
         show={showEmailConfirmAlert}
+        action={`Resend` + (seconds <= 0 ? `` : ` (${seconds}s)`)}
+        disableAction={disableResend}
+        handleAction={resendEmail}
       />
       <AlertDialog
         title="Error"

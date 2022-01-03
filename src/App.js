@@ -15,6 +15,7 @@ import AdminDashboard from "./pages/Admin";
 import GradeReviews from "./pages/GradeReviews";
 import ConfirmEmail from "./pages/Auth/ConfirmEmail";
 import RequestDetail from "./pages/GradeReviews/RequestDetail";
+import { ForgotPassword } from "./pages/Auth/Components/Forms/ForgotPassword";
 
 function App() {
   return (
@@ -27,10 +28,15 @@ function App() {
           <PublicRoute exact path="/register" component={SignUp} />
           <PublicRoute
             exact
-            path="/changepassword"
+            path="/forgot-password"
             component={ChangePassword}
           />
-          <PublicRoute exact path="/confirmemail" component={ConfirmEmail} />
+          <PublicRoute exact path="/verify-email" component={ConfirmEmail} />
+          <PublicRoute
+            exact
+            path="/changepassword"
+            component={ForgotPassword}
+          />
           <PrivateRoute exact path="/class/:id" component={ClassPage} />
           <PrivateRoute exact path="/profile" component={ProfilePage} />
           <PrivateRoute path="/class/join/:id" component={JoinClassPage} />

@@ -12,6 +12,7 @@ export default function AlertDialog({
   show,
   handleClose,
   action,
+  disableAction,
   handleAction,
 }) {
   return (
@@ -21,6 +22,7 @@ export default function AlertDialog({
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
+        fullWidth
       >
         <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
         <DialogContent>
@@ -29,7 +31,11 @@ export default function AlertDialog({
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          {action && <Button onClick={handleAction}>{action}</Button>}
+          {action && (
+            <Button onClick={handleAction} disabled={disableAction}>
+              {action}
+            </Button>
+          )}
           <Button onClick={handleClose}>Close</Button>
         </DialogActions>
       </Dialog>

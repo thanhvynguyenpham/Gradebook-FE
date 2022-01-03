@@ -18,6 +18,10 @@ import { useHistory } from "react-router";
 import Cookies from "js-cookie";
 import { post } from "../../../../Utils/httpHelpers";
 import AlertDialog from "../../../../Components/Alert/AlertDialog";
+import { setInterval } from "core-js";
+import { useEffect } from "react";
+
+const TIME_LIMIT = 120;
 
 const validationSchema = yup.object({
   firstname: yup
@@ -47,6 +51,9 @@ export const SignUpForm = ({
   const [showPassword, setShowPassword] = React.useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = React.useState(false);
   const [showSignUpSuccessAlert, setShowSignUpSuccessAlert] = useState(false);
+  const [email, setEmail] = useState("");
+  const [seconds, setSeconds] = useState(TIME_LIMIT);
+  const [disableResend, setDisableResend] = useState(false);
   const history = useHistory();
   const formik = useFormik({
     initialValues: {
@@ -59,11 +66,19 @@ export const SignUpForm = ({
     validationSchema: validationSchema,
     onSubmit: (values) => {
       setErrorMsg("");
+      setEmail(values.email);
       submitForm(values);
       console.log("submit");
     },
     validateOnChange: (value) => {},
   });
+
+  useEffect(() => {
+    if (showSignUpSuccessAlert) {
+      setDisableResend(true);
+      startCounter();
+    }
+  }, [showSignUpSuccessAlert]);
 
   function handleClickShowPassword() {
     const newStatus = !showPassword;
@@ -107,26 +122,63 @@ export const SignUpForm = ({
       firstName: values.firstname,
       lastName: values.lastname,
     };
-    setShowSignUpSuccessAlert(true);
-    // post("/register/", JSON.stringify(body))
-    //   .then((response) => {
-    //     closeLoadingScreen();
-    //     setShowSignUpSuccessAlert(true);
-    //   })
-    //   .catch((error) => {
-    //     closeLoadingScreen();
-    //     if (error.response.status === 400) {
-    //       setErrorMsg(error.response.data.err);
-    //     } else {
-    //       showFailedScreen();
-    //       console.log(error);
-    //     }
-    //   });
+    post("/register/", JSON.stringify(body))
+      .then((response) => {
+        sendEmail(values.email);
+      })
+      .catch((error) => {
+        closeLoadingScreen();
+        if (error.response.status === 400) {
+          setErrorMsg(error.response.data.err);
+        } else {
+          showFailedScreen();
+          console.log(error);
+        }
+      });
+  };
+
+  const resendEmail = () => {
+    setShowSignUpSuccessAlert(false);
+    showLoadingScreen();
+    sendEmail(email);
+  };
+
+  const sendEmail = (email) => {
+    const body = {
+      email: email,
+    };
+    post(`/auth/verify-email/send`, body)
+      .then((response) => {
+        closeLoadingScreen();
+        setShowSignUpSuccessAlert(true);
+      })
+      .catch((error) => {
+        closeLoadingScreen();
+        if (error.response.status === 400) {
+          setErrorMsg(error.response.data.err);
+        } else {
+          showFailedScreen();
+          console.log(error);
+        }
+      });
   };
 
   const onCloseSuccessScreen = () => {
     setShowSignUpSuccessAlert(false);
     history.replace("/login");
+  };
+  const startCounter = () => {
+    setDisableResend(true);
+    setSeconds(TIME_LIMIT);
+    let count = TIME_LIMIT;
+    const interval = setInterval(() => {
+      count = count - 1;
+      setSeconds(count);
+      if (count <= 0) {
+        clearInterval(interval);
+        setDisableResend(false);
+      }
+    }, 1000);
   };
 
   return (
@@ -300,11 +352,12 @@ export const SignUpForm = ({
           </form>
         </div>
         <AlertDialog
-          title="Sign Up Successfully"
-          message="You have successfully sign up with your email. Please check your email for confirmation link."
+          title="Verify your email"
+          message="Please check your email for confirmation link."
           handleClose={onCloseSuccessScreen}
-          action="Resend"
-          handleAction={onCloseSuccessScreen}
+          action={`Resend` + (seconds <= 0 ? `` : ` (${seconds}s)`)}
+          disableAction={disableResend}
+          handleAction={resendEmail}
           show={showSignUpSuccessAlert}
         />
       </div>
