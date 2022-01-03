@@ -220,9 +220,6 @@ export const LoginForm = ({
   const handleCloseConfirmEmail = () => {
     setShowEmailAlert(false);
   };
-  const handleResend = () => {
-    setShowEmailAlert(false);
-  };
   return (
     <div className="authen-form">
       <div className="authen-section">

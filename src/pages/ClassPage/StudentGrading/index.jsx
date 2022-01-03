@@ -1,7 +1,6 @@
 import {
   Container,
   Grid,
-  Snackbar,
   Button,
   Paper,
   Stack,
@@ -19,8 +18,8 @@ import { getAuth } from "../../../Utils/httpHelpers";
 import "../Grading/index.scss";
 import CreateRequest from "./Components/CreateRequest";
 function StudentGrading({ hidden, classDetails }) {
-  const [openAlertMessage, setOpenAlertMessage] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("");
+  // const [openAlertMessage, setOpenAlertMessage] = useState(false);
+  // const [alertMessage, setAlertMessage] = useState("");
   const [assignments, setAssignments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [openForm, setOpenForm] = useState(false);
@@ -151,12 +150,12 @@ function StudentGrading({ hidden, classDetails }) {
         handleClose={closeCreateRequestDialog}
         assignments={assignments}
       />
-      <Snackbar
+      {/* <Snackbar
         open={openAlertMessage}
         autoHideDuration={4000}
         onClose={() => setOpenAlertMessage(false)}
         message={alertMessage}
-      />
+      /> */}
     </div>
   );
 }

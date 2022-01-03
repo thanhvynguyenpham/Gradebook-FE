@@ -19,10 +19,11 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 export default function CreateRequest({ open, handleClose, assignments }) {
-  const [asignment, setAsignment] = React.useState("");
+  const [assignment, setAssignment] = React.useState("");
 
   const handleChange = (event) => {
-    setAsignment(event.target.value);
+    setAssignment(event.target.value);
+    console.log(assignment);
   };
   const handleSubmit = (event) => {
     console.log(event);

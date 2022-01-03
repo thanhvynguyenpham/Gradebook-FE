@@ -7,10 +7,10 @@ import "./index.scss";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { patchAuth, post } from "../../../../Utils/httpHelpers";
 import AlertDialog from "../../../../Components/Alert/AlertDialog";
 import { useEffect } from "react";
 import { useQuery } from "../../../../Utils/utils";
+import { post } from "../../../../Utils/httpHelpers";
 
 const passwordValidationSchema = yup.object({
   password: yup.string().required("Please enter new password."),
@@ -26,7 +26,6 @@ export const ChangePasswordForm = ({
 }) => {
   const query = useQuery();
   const token = query.get("token");
-  const email = query.get("email");
   const history = useHistory();
   const [showAlert, setShowAlert] = useState(false);
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
@@ -53,7 +52,6 @@ export const ChangePasswordForm = ({
       showLoadingScreen();
       submitPasswordForm(values);
     },
-    validateOnChange: (value) => {},
   });
 
   const submitPasswordForm = (values) => {

@@ -33,7 +33,7 @@ function ConfirmEmail() {
     };
     setShowLoadingScreen(true);
     verify(token);
-  }, []);
+  }, [token, history]);
 
   const goToLogin = () => {
     history.push("/login");

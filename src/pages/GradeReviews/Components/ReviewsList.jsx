@@ -3,8 +3,7 @@ import { Pagination, Stack } from "@mui/material";
 import ReviewListItem from "./ReviewListItem";
 import { useState } from "react";
 import { useEffect } from "react";
-
-const ITEMS_PER_PAGE = 5;
+import { REQUEST_ITEMS_PER_PAGE } from "../../../enum";
 
 export default function ReviewsList({ hidden, list, isRequestedList }) {
   const [page, setPage] = useState(1);
@@ -12,16 +11,16 @@ export default function ReviewsList({ hidden, list, isRequestedList }) {
   const [presentList, setPresentList] = useState(list);
 
   useEffect(() => {
-    const num = Math.ceil(list.length / ITEMS_PER_PAGE);
+    const num = Math.ceil(list.length / REQUEST_ITEMS_PER_PAGE);
     setNumOfPage(num);
     setPresentList(list);
     setPage(1);
     changeList(0);
-  }, [list]);
+  }, [list]); // eslint-disable-next-line
   const changeList = (page) => {
     const newList = list.slice(
-      page * ITEMS_PER_PAGE,
-      page * ITEMS_PER_PAGE + 5
+      page * REQUEST_ITEMS_PER_PAGE,
+      page * REQUEST_ITEMS_PER_PAGE + 5
     );
     setPresentList(newList);
   };

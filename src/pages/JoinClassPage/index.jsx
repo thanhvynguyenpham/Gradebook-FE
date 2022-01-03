@@ -67,17 +67,10 @@ export const JoinClassPage = () => {
         history.replace(`/class/${id}`);
       })
       .catch((error) => {
-        switch (error.response.status) {
-          case 401:
-            setAlertMessage("This invitation link is expired or invalid.");
-            break;
-          case 402:
-            setAlertMessage(
-              "This class has been disable. Please contact the owner or admin for more information."
-            );
-          default:
-            setAlertMessage("Something went wrong. Please try again later.");
-            break;
+        if (error.response.status !== 500) {
+          setAlertMessage(error.response.data.message);
+        } else {
+          setAlertMessage("Something went wrong. Please try again later.");
         }
         setDisable(false);
         setFailedMessage(true);
@@ -94,21 +87,10 @@ export const JoinClassPage = () => {
         history.replace(`/class/${id}`);
       })
       .catch((error) => {
-        switch (error.response.status) {
-          case 401:
-            setAlertMessage("This invitation link is expired or invalid.");
-            break;
-          case 402:
-            setAlertMessage(
-              "This class has been disable. Please contact the owner or admin for more information."
-            );
-          case 403:
-            setAlertMessage(
-              "You are using the wrong email to sign up for this class."
-            );
-          default:
-            setAlertMessage("Something went wrong. Please try again later.");
-            break;
+        if (error.response.status !== 500) {
+          setAlertMessage(error.response.data.message);
+        } else {
+          setAlertMessage("Something went wrong. Please try again later.");
         }
         setDisable(false);
         setFailedMessage(true);

@@ -11,7 +11,6 @@ import { Link } from "react-router-dom";
 import React from "react";
 import "./index.scss";
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
 import { post } from "../../../../Utils/httpHelpers";
 import AlertDialog from "../../../../Components/Alert/AlertDialog";
 import { useEffect } from "react";
@@ -26,7 +25,6 @@ const validationSchema = yup.object({
 });
 
 export const ForgotPassword = () => {
-  const history = useHistory();
   const [showLoadingScreen, setShowLoadingScreen] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");

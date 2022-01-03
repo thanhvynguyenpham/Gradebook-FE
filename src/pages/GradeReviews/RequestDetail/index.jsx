@@ -1,11 +1,4 @@
-import {
-  AccessTime,
-  ArrowRightAltTwoTone,
-  ArrowCircleRight,
-  ChevronRightRounded,
-  ChevronRightOutlined,
-  ChevronRight,
-} from "@mui/icons-material";
+import { AccessTime, ChevronRight } from "@mui/icons-material";
 import {
   Avatar,
   Button,
@@ -15,11 +8,9 @@ import {
   CardHeader,
   Chip,
   Container,
-  Divider,
   Grid,
   Paper,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
 import React from "react";
