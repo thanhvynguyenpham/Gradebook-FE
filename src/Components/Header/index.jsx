@@ -13,6 +13,7 @@ import {
   Input,
   Logout,
   Person,
+  ViewList,
 } from "@mui/icons-material";
 import { Avatar, Divider, ListItemIcon } from "@mui/material";
 import { useHistory } from "react-router";
@@ -76,6 +77,10 @@ export default function Header({ onCreateClass, onJoinClass, isAtMainPage }) {
     history.push("/profile");
   }
 
+  function handleGradeReviewClick() {
+    history.push("/reviews");
+  }
+
   const menuId = "primary-search-account-menu";
   const renderAddMenu = (
     <Menu
@@ -130,6 +135,12 @@ export default function Header({ onCreateClass, onJoinClass, isAtMainPage }) {
         </ListItemIcon>
         Profile
       </MenuItem>
+      <MenuItem onClick={handleGradeReviewClick}>
+        <ListItemIcon>
+          <ViewList fontSize="small" />
+        </ListItemIcon>
+        Grade Reviews List
+      </MenuItem>
       <Divider />
       <MenuItem onClick={handleLogout}>
         <ListItemIcon>
@@ -180,6 +191,12 @@ export default function Header({ onCreateClass, onJoinClass, isAtMainPage }) {
             <Person fontSize="small" />
           </ListItemIcon>
           Profile
+        </MenuItem>
+        <MenuItem onClick={handleGradeReviewClick}>
+          <ListItemIcon>
+            <ViewList fontSize="small" />
+          </ListItemIcon>
+          Grade Reviews List
         </MenuItem>
         <MenuItem onClick={handleLogout}>
           <ListItemIcon>

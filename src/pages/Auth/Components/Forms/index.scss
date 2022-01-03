@@ -14,6 +14,7 @@
     justify-content: center;
     align-items: center;
     margin: auto;
+    padding-bottom: 20px;
 
     form {
       max-width: 300px;
@@ -26,7 +27,7 @@
       font-weight: bold;
       font-size: 30px;
       line-height: 41px;
-      color: $secondary;
+      color: $primary;
       width: 80%;
       margin-bottom: 25px;
     }
@@ -36,6 +37,13 @@
       height: 1.25rem;
       margin: 0.2rem 0 0.4rem 0;
       text-align: center;
+    }
+    .forgot-password-msg {
+      color: $primary;
+      font-weight: bold;
+      font-size: 0.9rem;
+      height: 1.25rem;
+      text-align: right;
     }
     .form-footer {
       margin-block-start: 10px;
@@ -50,7 +58,7 @@
     .message {
       font-size: 16px;
       font-weight: bold;
-      color: white;
+      color: $primary;
     }
   }
 }

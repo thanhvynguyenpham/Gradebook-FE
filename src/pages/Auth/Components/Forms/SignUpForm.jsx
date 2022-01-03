@@ -17,6 +17,9 @@ import { useHistory } from "react-router";
 import Cookies from "js-cookie";
 import { post } from "../../../../Utils/httpHelpers";
 import AlertDialog from "../../../../Components/Alert/AlertDialog";
+import { setInterval } from "core-js";
+import { useEffect } from "react";
+import { TIME_LIMIT } from "../../../../enum";
 
 const validationSchema = yup.object({
   firstname: yup
@@ -46,6 +49,9 @@ export const SignUpForm = ({
   const [showPassword, setShowPassword] = React.useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = React.useState(false);
   const [showSignUpSuccessAlert, setShowSignUpSuccessAlert] = useState(false);
+  const [email, setEmail] = useState("");
+  const [seconds, setSeconds] = useState(TIME_LIMIT);
+  const [disableResend, setDisableResend] = useState(false);
   const history = useHistory();
   const formik = useFormik({
     initialValues: {
@@ -58,11 +64,19 @@ export const SignUpForm = ({
     validationSchema: validationSchema,
     onSubmit: (values) => {
       setErrorMsg("");
+      setEmail(values.email);
       submitForm(values);
       console.log("submit");
     },
     validateOnChange: (value) => {},
   });
+
+  useEffect(() => {
+    if (showSignUpSuccessAlert) {
+      setDisableResend(true);
+      startCounter();
+    }
+  }, [showSignUpSuccessAlert]);
 
   function handleClickShowPassword() {
     const newStatus = !showPassword;
@@ -108,6 +122,31 @@ export const SignUpForm = ({
     };
     post("/register/", JSON.stringify(body))
       .then((response) => {
+        sendEmail(values.email);
+      })
+      .catch((error) => {
+        closeLoadingScreen();
+        if (error.response.status === 400) {
+          setErrorMsg(error.response.data.err);
+        } else {
+          showFailedScreen();
+          console.log(error);
+        }
+      });
+  };
+
+  const resendEmail = () => {
+    setShowSignUpSuccessAlert(false);
+    showLoadingScreen();
+    sendEmail(email);
+  };
+
+  const sendEmail = (email) => {
+    const body = {
+      email: email,
+    };
+    post(`/auth/verify-email/send`, body)
+      .then((response) => {
         closeLoadingScreen();
         setShowSignUpSuccessAlert(true);
       })
@@ -126,6 +165,19 @@ export const SignUpForm = ({
     setShowSignUpSuccessAlert(false);
     history.replace("/login");
   };
+  const startCounter = () => {
+    setDisableResend(true);
+    setSeconds(TIME_LIMIT);
+    let count = TIME_LIMIT;
+    const interval = setInterval(() => {
+      count = count - 1;
+      setSeconds(count);
+      if (count <= 0) {
+        clearInterval(interval);
+        setDisableResend(false);
+      }
+    }, 1000);
+  };
 
   return (
     <>
@@ -133,8 +185,10 @@ export const SignUpForm = ({
         <div className="authen-section">
           <Link to="/">
             <img
-              src="assets/img/logo_white.png"
+              src="assets/img/gradebook_bg.png"
               alt="logo"
+              width="100px"
+              height="100px"
               className="logo"
             ></img>
           </Link>
@@ -145,7 +199,7 @@ export const SignUpForm = ({
             <Grid container spacing={2}>
               <Grid item xs={4}>
                 <TextField
-                  color="warning"
+                  color="primary"
                   autoFocus
                   margin="dense"
                   id="firstname"
@@ -165,7 +219,7 @@ export const SignUpForm = ({
               </Grid>
               <Grid item xs={8}>
                 <TextField
-                  color="warning"
+                  color="primary"
                   margin="dense"
                   id="lastname"
                   label="Lastname"
@@ -182,7 +236,7 @@ export const SignUpForm = ({
               </Grid>
             </Grid>
             <TextField
-              color="warning"
+              color="primary"
               margin="dense"
               id="email"
               label="Email"
@@ -195,7 +249,7 @@ export const SignUpForm = ({
               helperText={formik.touched.email && formik.errors.email}
             />
             <TextField
-              color="warning"
+              color="primary"
               margin="dense"
               fullWidth
               variant="standard"
@@ -219,7 +273,7 @@ export const SignUpForm = ({
               label="Password"
             />
             <TextField
-              color="warning"
+              color="primary"
               margin="dense"
               fullWidth
               variant="standard"
@@ -251,7 +305,7 @@ export const SignUpForm = ({
             <Button
               type="submit"
               variant="contained"
-              color="warning"
+              color="primary"
               fullWidth
               style={{ marginTop: "20px" }}
             >
@@ -289,18 +343,19 @@ export const SignUpForm = ({
               <span>Already have an account?</span>
               <span style={{ float: "right" }}>
                 <Link to="/login" replace>
-                  <b style={{ color: "white", textDecoration: "none" }}>
-                    Login
-                  </b>
+                  <b className="message">Login</b>
                 </Link>
               </span>
             </div>
           </form>
         </div>
         <AlertDialog
-          title="Sign Up Successfully"
-          message="You have successfully sign up with your email. Login now to use Gradebook's features."
+          title="Verify your email"
+          message="Please check your email for confirmation link."
           handleClose={onCloseSuccessScreen}
+          action={`Resend` + (seconds <= 0 ? `` : ` (${seconds}s)`)}
+          disableAction={disableResend}
+          handleAction={resendEmail}
           show={showSignUpSuccessAlert}
         />
       </div>

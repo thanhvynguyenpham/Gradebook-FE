@@ -14,7 +14,12 @@ import {
   Input,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { getAuth, patchAuth } from "../../../../Utils/httpHelpers";
+import {
+  deleteAuth,
+  getAuth,
+  patchAuth,
+  postAuth,
+} from "../../../../Utils/httpHelpers";
 import ExportGradeForm from "./ExportGradeForm";
 import UploadGradeForm from "./UploadGradeForm";
 const Marks = ({
@@ -45,6 +50,7 @@ const Marks = ({
 
   useEffect(() => {
     getGradeBoard();
+    console.log(assignments);
   }, [assignments, students]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleBlur = (event, student, index, identity) => {
@@ -80,12 +86,39 @@ const Marks = ({
   };
 
   const finalizeGrade = (index) => {
-    console.log(assignments[index].identity);
-    let newArray = [...assignments];
-    newArray[index].finalized = true;
-    updateGradeStructure(newArray);
-    setAlertMessage("Finalized this assignment.");
-    setOpenAlertMessage(true);
+    postAuth(
+      `/class/${classDetails._id}/grade-structure/${assignments[index].identity}`
+    )
+      .then((response) => {
+        // let newArray = [...assignments];
+        // newArray[index].finalized = true;
+        updateGradeStructure(response.data.gradeStructure);
+        setAlertMessage("Finalized this assignment.");
+        setOpenAlertMessage(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        setAlertMessage("Something went wrong. Please try again.");
+        setOpenAlertMessage(true);
+      });
+  };
+
+  const unFinalizeGrade = (index) => {
+    deleteAuth(
+      `/class/${classDetails._id}/grade-structure/${assignments[index].identity}`
+    )
+      .then((response) => {
+        // let newArray = [...assignments];
+        // newArray[index].finalized = true;
+        updateGradeStructure(response.data.gradeStructure);
+        setAlertMessage("Finalized this assignment.");
+        setOpenAlertMessage(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        setAlertMessage("Something went wrong. Please try again.");
+        setOpenAlertMessage(true);
+      });
   };
 
   const updateStudent = (student, index) => {
@@ -212,14 +245,23 @@ const Marks = ({
                     {assignments &&
                       assignments.map((assignment, index) => (
                         <TableCell key={assignment.name}>
-                          <Button
-                            size="small"
-                            variant="outlined"
-                            onClick={() => finalizeGrade(index)}
-                            disabled={assignment.finalized}
-                          >
-                            Finalize
-                          </Button>
+                          {assignment.finalized ? (
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              onClick={() => unFinalizeGrade(index)}
+                            >
+                              Unfinalize
+                            </Button>
+                          ) : (
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              onClick={() => finalizeGrade(index)}
+                            >
+                              Finalize
+                            </Button>
+                          )}
                         </TableCell>
                       ))}
                     <TableCell></TableCell>

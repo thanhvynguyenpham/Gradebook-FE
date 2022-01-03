@@ -20,7 +20,6 @@ export default function Accounts({
 
   const handleClickOpen = () => {
     setOpenCreateAdmin(true);
-    console.log("openned");
   };
 
   const handleClose = () => {
@@ -43,9 +42,9 @@ export default function Accounts({
     deleteAuth(`/admin/users/${id}`)
       .then(() => {
         if (isAdmin) {
-          updateAdminsStatus(index, "unable");
+          updateAdminsStatus(index, "disable");
         } else {
-          updateUsersStatus(index, "unable");
+          updateUsersStatus(index, "disable");
         }
       })
       .catch((error) => {
@@ -113,7 +112,7 @@ export default function Accounts({
           isAdmin={false}
           isLoading={isLoadingUser}
           users={users}
-          setUsers={users}
+          setUsers={setUsers}
           handleBlock={handleBlock}
           handleUnblock={handleUnblock}
           handleSuccessMessage={handleSuccessMessage}

@@ -14,6 +14,9 @@ import {
   setLocalRefreshToken,
   setLocalUser,
 } from "../../../../Utils/localStorageGetSet";
+import AlertDialog from "../../../../Components/Alert/AlertDialog";
+import { useEffect } from "react";
+import { TIME_LIMIT } from "../../../../enum";
 
 const validationSchema = yup.object({
   email: yup
@@ -42,9 +45,29 @@ export const LoginForm = ({
       setErrorMsg("");
       submitForm(values);
     },
-    validateOnChange: (value) => {},
   });
-  const [showPassword, setShowPassword] = React.useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showEmailConfirmAlert, setShowEmailAlert] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [email, setEmail] = useState("");
+  const [seconds, setSeconds] = useState(TIME_LIMIT);
+  const [disableResend, setDisableResend] = useState(false);
+
+  useEffect(() => {
+    if (alertMessage === "") {
+      setShowAlert(false);
+    } else {
+      setShowAlert(true);
+    }
+  }, [alertMessage]);
+
+  useEffect(() => {
+    if (showEmailConfirmAlert) {
+      setDisableResend(true);
+      startCounter();
+    }
+  }, [showEmailConfirmAlert]);
   function handleClickShowPassword() {
     const newStatus = !showPassword;
     setShowPassword(newStatus);
@@ -83,7 +106,21 @@ export const LoginForm = ({
       })
       .catch((error) => {
         closeLoadingScreen();
-        showFailedAlert();
+        switch (error.response.status) {
+          // login failed
+          case 401:
+            showFailedAlert();
+            break;
+          // account blocked
+          case 402:
+            setAlertMessage(
+              "Your account has been blocked. Please contact admin to unblock your account."
+            );
+            break;
+          default:
+            setAlertMessage("Something when wrong, please try again.");
+            break;
+        }
         console.log(error);
       });
   };
@@ -97,6 +134,7 @@ export const LoginForm = ({
       email: values.email,
       password: values.password,
     };
+    setEmail(values.email);
     post("/auth", JSON.stringify(body))
       .then((response) => {
         closeLoadingScreen();
@@ -117,18 +155,80 @@ export const LoginForm = ({
       })
       .catch((error) => {
         closeLoadingScreen();
-        setErrorMsg("Invalid email or password");
-        console.log(error);
+        switch (error.response.status) {
+          case 400:
+            setErrorMsg(error.response.data.message);
+            break;
+          case 410:
+            setAlertMessage(error.response.data.message);
+            break;
+          case 411:
+            setShowEmailAlert(true);
+            sendEmail(email);
+            break;
+          default:
+            setAlertMessage("Something went wrong, please try again.");
+            break;
+        }
       });
   };
 
+  const resendEmail = () => {
+    setShowEmailAlert(false);
+    showLoadingScreen();
+    sendEmail(email);
+  };
+
+  const sendEmail = (email) => {
+    const body = {
+      email: email,
+    };
+    post(`/auth/verify-email/send`, body)
+      .then((response) => {
+        closeLoadingScreen();
+        setShowEmailAlert(true);
+      })
+      .catch((error) => {
+        closeLoadingScreen();
+        if (error.response.status === 400) {
+          setErrorMsg(error.response.data.err);
+        } else {
+          setAlertMessage("Something went wrong, please try again.");
+          console.log(error);
+        }
+      });
+  };
+
+  const startCounter = () => {
+    setDisableResend(true);
+    setSeconds(TIME_LIMIT);
+    let count = TIME_LIMIT;
+    const interval = setInterval(() => {
+      count = count - 1;
+      setSeconds(count);
+      if (count <= 0) {
+        clearInterval(interval);
+        setDisableResend(false);
+      }
+    }, 1000);
+  };
+
+  const handleCloseAlert = () => {
+    setAlertMessage("");
+  };
+
+  const handleCloseConfirmEmail = () => {
+    setShowEmailAlert(false);
+  };
   return (
     <div className="authen-form">
       <div className="authen-section">
         <Link to="/">
           <img
-            src="assets/img/logo_white.png"
+            src="assets/img/gradebook_bg.png"
             alt="logo"
+            width="150px"
+            height="150px"
             className="logo"
           ></img>
         </Link>
@@ -137,7 +237,7 @@ export const LoginForm = ({
             <span>Login</span>
           </div>
           <TextField
-            color="secondary"
+            color="primary"
             autoFocus
             margin="dense"
             id="email"
@@ -151,7 +251,7 @@ export const LoginForm = ({
             helperText={formik.touched.email && formik.errors.email}
           />
           <TextField
-            color="secondary"
+            color="primary"
             margin="dense"
             fullWidth
             variant="standard"
@@ -174,13 +274,16 @@ export const LoginForm = ({
             }
             label="Password"
           />
+          <Link to="/changepassword">
+            <div className="forgot-password-msg">Forgot password</div>
+          </Link>
           <div className="error-msg">{errorMsg}</div>
           <Button
             type="submit"
             variant="contained"
-            color="secondary"
+            color="primary"
             fullWidth
-            style={{ marginTop: "20px" }}
+            style={{ marginTop: "10px" }}
           >
             Login
           </Button>
@@ -216,12 +319,27 @@ export const LoginForm = ({
             <span>Haven't had an account yet?</span>
             <span style={{ float: "right" }}>
               <Link to="/register">
-                <b style={{ color: "white" }}>Sign Up</b>
+                <b className="message">Sign Up</b>
               </Link>
             </span>
           </div>
         </form>
       </div>
+      <AlertDialog
+        title="Confirm Email"
+        message="Your email hasn't been confirmed yet. Please check your email for confirmation link and login again."
+        handleClose={handleCloseConfirmEmail}
+        show={showEmailConfirmAlert}
+        action={`Resend` + (seconds <= 0 ? `` : ` (${seconds}s)`)}
+        disableAction={disableResend}
+        handleAction={resendEmail}
+      />
+      <AlertDialog
+        title="Error"
+        message={alertMessage}
+        handleClose={handleCloseAlert}
+        show={showAlert}
+      />
     </div>
   );
 };

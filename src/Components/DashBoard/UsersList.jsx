@@ -120,7 +120,11 @@ const UsersList = ({
                                   style={{ width: "120px" }}
                                   startIcon={<DoDisturbOn />}
                                   onClick={() =>
-                                    handleBlock(index, row._id, isAdmin)
+                                    handleBlock(
+                                      rowsPerPage * page + index,
+                                      row._id,
+                                      isAdmin
+                                    )
                                   }
                                 >
                                   Block
@@ -131,7 +135,11 @@ const UsersList = ({
                                   style={{ width: "120px" }}
                                   startIcon={<DoDisturbOff />}
                                   onClick={() =>
-                                    handleUnblock(index, row._id, isAdmin)
+                                    handleUnblock(
+                                      rowsPerPage * page + index,
+                                      row._id,
+                                      isAdmin
+                                    )
                                   }
                                 >
                                   Unblock

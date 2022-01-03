@@ -1,0 +1,36 @@
+@import "../../../variables.scss";
+.list-container {
+  cursor: pointer;
+  border-radius: 10px;
+  min-height: 80px;
+  color: white;
+  background-color: $primary;
+
+  &-item {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* number of lines to show */
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    font-size: 1.25rem;
+  }
+  &-status {
+    text-align: center;
+    min-height: inherit;
+    border-radius: 20px 10px 10px 20px;
+    writing-mode: vertical-lr;
+    justify-content: center;
+    align-content: center;
+    font-size: 1.25rem;
+    font-weight: bold;
+    &-open {
+      background-color: $secondary;
+      color: white;
+    }
+    &-close {
+      background-color: gainsboro;
+      color: black;
+    }
+  }
+}

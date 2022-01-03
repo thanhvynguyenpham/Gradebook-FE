@@ -67,10 +67,10 @@ export const JoinClassPage = () => {
         history.replace(`/class/${id}`);
       })
       .catch((error) => {
-        if (error.response.status === 500) {
-          setAlertMessage("Something went wrong. Please try again later.");
+        if (error.response.status !== 500) {
+          setAlertMessage(error.response.data.message);
         } else {
-          setAlertMessage("This invitation link is expired or invalid.");
+          setAlertMessage("Something went wrong. Please try again later.");
         }
         setDisable(false);
         setFailedMessage(true);
@@ -87,12 +87,10 @@ export const JoinClassPage = () => {
         history.replace(`/class/${id}`);
       })
       .catch((error) => {
-        if (error.response.status === 500) {
-          setAlertMessage("Something went wrong. Please try again later.");
+        if (error.response.status !== 500) {
+          setAlertMessage(error.response.data.message);
         } else {
-          setAlertMessage(
-            "This invitation link is expired or you are using the wrong email to sign up for this class."
-          );
+          setAlertMessage("Something went wrong. Please try again later.");
         }
         setDisable(false);
         setFailedMessage(true);
@@ -117,7 +115,9 @@ export const JoinClassPage = () => {
                       />
                       <Link to="/">
                         <img
-                          src="/assets/img/logo_white.png"
+                          src="/assets/img/gradebook_bg.png"
+                          width="150px"
+                          height="150px"
                           alt="logo"
                           className="logo"
                         ></img>
@@ -138,7 +138,7 @@ export const JoinClassPage = () => {
                         textAlign="center"
                       >
                         You are invited to this class as a{" "}
-                        {role !== undefined ? role : "student"}
+                        {role ? role : "student"}
                       </Typography>
                     </CardContent>
                   </CardActionArea>
