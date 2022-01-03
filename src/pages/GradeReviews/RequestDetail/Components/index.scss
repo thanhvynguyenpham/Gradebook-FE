@@ -1,0 +1,36 @@
+@import "../../../../variables.scss";
+.request-card {
+  min-width: 275px;
+  background-color: $crayola;
+  &-date {
+    font-size: 14px;
+  }
+  &-title {
+    margin-bottom: 1.5px;
+  }
+  &-class-panel {
+    background-color: $primary;
+    min-height: 50px;
+  }
+  &-review-panel {
+    background-color: lightgoldenrodyellow;
+    min-height: 50px;
+    &-point-before {
+      background-color: $sandy_brown;
+      color: white;
+      width: fit-content;
+      padding: 5px;
+    }
+    &-point-after {
+      background-color: $dark_green;
+      color: white;
+      width: fit-content;
+      padding: 5px;
+    }
+  }
+  &-submit-panel {
+    width: 100%;
+    min-height: 50px;
+    background-color: lightgoldenrodyellow;
+  }
+}
