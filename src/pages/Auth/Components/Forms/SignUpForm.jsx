@@ -20,8 +20,7 @@ import { post } from "../../../../Utils/httpHelpers";
 import AlertDialog from "../../../../Components/Alert/AlertDialog";
 import { setInterval } from "core-js";
 import { useEffect } from "react";
-
-const TIME_LIMIT = 120;
+import { TIME_LIMIT } from "../../../../enum";
 
 const validationSchema = yup.object({
   firstname: yup

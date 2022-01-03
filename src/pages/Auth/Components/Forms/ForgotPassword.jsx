@@ -16,8 +16,7 @@ import { post } from "../../../../Utils/httpHelpers";
 import AlertDialog from "../../../../Components/Alert/AlertDialog";
 import { useEffect } from "react";
 import { setInterval } from "core-js";
-
-const TIME_LIMIT = 120;
+import { TIME_LIMIT } from "../../../../enum";
 
 const validationSchema = yup.object({
   email: yup

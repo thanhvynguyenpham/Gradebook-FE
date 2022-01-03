@@ -16,8 +16,7 @@ import {
 } from "../../../../Utils/localStorageGetSet";
 import AlertDialog from "../../../../Components/Alert/AlertDialog";
 import { useEffect } from "react";
-
-const TIME_LIMIT = 10;
+import { TIME_LIMIT } from "../../../../enum";
 
 const validationSchema = yup.object({
   email: yup
@@ -157,27 +156,20 @@ export const LoginForm = ({
       .catch((error) => {
         closeLoadingScreen();
         switch (error.response.status) {
-          case 401:
-            if (error.response.data.message === "Invalid email or password")
-              setErrorMsg("Invalid email or password");
-            else {
-              setShowEmailAlert(true);
-              sendEmail(email);
-            }
+          case 400:
+            setErrorMsg(error.response.data.message);
             break;
-          case 402:
-            setAlertMessage(
-              "Your account has been blocked. Please contact admin to unblock your account."
-            );
+          case 410:
+            setAlertMessage(error.response.data.message);
             break;
-          case 403:
+          case 411:
             setShowEmailAlert(true);
+            sendEmail(email);
             break;
           default:
             setAlertMessage("Something went wrong, please try again.");
             break;
         }
-        console.log(error);
       });
   };
 
