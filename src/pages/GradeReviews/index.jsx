@@ -85,7 +85,7 @@ function GradeReviews({ hidden }) {
               {isLoadingReview ? (
                 <Stack>
                   <Skeleton height="80px" />
-                  <Skeleton height="80px" height="80px" />
+                  <Skeleton height="80px" />
                   <Skeleton height="80px" />
                   <Skeleton height="80px" />
                   <Skeleton height="80px" />

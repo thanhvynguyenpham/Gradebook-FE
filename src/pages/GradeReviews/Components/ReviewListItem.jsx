@@ -1,6 +1,6 @@
 import { Chip, Grid, Paper, useMediaQuery } from "@mui/material";
 import React from "react";
-import { covertToLocalDate } from "../../../Utils/converters";
+import { convertToLocalDate } from "../../../Utils/converters";
 import "./index.scss";
 
 function ReviewListItem({ requestedList, request }) {
@@ -66,7 +66,7 @@ function ReviewListItem({ requestedList, request }) {
             textAlign="center"
             marginBottom={smDown ? 3 : 0}
           >
-            <span>{covertToLocalDate(request.createdAt)}</span>
+            <span>{convertToLocalDate(request.createdAt)}</span>
           </Grid>
           {!smDown && (
             <Grid
