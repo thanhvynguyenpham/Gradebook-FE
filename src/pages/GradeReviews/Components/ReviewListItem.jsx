@@ -1,65 +1,85 @@
-import { Grid, Paper } from "@mui/material";
+import { Chip, Grid, Paper, useMediaQuery } from "@mui/material";
 import React from "react";
+import { covertToLocalDate } from "../../../Utils/converters";
 import "./index.scss";
 
 function ReviewListItem({ requestedList, request }) {
+  const smDown = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   return (
     <div>
       <Paper sx={{ borderRadius: "10px" }}>
-        <Grid container className="list-container">
+        <Grid container className="list-container" rowSpacing={smDown ? 2 : 0}>
           <Grid
             item
-            xs={requestedList ? 4 : 3.5}
+            xs={12}
+            md={requestedList ? 4 : 3.5}
             alignSelf="center"
-            className="list-container-item"
-            paddingLeft={4}
+            paddingLeft={smDown ? 0 : 4}
+            textAlign={smDown ? "center" : "left"}
           >
-            <span>
-              <b>{request.class.toUpperCase()}</b>
+            {smDown && (
+              <Chip
+                label={request.status.toUpperCase()}
+                className={`list-container-status-${request.status}`}
+                style={{ fontWeight: "bold" }}
+              ></Chip>
+            )}
+            <span className="list-container-item">
+              <b>
+                {request.class.name.toUpperCase()}
+                {"  "}
+              </b>
             </span>
           </Grid>
           <Grid
             item
             className="list-container-item"
-            xs={requestedList ? 4 : 3.5}
+            xs={12}
+            md={requestedList ? 4 : 3.5}
             alignSelf="center"
             textAlign="center"
           >
             <span>
-              <b>Assignment:</b> {request.assignment}
+              <b>Assignment:</b> {request.gradeComposition.name}
             </span>
           </Grid>
           {!requestedList && (
             <Grid
               item
               className="list-container-item"
-              xs={2.5}
+              xs={12}
+              md={2.5}
               alignSelf="center"
               textAlign="center"
             >
               <span>
-                <b>Student:</b> {request.student}
+                <b>Student:</b> {request.student.name}
               </span>
             </Grid>
           )}
           <Grid
             item
             className="list-container-item"
-            xs={requestedList ? 3.5 : 2}
+            xs={12}
+            md={requestedList ? 3.5 : 2}
             alignSelf="center"
             textAlign="center"
+            marginBottom={smDown ? 3 : 0}
           >
-            <span>{request.time}</span>
+            <span>{covertToLocalDate(request.createdAt)}</span>
           </Grid>
-          <Grid
-            container
-            item
-            xs={0.5}
-            alignSelf="center"
-            className={`list-container-status list-container-status-${request.status}`}
-          >
-            <span>{request.status.toUpperCase()}</span>
-          </Grid>
+          {!smDown && (
+            <Grid
+              container
+              item
+              xs={12}
+              md={0.5}
+              alignSelf="center"
+              className={`list-container-status list-container-status-${request.status}`}
+            >
+              <span>{request.status.toUpperCase()}</span>
+            </Grid>
+          )}
         </Grid>
       </Paper>
     </div>

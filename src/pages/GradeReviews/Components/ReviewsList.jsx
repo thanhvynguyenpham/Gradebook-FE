@@ -4,6 +4,7 @@ import ReviewListItem from "./ReviewListItem";
 import { useState } from "react";
 import { useEffect } from "react";
 import { REQUEST_ITEMS_PER_PAGE } from "../../../enum";
+import { Link } from "react-router-dom";
 
 export default function ReviewsList({ hidden, list, isRequestedList }) {
   const [page, setPage] = useState(1);
@@ -32,7 +33,9 @@ export default function ReviewsList({ hidden, list, isRequestedList }) {
     <div hidden={hidden}>
       <Stack spacing={2}>
         {presentList.map((item) => (
-          <ReviewListItem request={item} requestedList={isRequestedList} />
+          <Link to={`/reviews/${item._id}`}>
+            <ReviewListItem request={item} requestedList={isRequestedList} />
+          </Link>
         ))}
         <br></br>
         <Pagination

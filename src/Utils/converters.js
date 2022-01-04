@@ -36,3 +36,8 @@ export const convertToJson = (csv, headers) => {
   }
   return result;
 };
+
+export const covertToLocalDate = (date) => {
+  var newDate = new Date(date);
+  return newDate.toLocaleDateString("en-US");
+};

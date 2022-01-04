@@ -25,12 +25,12 @@
     font-size: 1.25rem;
     font-weight: bold;
     &-open {
-      background-color: $secondary;
-      color: white;
+      background-color: $secondary !important;
+      color: white !important;
     }
     &-close {
-      background-color: gainsboro;
-      color: black;
+      background-color: gainsboro !important;
+      color: black !important;
     }
   }
 }
