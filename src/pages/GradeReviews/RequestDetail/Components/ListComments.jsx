@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Send } from "@mui/icons-material";
 import {
   Avatar,
@@ -7,61 +7,80 @@ import {
   CardHeader,
   Grid,
   IconButton,
-  Skeleton,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import { nameToAvatar } from "../../../../Utils/converters";
-const listComments = [
-  {
-    name: "Vy Nguyen",
-    firstName: "Vy",
-    lastName: "Nguyen",
-    postDate: "26/10/2021",
-    postContent: "Hello everyone, nice to meet you all",
-  },
-  {
-    name: "Linh Nguyen",
-    firstName: "Linh",
-    lastName: "Nguyen",
-    postDate: "25/10/2021",
-    postContent: "Welcome to our class!",
-  },
-];
+import { useState } from "react";
+import { getAuth, postAuth } from "../../../../Utils/httpHelpers";
+import { useParams } from "react-router-dom";
 
-const loading = false;
-const ListComments = () => {
+const ListComments = ({ showAlert, status }) => {
+  const [listComments, setListComments] = useState([]);
+  const { id } = useParams();
+  const [comment, setComment] = useState("");
+  const [disableComment, setDisableComment] = useState(false);
+  useEffect(() => {
+    const loadComments = () => {
+      getAuth(`/request/${id}/comments`).then((response) => {
+        setListComments(response.data);
+      });
+    };
+    loadComments();
+  }, [id]);
+  const handleComment = (event) => {
+    setComment(event.target.value);
+  };
+  const submitForm = () => {
+    if (comment.length === 0) {
+      return;
+    } else {
+      const body = {
+        content: comment,
+      };
+      setDisableComment(true);
+      postAuth(`/request/${id}/comments`, body)
+        .then((response) => {
+          const date = new Date();
+          let newList = [...listComments];
+          newList.push(response.data);
+          setListComments(newList);
+          setDisableComment(false);
+          setComment("");
+        })
+        .catch((error) => {
+          setDisableComment(false);
+          if (error.response.status !== 500) {
+            showAlert(error.response.data.message);
+          } else {
+            showAlert("Something went wrong, please try again!");
+          }
+        });
+    }
+  };
   return (
     <div>
       <Stack spacing={2}>
         <Typography variant="h6">COMMENTS</Typography>
         {listComments &&
-          listComments.map((value, key) => (
-            <Card>
+          listComments.map((comment, key) => (
+            <Card key={key}>
               <CardHeader
                 avatar={
-                  loading ? (
-                    <Skeleton variant="circular" width={40} height={40} />
-                  ) : (
-                    <Avatar sx={{ bgcolor: "red" }} aria-label="recipe">
-                      {nameToAvatar(value.name)}
-                    </Avatar>
-                  )
+                  <Avatar sx={{ bgcolor: "red" }} aria-label="recipe">
+                    {nameToAvatar(comment.user.name)}
+                  </Avatar>
                 }
-                title={loading ? <Skeleton variant="text" /> : value.name}
-                subheader={
-                  loading ? <Skeleton variant="text" /> : value.postDate
-                }
+                title={comment.user.name}
+                subheader={comment.createdAt}
               />
               <CardContent>
-                <Typography variant="body1">
-                  {loading ? <Skeleton variant="text" /> : value.postContent}
-                </Typography>
+                <Typography variant="body1">{comment.content}</Typography>
               </CardContent>
             </Card>
           ))}
-        <Card>
+        <Card hidden={status === "close"}>
           <CardContent>
             <Grid container spacing={2} alignItems="center">
               <Grid item xs={1.5}>
@@ -71,14 +90,17 @@ const ListComments = () => {
               </Grid>
               <Grid item xs={9.5}>
                 <TextField
+                  disabled={disableComment}
                   fullWidth
                   type="text"
                   variant="outlined"
                   placeholder="Leave a comment"
+                  onChange={handleComment}
+                  value={comment}
                 ></TextField>
               </Grid>
               <Grid item xs={1}>
-                <IconButton>
+                <IconButton onClick={submitForm} disabled={disableComment}>
                   <Send />
                 </IconButton>
               </Grid>
