@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Pagination, Stack } from "@mui/material";
+import { Pagination, Stack, Typography } from "@mui/material";
 import ReviewListItem from "./ReviewListItem";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -38,13 +38,19 @@ export default function ReviewsList({ hidden, list, isRequestedList }) {
           </Link>
         ))}
         <br></br>
-        <Pagination
-          count={numOfPage}
-          page={page}
-          onChange={onChangePage}
-          color="primary"
-          style={{ alignSelf: "center" }}
-        />
+        {list.length === 0 ? (
+          <Typography variant="h5" style={{ alignSelf: "center" }}>
+            No request yet.
+          </Typography>
+        ) : (
+          <Pagination
+            count={numOfPage}
+            page={page}
+            onChange={onChangePage}
+            color="primary"
+            style={{ alignSelf: "center" }}
+          />
+        )}
       </Stack>
     </div>
   );

@@ -16,6 +16,7 @@ import GradeReviews from "./pages/GradeReviews";
 import ConfirmEmail from "./pages/Auth/ConfirmEmail";
 import RequestDetail from "./pages/GradeReviews/RequestDetail";
 import { ForgotPassword } from "./pages/Auth/Components/Forms/ForgotPassword";
+import Notification from "./pages/Notification";
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
           <PrivateRoute path="/class/join/:id" component={JoinClassPage} />
           <PrivateRoute exact path="/reviews" component={GradeReviews} />
           <PrivateRoute exact path="/reviews/:id" component={RequestDetail} />
+          <PrivateRoute exact path="/notification" component={Notification} />
           <Route path="/404/:message" component={NotFoundPage} />
           <Route path="/404" component={NotFoundPage} />
           <Redirect to="/404" />
