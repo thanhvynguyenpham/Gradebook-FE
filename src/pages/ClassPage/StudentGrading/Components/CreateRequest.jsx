@@ -52,7 +52,6 @@ export default function CreateRequest({
   });
   const handleChange = (event) => {
     setAssignment(event.target.value);
-    console.log(assignment);
   };
   function submitForm(values) {
     const body = {

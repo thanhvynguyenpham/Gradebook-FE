@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { AccessTime, ChevronRight } from "@mui/icons-material";
 import {
   Avatar,

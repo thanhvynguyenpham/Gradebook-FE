@@ -63,7 +63,6 @@ const Notification = () => {
           setNotificationsLoading(false);
           let list = response.data;
           setNotifications(list);
-          console.log(response.data);
         })
         .catch((error) => {
           setNotificationsLoading(false);

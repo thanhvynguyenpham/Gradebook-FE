@@ -42,7 +42,6 @@ const ListComments = ({ showAlert, status }) => {
       setDisableComment(true);
       postAuth(`/request/${id}/comments`, body)
         .then((response) => {
-          const date = new Date();
           let newList = [...listComments];
           newList.push(response.data);
           setListComments(newList);

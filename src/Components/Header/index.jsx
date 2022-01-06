@@ -127,7 +127,6 @@ export default function Header({ onCreateClass, onJoinClass, isAtMainPage }) {
       .then((response) => {
         setNotificationsLoading(false);
         setNotifications(response.data);
-        console.log(response.data);
       })
       .catch((error) => {
         setNotificationsLoading(false);
