@@ -84,6 +84,7 @@ function GradeStructure({
             name: item.name,
             point: item.point,
             identity: item.identity,
+            finalized: item.finalized,
           });
         } else {
           newAsgList.push({
