@@ -78,12 +78,25 @@ const UsersList = ({
         <Grid item>
           <Title>{isAdmin ? "Admins" : "Members"}</Title>
         </Grid>
+        {isAdmin && (
+          <Grid item alignSelf="flex-end">
+            <Button
+              variant="contained"
+              sx={{
+                width: "150px",
+              }}
+              onClick={handleOpenAdminCreateForm}
+            >
+              Create Admin
+            </Button>
+          </Grid>
+        )}
         <Grid item>
           <TextField
             variant="standard"
             value={searchText}
             onChange={handleOnChange}
-            placeholder="Search by name…"
+            placeholder="Search by name or email…"
             InputProps={{
               startAdornment: <Search fontSize="small" />,
               endAdornment: (
@@ -114,19 +127,7 @@ const UsersList = ({
             }}
           />
         </Grid>
-        {isAdmin && (
-          <Grid item alignSelf="flex-end">
-            <Button
-              variant="contained"
-              sx={{
-                width: "150px",
-              }}
-              onClick={handleOpenAdminCreateForm}
-            >
-              Create Admin
-            </Button>
-          </Grid>
-        )}
+
         <Grid item>
           {isLoading ? (
             Array.from({ length: 7 }, (_, i) => (
@@ -177,7 +178,6 @@ const UsersList = ({
                                 ) : (
                                   <IDField
                                     identity={row._id}
-                                    index={index}
                                     users={users}
                                     setUsers={setUsers}
                                     showSuccessfulAlert={handleSuccessMessage}
