@@ -26,15 +26,15 @@ export default function Accounts({
     setOpenCreateAdmin(false);
   };
 
-  const updateUsersStatus = (index, status) => {
+  const updateUsersStatus = (id, status) => {
     let newList = [...users];
-    newList[index].status = status;
+    newList.find((value) => value._id === id).status = status;
     setUsers(newList);
   };
 
-  const updateAdminsStatus = (index, status) => {
+  const updateAdminsStatus = (id, status) => {
     let newList = [...admins];
-    newList[index].status = status;
+    newList.find((value) => value._id === id).status = status;
     setAdmins(newList);
   };
 
@@ -42,9 +42,9 @@ export default function Accounts({
     deleteAuth(`/admin/users/${id}`)
       .then(() => {
         if (isAdmin) {
-          updateAdminsStatus(index, "disable");
+          updateAdminsStatus(id, "disable");
         } else {
-          updateUsersStatus(index, "disable");
+          updateUsersStatus(id, "disable");
         }
       })
       .catch((error) => {
@@ -60,9 +60,9 @@ export default function Accounts({
     postAuth(`/admin/users/${id}`)
       .then(() => {
         if (isAdmin) {
-          updateAdminsStatus(index, "enable");
+          updateAdminsStatus(id, "enable");
         } else {
-          updateUsersStatus(index, "enable");
+          updateUsersStatus(id, "enable");
         }
       })
       .catch((error) => {

@@ -5,12 +5,18 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Title from "./Title";
+import Search from "@mui/icons-material/Search";
+import Clear from "@mui/icons-material/Clear";
+import { filterList } from "../../Utils/utils";
 import {
   Button,
   Paper,
   Skeleton,
   TableContainer,
   TablePagination,
+  Grid,
+  TextField,
+  IconButton,
 } from "@mui/material";
 import { DoDisturbOff, DoDisturbOn } from "@mui/icons-material";
 import { deleteAuth, postAuth } from "../../Utils/httpHelpers";
@@ -18,6 +24,22 @@ import { deleteAuth, postAuth } from "../../Utils/httpHelpers";
 export default function Classes({ classes, setClasses, isLoading }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [searchText, setSearchText] = React.useState("");
+  const [rows, setRows] = React.useState(classes);
+
+  React.useEffect(() => {
+    handleSearch(searchText);
+  }, [classes]);
+  const requestSearch = (searchValue) => {
+    setSearchText(searchValue);
+    handleSearch(searchValue);
+    setPage(0);
+  };
+
+  const handleSearch = (searchValue) => {
+    const filteredRows = filterList(classes, ["name"], searchValue);
+    setRows(filteredRows);
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -29,31 +51,34 @@ export default function Classes({ classes, setClasses, isLoading }) {
     setPage(0);
   };
 
-  const updateStatus = (index, status) => {
+  const updateStatus = (id, status) => {
     let newList = [...classes];
-    newList[index].status = status;
+    newList.find((value) => value._id === id).status = status;
     setClasses(newList);
   };
 
-  const handleBlock = (index, id) => {
+  const handleBlock = (id) => {
     deleteAuth(`/admin/classes/${id}`)
       .then(() => {
-        updateStatus(index, "unable");
+        updateStatus(id, "unable");
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
-  const handleUnblock = (index, id) => {
+  const handleUnblock = (id) => {
     postAuth(`/admin/classes/${id}`)
       .then(() => {
-        updateStatus(index, "enable");
+        updateStatus(id, "enable");
       })
       .catch((error) => {
         console.log(error);
       });
   };
+  const handleOnChange = (event) => requestSearch(event.target.value);
+
+  const clearSearch = () => requestSearch("");
   return (
     <Paper
       sx={{
@@ -64,7 +89,47 @@ export default function Classes({ classes, setClasses, isLoading }) {
         flexDirection: "column",
       }}
     >
-      <Title>Classes</Title>
+      <Grid container flexDirection={"column"} padding={2}>
+        <Grid item>
+          <Title>Classes</Title>
+        </Grid>
+        <Grid item>
+          <TextField
+            variant="standard"
+            value={searchText}
+            onChange={handleOnChange}
+            placeholder="Search by name…"
+            InputProps={{
+              startAdornment: <Search fontSize="small" />,
+              endAdornment: (
+                <IconButton
+                  title="Clear"
+                  aria-label="Clear"
+                  size="small"
+                  style={{ visibility: searchText ? "visible" : "hidden" }}
+                  onClick={clearSearch}
+                >
+                  <Clear fontSize="small" />
+                </IconButton>
+              ),
+            }}
+            sx={{
+              width: {
+                xs: 1,
+                sm: "auto",
+              },
+              m: (theme) => theme.spacing(1, 0.5, 1.5),
+              "& .MuiSvgIcon-root": {
+                mr: 0.5,
+              },
+              "& .MuiInput-underline:before": {
+                borderBottom: 1,
+                borderColor: "divider",
+              },
+            }}
+          />
+        </Grid>
+      </Grid>
       {isLoading ? (
         Array.from({ length: 7 }, (_, i) => <Skeleton height={50} />)
       ) : (
@@ -81,7 +146,7 @@ export default function Classes({ classes, setClasses, isLoading }) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {classes
+                {rows
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
                     return (
@@ -96,9 +161,7 @@ export default function Classes({ classes, setClasses, isLoading }) {
                               variant="outlined"
                               style={{ width: "120px" }}
                               startIcon={<DoDisturbOn />}
-                              onClick={() =>
-                                handleBlock(rowsPerPage * page + index, row._id)
-                              }
+                              onClick={() => handleBlock(row._id)}
                             >
                               Block
                             </Button>
@@ -107,12 +170,7 @@ export default function Classes({ classes, setClasses, isLoading }) {
                               variant="contained"
                               style={{ width: "120px" }}
                               startIcon={<DoDisturbOff />}
-                              onClick={() =>
-                                handleUnblock(
-                                  rowsPerPage * page + index,
-                                  row._id
-                                )
-                              }
+                              onClick={() => handleUnblock(row._id)}
                             >
                               Unblock
                             </Button>
@@ -127,7 +185,7 @@ export default function Classes({ classes, setClasses, isLoading }) {
           <TablePagination
             rowsPerPageOptions={[5, 10, 50]}
             component="div"
-            count={classes.length}
+            count={rows.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
