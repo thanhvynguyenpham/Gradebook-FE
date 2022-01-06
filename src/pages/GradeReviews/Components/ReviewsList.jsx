@@ -17,7 +17,7 @@ export default function ReviewsList({ hidden, list, isRequestedList }) {
     setPresentList(list);
     setPage(1);
     changeList(0);
-  }, [list]); // eslint-disable-next-line
+  }, [list]); // eslint-disable-line
   const changeList = (page) => {
     const newList = list.slice(
       page * REQUEST_ITEMS_PER_PAGE,

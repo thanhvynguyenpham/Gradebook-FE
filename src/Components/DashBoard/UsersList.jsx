@@ -42,7 +42,7 @@ const UsersList = ({
 
   React.useEffect(() => {
     handleSearch(searchText);
-  }, [users]);
+  }, [users]); // eslint-disable-line
 
   const requestSearch = (searchValue) => {
     setSearchText(searchValue);
@@ -57,7 +57,6 @@ const UsersList = ({
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-    console.log(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {

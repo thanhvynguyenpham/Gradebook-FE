@@ -32,7 +32,7 @@ export default function Classes({ classes, setClasses, isLoading }) {
 
   React.useEffect(() => {
     handleSearch(searchText);
-  }, [classes]);
+  }, [classes]); // eslint-disable-line
   const requestSearch = (searchValue) => {
     setSearchText(searchValue);
     handleSearch(searchValue);
@@ -46,7 +46,6 @@ export default function Classes({ classes, setClasses, isLoading }) {
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-    console.log(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {

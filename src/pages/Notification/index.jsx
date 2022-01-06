@@ -43,7 +43,7 @@ const Notification = () => {
     setPresentList(notifications);
     setPage(1);
     changeList(0);
-  }, [notifications]); // eslint-disable-next-line
+  }, [notifications]); // eslint-disable-line
   const changeList = (page) => {
     const newList = notifications.slice(
       page * NOTIFICATION_ITEMS_PER_PAGE,
