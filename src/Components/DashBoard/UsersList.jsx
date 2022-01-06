@@ -2,6 +2,7 @@ import React from "react";
 import {
   Button,
   Grid,
+  IconButton,
   Paper,
   Skeleton,
   Table,
@@ -11,11 +12,16 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  TextField,
 } from "@mui/material";
 import IDField from "./IDField";
 import { DoDisturbOff, DoDisturbOn } from "@mui/icons-material";
 import { useState } from "react";
 import Title from "./Title";
+import Search from "@mui/icons-material/Search";
+import Clear from "@mui/icons-material/Clear";
+import { filterList, getDateComparator } from "../../Utils/utils";
+import TableSortedHead from "../TableCell.jsx/TableSortedHead";
 const UsersList = ({
   isLoading,
   users,
@@ -29,16 +35,37 @@ const UsersList = ({
 }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [searchText, setSearchText] = React.useState("");
+  const [rows, setRows] = React.useState(users);
+  const [order, setOrder] = React.useState("asc");
+  const [orderBy, setOrderBy] = React.useState("createdAt");
+
+  React.useEffect(() => {
+    handleSearch(searchText);
+  }, [users]); // eslint-disable-line
+
+  const requestSearch = (searchValue) => {
+    setSearchText(searchValue);
+    handleSearch(searchValue);
+    setPage(0);
+  };
+
+  const handleSearch = (searchValue) => {
+    const filteredRows = filterList(users, ["email", "name"], searchValue);
+    setRows(filteredRows);
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-    console.log(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+  const handleOnChange = (event) => requestSearch(event.target.value);
+
+  const clearSearch = () => requestSearch("");
   return (
     <Paper
       sx={{
@@ -64,6 +91,43 @@ const UsersList = ({
           </Grid>
         )}
         <Grid item>
+          <TextField
+            variant="standard"
+            value={searchText}
+            onChange={handleOnChange}
+            placeholder="Search by name or email…"
+            InputProps={{
+              startAdornment: <Search fontSize="small" />,
+              endAdornment: (
+                <IconButton
+                  title="Clear"
+                  aria-label="Clear"
+                  size="small"
+                  style={{ visibility: searchText ? "visible" : "hidden" }}
+                  onClick={clearSearch}
+                >
+                  <Clear fontSize="small" />
+                </IconButton>
+              ),
+            }}
+            sx={{
+              width: {
+                xs: 1,
+                sm: "auto",
+              },
+              m: (theme) => theme.spacing(1, 0.5, 1.5),
+              "& .MuiSvgIcon-root": {
+                mr: 0.5,
+              },
+              "& .MuiInput-underline:before": {
+                borderBottom: 1,
+                borderColor: "divider",
+              },
+            }}
+          />
+        </Grid>
+
+        <Grid item>
           {isLoading ? (
             Array.from({ length: 7 }, (_, i) => (
               <Skeleton key={i} height={50} />
@@ -78,15 +142,23 @@ const UsersList = ({
                 >
                   <TableHead>
                     <TableRow>
-                      <TableCell>Email</TableCell>
-                      <TableCell>First Name</TableCell>
-                      <TableCell>Last Name</TableCell>
+                      <TableCell width="250px">Email</TableCell>
+                      <TableCell width="180px">First Name</TableCell>
+                      <TableCell width="180px">Last Name</TableCell>
+                      <TableSortedHead
+                        label={"Created At"}
+                        order={order}
+                        orderBy={orderBy}
+                        setOrder={setOrder}
+                        setOrderBy={setOrderBy}
+                      />
                       {!isAdmin && <TableCell>StudentID</TableCell>}
                       <TableCell></TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {users
+                    {rows
+                      .sort(getDateComparator(order, orderBy))
                       .slice(
                         page * rowsPerPage,
                         page * rowsPerPage + rowsPerPage
@@ -97,6 +169,7 @@ const UsersList = ({
                             <TableCell>{row.email}</TableCell>
                             <TableCell>{row.firstName}</TableCell>
                             <TableCell>{row.lastName}</TableCell>
+                            <TableCell>{row.createdAt}</TableCell>
                             {!isAdmin && (
                               <TableCell>
                                 {row.studentId ? (
@@ -104,7 +177,6 @@ const UsersList = ({
                                 ) : (
                                   <IDField
                                     identity={row._id}
-                                    index={index}
                                     users={users}
                                     setUsers={setUsers}
                                     showSuccessfulAlert={handleSuccessMessage}
@@ -155,7 +227,7 @@ const UsersList = ({
               <TablePagination
                 rowsPerPageOptions={[5, 10, 50]}
                 component="div"
-                count={users.length}
+                count={rows.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

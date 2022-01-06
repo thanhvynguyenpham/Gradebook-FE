@@ -73,7 +73,7 @@ instance.interceptors.response.use(
         }
       }
 
-      if (err.response.status === 403 && err.response.data) {
+      if (err.response.status === 413 && err.response.data) {
         clearLocalStorage();
         window.location.replace("/login");
         return Promise.reject(err.response.data);

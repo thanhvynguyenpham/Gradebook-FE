@@ -12,14 +12,15 @@ import {
   TableHead,
   TableRow,
   Skeleton,
+  Snackbar,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { getAuth } from "../../../Utils/httpHelpers";
 import "../Grading/index.scss";
 import CreateRequest from "./Components/CreateRequest";
 function StudentGrading({ hidden, classDetails }) {
-  // const [openAlertMessage, setOpenAlertMessage] = useState(false);
-  // const [alertMessage, setAlertMessage] = useState("");
+  const [openAlertMessage, setOpenAlertMessage] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
   const [assignments, setAssignments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [openForm, setOpenForm] = useState(false);
@@ -44,6 +45,10 @@ function StudentGrading({ hidden, classDetails }) {
   };
   const closeCreateRequestDialog = () => {
     setOpenForm(false);
+  };
+  const showAlert = (message) => {
+    setAlertMessage(message);
+    setOpenAlertMessage(true);
   };
   return (
     <div hidden={hidden}>
@@ -149,13 +154,15 @@ function StudentGrading({ hidden, classDetails }) {
         open={openForm}
         handleClose={closeCreateRequestDialog}
         assignments={assignments}
+        classDetails={classDetails}
+        showAlert={showAlert}
       />
-      {/* <Snackbar
+      <Snackbar
         open={openAlertMessage}
         autoHideDuration={4000}
         onClose={() => setOpenAlertMessage(false)}
         message={alertMessage}
-      /> */}
+      />
     </div>
   );
 }

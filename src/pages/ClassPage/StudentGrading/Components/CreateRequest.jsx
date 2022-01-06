@@ -6,6 +6,8 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { useFormik } from "formik";
+import * as yup from "yup";
 import {
   FormControl,
   InputLabel,
@@ -14,20 +16,65 @@ import {
   Slide,
   Grid,
 } from "@mui/material";
-
+import { postAuth } from "../../../../Utils/httpHelpers";
+import { useState } from "react";
+const validationSchema = yup.object({
+  point: yup
+    .number()
+    .moreThan(0)
+    .max(10, "Point must below 10")
+    .required("Point is required"),
+  explanation: yup.string().required("explanation is required"),
+});
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-export default function CreateRequest({ open, handleClose, assignments }) {
-  const [assignment, setAssignment] = React.useState("");
-
+export default function CreateRequest({
+  open,
+  handleClose,
+  assignments,
+  classDetails,
+  showAlert,
+}) {
+  const [assignment, setAssignment] = useState("");
+  const [btnDisabled, setBtnDisabled] = useState(false);
+  const formik = useFormik({
+    initialValues: {
+      point: "",
+      explanation: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      setBtnDisabled(true);
+      submitForm(values);
+      formik.resetForm();
+    },
+  });
   const handleChange = (event) => {
     setAssignment(event.target.value);
-    console.log(assignment);
   };
-  const handleSubmit = (event) => {
-    console.log(event);
-  };
+  function submitForm(values) {
+    const body = {
+      class: classDetails._id,
+      gradeIdentity: assignment,
+      expectedGrade: values.point,
+      explanation: values.explanation,
+    };
+    postAuth("/request", body)
+      .then((response) => {
+        showAlert("Send request successfully");
+        setBtnDisabled(false);
+        handleClose();
+      })
+      .catch((error) => {
+        setBtnDisabled(false);
+        if (error.response.status !== 500) {
+          showAlert(error.response.data.message);
+        } else {
+          showAlert("Something went wrong. Please try again.");
+        }
+      });
+  }
   return (
     <div>
       <Dialog
@@ -36,7 +83,7 @@ export default function CreateRequest({ open, handleClose, assignments }) {
         TransitionComponent={Transition}
         keepMounted
       >
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={formik.handleSubmit}>
           <DialogTitle>Request A Review</DialogTitle>
           <DialogContent>
             <Grid container spacing={2}>
@@ -68,22 +115,43 @@ export default function CreateRequest({ open, handleClose, assignments }) {
               </Grid>
               <Grid item xs={4}>
                 <TextField
-                  required
                   autoFocus
-                  id="name"
+                  required
+                  id="point"
                   label="Expected Point"
                   type="number"
                   fullWidth
+                  value={formik.values.point}
+                  onChange={formik.handleChange}
+                  error={formik.touched.point && Boolean(formik.errors.point)}
+                  helperText={formik.touched.point && formik.errors.point}
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField required multiline fullWidth label="Reason" />
+                <TextField
+                  multiline
+                  required
+                  fullWidth
+                  label="Explanation"
+                  id="explanation"
+                  value={formik.values.explanation}
+                  onChange={formik.handleChange}
+                  error={
+                    formik.touched.explanation &&
+                    Boolean(formik.errors.explanation)
+                  }
+                  helperText={
+                    formik.touchedexplanation && formik.errors.explanation
+                  }
+                />
               </Grid>
             </Grid>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>
-            <Button type="submit">Send Request</Button>
+            <Button disabled={btnDisabled} type="submit">
+              Send Request
+            </Button>
           </DialogActions>
         </form>
       </Dialog>

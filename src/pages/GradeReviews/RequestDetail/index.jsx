@@ -1,146 +1,78 @@
-import { AccessTime, ChevronRight } from "@mui/icons-material";
-import {
-  Avatar,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Chip,
-  Container,
-  Grid,
-  Paper,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Container, Grid, Snackbar } from "@mui/material";
 import React from "react";
+import { useEffect } from "react";
+import { useState } from "react";
+import { useParams } from "react-router-dom";
 import Header from "../../../Components/Header";
+import { getAuth } from "../../../Utils/httpHelpers";
+import ListComments from "./Components/ListComments";
+import RequestCard from "./Components/RequestCard";
 
 function RequestDetail() {
+  const { id } = useParams();
+  const [request, setRequest] = useState();
+  const [isLoading, setIsLoading] = useState(true);
+  const [openAlertMessage, setOpenAlertMessage] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  useEffect(() => {
+    const loadRequest = () => {
+      setIsLoading(true);
+      getAuth(`/request/${id}`)
+        .then((response) => {
+          setRequest(response.data);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          if (error.response.status !== 500) {
+            showAlert(error.response.data.message);
+          } else {
+            showAlert("Something went wrong, please try again!");
+          }
+        });
+    };
+    loadRequest();
+  }, [id]);
+  useEffect(() => {
+    if (alertMessage && alertMessage.length !== 0) {
+      setOpenAlertMessage(true);
+    } else {
+      setOpenAlertMessage(false);
+    }
+  }, [alertMessage]);
+
+  const showAlert = (message) => {
+    setAlertMessage(message);
+  };
   return (
     <div>
       <Header isAtMainPage={false} />
       <Container sx={{ marginBlock: "20px" }}>
         <Grid container spacing={3}>
-          <Grid container item>
-            <Grid item xs={6}>
-              <Card sx={{ minWidth: 275 }} color="secondary">
-                <CardContent>
-                  <Grid
-                    container
-                    justifyContent="space-between"
-                    alignItems="center"
-                  >
-                    <Grid item>
-                      <Typography
-                        sx={{ fontSize: 14 }}
-                        color="text.secondary"
-                        gutterBottom
-                      >
-                        <AccessTime style={{ fontSize: 14 }} /> 15-01-2021
-                      </Typography>
-                    </Grid>
-                    <Grid item>
-                      <Typography variant="h6" sx={{ mb: 1.5 }} component="div">
-                        REQUEST TO REVIEW
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                  <Paper
-                    style={{
-                      backgroundColor: "orange",
-                      minHeight: "50px",
-                    }}
-                  >
-                    <Grid container justifyContent="space-between" padding={2}>
-                      <Grid item>
-                        <Typography variant="h6">
-                          Introduction to AI{" "}
-                          <Chip label="Midterm" color="primary" size="medium" />
-                        </Typography>
-                      </Grid>
-                      <Grid item>
-                        <Button variant="contained">Go to class</Button>
-                      </Grid>
-                    </Grid>
-                  </Paper>
-                  <br></br>
-                  <Paper
-                    style={{
-                      backgroundColor: "lightyellow",
-                      minHeight: "50px",
-                    }}
-                  >
-                    <CardHeader
-                      avatar={
-                        <Avatar sx={{ bgcolor: "red" }} aria-label="recipe">
-                          TV
-                        </Avatar>
-                      }
-                      title={
-                        <Typography variant="body2" color="text.secondary">
-                          Requested by
-                        </Typography>
-                      }
-                      subheader={
-                        <Typography variant="h6">
-                          18127258 | Nguyễn Phạm Thanh Vy
-                        </Typography>
-                      }
-                    />
-                    <Stack padding={2}>
-                      <Grid container justifyContent="center">
-                        <Grid item>
-                          <Paper
-                            style={{
-                              backgroundColor: "aqua",
-                              width: "fit-content",
-                              padding: "5px",
-                            }}
-                          >
-                            <Typography variant="body1">
-                              Current Score : <b>8</b>
-                            </Typography>
-                          </Paper>
-                        </Grid>
-                        <Grid item alignSelf="center">
-                          <ChevronRight fontSize="2rem" />
-                        </Grid>
-                        <Grid item>
-                          <Paper
-                            style={{
-                              backgroundColor: "aqua",
-                              width: "fit-content",
-                              padding: "5px",
-                            }}
-                          >
-                            <Typography variant="body1">
-                              Expected Score : <b>8</b>
-                            </Typography>
-                          </Paper>
-                        </Grid>
-                      </Grid>
-                      <br></br>
-                      <Typography variant="h6">Reason</Typography>
-                      <Typography variant="body1">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit. Magnam numquam, ipsa quaerat quos iste officiis
-                        voluptate architecto, in ipsam blanditiis aspernatur.
-                        Accusantium modi dolorum nemo facilis ad id facere
-                        consequuntur.
-                      </Typography>
-                    </Stack>
-                  </Paper>
-                </CardContent>
-                <CardActions>
-                  <Button size="small">Learn More</Button>
-                </CardActions>
-              </Card>
+          <Grid container item spacing={3}>
+            <Grid item xs={12} md={6}>
+              <RequestCard
+                showAlert={showAlert}
+                id={id}
+                isLoading={isLoading}
+                request={request}
+                setRequest={setRequest}
+              />
             </Grid>
-            <Grid item xs={6}></Grid>
+            <Grid item xs={12} md={6}>
+              <ListComments
+                showAlert={showAlert}
+                status={request ? request.status : "close"}
+              />
+            </Grid>
           </Grid>
         </Grid>
       </Container>
+      <Snackbar
+        open={openAlertMessage}
+        autoHideDuration={4000}
+        onClose={() => setOpenAlertMessage(false)}
+        message={alertMessage}
+      />
     </div>
   );
 }

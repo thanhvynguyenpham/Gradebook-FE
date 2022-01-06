@@ -1,9 +1,10 @@
 import * as React from "react";
-import { Pagination, Stack } from "@mui/material";
+import { Pagination, Stack, Typography } from "@mui/material";
 import ReviewListItem from "./ReviewListItem";
 import { useState } from "react";
 import { useEffect } from "react";
 import { REQUEST_ITEMS_PER_PAGE } from "../../../enum";
+import { Link } from "react-router-dom";
 
 export default function ReviewsList({ hidden, list, isRequestedList }) {
   const [page, setPage] = useState(1);
@@ -16,7 +17,7 @@ export default function ReviewsList({ hidden, list, isRequestedList }) {
     setPresentList(list);
     setPage(1);
     changeList(0);
-  }, [list]); // eslint-disable-next-line
+  }, [list]); // eslint-disable-line
   const changeList = (page) => {
     const newList = list.slice(
       page * REQUEST_ITEMS_PER_PAGE,
@@ -32,16 +33,24 @@ export default function ReviewsList({ hidden, list, isRequestedList }) {
     <div hidden={hidden}>
       <Stack spacing={2}>
         {presentList.map((item) => (
-          <ReviewListItem request={item} requestedList={isRequestedList} />
+          <Link to={`/reviews/${item._id}`}>
+            <ReviewListItem request={item} requestedList={isRequestedList} />
+          </Link>
         ))}
         <br></br>
-        <Pagination
-          count={numOfPage}
-          page={page}
-          onChange={onChangePage}
-          color="primary"
-          style={{ alignSelf: "center" }}
-        />
+        {list.length === 0 ? (
+          <Typography variant="h5" style={{ alignSelf: "center" }}>
+            No request yet.
+          </Typography>
+        ) : (
+          <Pagination
+            count={numOfPage}
+            page={page}
+            onChange={onChangePage}
+            color="primary"
+            style={{ alignSelf: "center" }}
+          />
+        )}
       </Stack>
     </div>
   );

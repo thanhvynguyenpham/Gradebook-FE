@@ -4,7 +4,6 @@ import { patchAuth } from "../../Utils/httpHelpers";
 
 const IDField = ({
   identity,
-  index,
   setUsers,
   users,
   showSuccessfulAlert,
@@ -12,10 +11,12 @@ const IDField = ({
 }) => {
   const [disabled, setDisabled] = React.useState(false);
   const handleSubmit = (event) => {
+    if (event.target.value.length === 0) {
+      return;
+    }
     if (event.target.value.length > 20) {
       event.target.value = "";
       showFailedAlert("ID must be no longer than 20 characters.");
-      return;
     }
     if (!checkID(event.target.value)) {
       event.target.value = "";
@@ -29,7 +30,8 @@ const IDField = ({
     patchAuth(`/admin/users/${identity}/studentid`, body)
       .then((response) => {
         let newList = [...users];
-        newList[index].studentId = event.target.value;
+        newList.find((value) => value._id === identity).studentId =
+          event.target.value;
         setUsers(newList);
         showSuccessfulAlert();
       })

@@ -21,7 +21,6 @@ const ExportGradeForm = ({ csvData, fileName }) => {
       item.total = data.total;
       result.push(item);
     });
-    console.log(result);
     return result;
   };
 
