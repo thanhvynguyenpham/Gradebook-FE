@@ -20,7 +20,8 @@ import { useState } from "react";
 import Title from "./Title";
 import Search from "@mui/icons-material/Search";
 import Clear from "@mui/icons-material/Clear";
-import { filterList } from "../../Utils/utils";
+import { filterList, getDateComparator } from "../../Utils/utils";
+import TableSortedHead from "../TableCell.jsx/TableSortedHead";
 const UsersList = ({
   isLoading,
   users,
@@ -36,6 +37,8 @@ const UsersList = ({
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchText, setSearchText] = React.useState("");
   const [rows, setRows] = React.useState(users);
+  const [order, setOrder] = React.useState("asc");
+  const [orderBy, setOrderBy] = React.useState("createdAt");
 
   React.useEffect(() => {
     handleSearch(searchText);
@@ -139,15 +142,23 @@ const UsersList = ({
                 >
                   <TableHead>
                     <TableRow>
-                      <TableCell>Email</TableCell>
-                      <TableCell>First Name</TableCell>
-                      <TableCell>Last Name</TableCell>
+                      <TableCell width="250px">Email</TableCell>
+                      <TableCell width="180px">First Name</TableCell>
+                      <TableCell width="180px">Last Name</TableCell>
+                      <TableSortedHead
+                        label={"Created At"}
+                        order={order}
+                        orderBy={orderBy}
+                        setOrder={setOrder}
+                        setOrderBy={setOrderBy}
+                      />
                       {!isAdmin && <TableCell>StudentID</TableCell>}
                       <TableCell></TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {rows
+                      .sort(getDateComparator(order, orderBy))
                       .slice(
                         page * rowsPerPage,
                         page * rowsPerPage + rowsPerPage
@@ -158,6 +169,7 @@ const UsersList = ({
                             <TableCell>{row.email}</TableCell>
                             <TableCell>{row.firstName}</TableCell>
                             <TableCell>{row.lastName}</TableCell>
+                            <TableCell>{row.createdAt}</TableCell>
                             {!isAdmin && (
                               <TableCell>
                                 {row.studentId ? (

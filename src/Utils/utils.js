@@ -28,3 +28,21 @@ export const filterList = (list, cols, searchValue) => {
   });
   return filteredRows;
 };
+
+export function getDateComparator(order, orderBy) {
+  return order === "desc"
+    ? (a, b) => descendingDateComparator(a, b, orderBy)
+    : (a, b) => -descendingDateComparator(a, b, orderBy);
+}
+
+export function descendingDateComparator(a, b, orderBy) {
+  var d1 = new Date(a[orderBy]);
+  var d2 = new Date(b[orderBy]);
+  if (d2 < d1) {
+    return -1;
+  }
+  if (d2 > d1) {
+    return 1;
+  }
+  return 0;
+}

@@ -7,7 +7,7 @@ import TableRow from "@mui/material/TableRow";
 import Title from "./Title";
 import Search from "@mui/icons-material/Search";
 import Clear from "@mui/icons-material/Clear";
-import { filterList } from "../../Utils/utils";
+import { filterList, getDateComparator } from "../../Utils/utils";
 import {
   Button,
   Paper,
@@ -20,12 +20,15 @@ import {
 } from "@mui/material";
 import { DoDisturbOff, DoDisturbOn } from "@mui/icons-material";
 import { deleteAuth, postAuth } from "../../Utils/httpHelpers";
+import TableSortedHead from "../TableCell.jsx/TableSortedHead";
 
 export default function Classes({ classes, setClasses, isLoading }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [searchText, setSearchText] = React.useState("");
   const [rows, setRows] = React.useState(classes);
+  const [order, setOrder] = React.useState("asc");
+  const [orderBy, setOrderBy] = React.useState("createdAt");
 
   React.useEffect(() => {
     handleSearch(searchText);
@@ -79,6 +82,7 @@ export default function Classes({ classes, setClasses, isLoading }) {
   const handleOnChange = (event) => requestSearch(event.target.value);
 
   const clearSearch = () => requestSearch("");
+
   return (
     <Paper
       sx={{
@@ -142,19 +146,30 @@ export default function Classes({ classes, setClasses, isLoading }) {
                   <TableCell>Owner</TableCell>
                   <TableCell>Number of teachers</TableCell>
                   <TableCell>Number of students</TableCell>
+                  <TableSortedHead
+                    label={"Created Date"}
+                    order={order}
+                    orderBy={orderBy}
+                    setOrder={setOrder}
+                    setOrderBy={setOrderBy}
+                  />
                   <TableCell></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {rows
+                  .sort(getDateComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
                     return (
                       <TableRow key={index}>
-                        <TableCell>{row.name}</TableCell>
-                        <TableCell>{row.createdUser.name}</TableCell>
+                        <TableCell width="270px">{row.name}</TableCell>
+                        <TableCell width="200px">
+                          {row.createdUser.name}
+                        </TableCell>
                         <TableCell>{row.numOfTeachers}</TableCell>
                         <TableCell>{row.numOfStudents}</TableCell>
+                        <TableCell>{row.createdAt}</TableCell>
                         <TableCell align="right">
                           {row.status === "enable" ? (
                             <Button
