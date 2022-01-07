@@ -137,45 +137,31 @@ export const LoginForm = ({
     const { authResponse } = await new Promise(window.FB.login);
     if (!authResponse) return;
     showLoadingScreen();
-    facebookAuth(authResponse.accessToken)
-      .then((response) => {
-        closeLoadingScreen();
-        if (response.status === 200) {
-          const user = {
-            id: response.data._id,
-            firstName: response.data.firstName,
-            lastName: response.data.lastName,
-            name: response.data.name,
-            email: response.data.email || "",
-            role: response.data.role,
-          };
-          setLocalAccessToken(response.data.accessToken);
-          setLocalRefreshToken(response.data.refreshToken);
-          setLocalUser(user);
-          navigate();
-        }
-      })
-      .catch((error) => {
-        closeLoadingScreen();
-        switch (error.response.status) {
-          case 400:
-          case 401:
-            showFailedAlert(
-              "Cannot login with your Facebook Account. Please try again!"
-            );
-            break;
-          // account blocked
-          case 410:
-            setAlertMessage(
-              "Your account has been blocked. Please contact admin to unblock your account."
-            );
-            break;
-          default:
-            setAlertMessage("Something when wrong, please try again.");
-            break;
-        }
-        console.log(error);
-      });
+    try {
+      await facebookAuth(authResponse.accessToken);
+      closeLoadingScreen();
+      navigate();
+    } catch (error) {
+      closeLoadingScreen();
+      switch (error.response.status) {
+        case 400:
+        case 401:
+          showFailedAlert(
+            "Cannot login with your Facebook Account. Please try again!"
+          );
+          break;
+        // account blocked
+        case 410:
+          setAlertMessage(
+            "Your account has been blocked. Please contact admin to unblock your account."
+          );
+          break;
+        default:
+          setAlertMessage("Something when wrong, please try again.");
+          break;
+      }
+      console.log(error);
+    }
   }
 
   const submitForm = (values) => {

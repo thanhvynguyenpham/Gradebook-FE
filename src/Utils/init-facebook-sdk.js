@@ -1,8 +1,3 @@
-import {
-  setLocalAccessToken,
-  setLocalRefreshToken,
-  setLocalUser,
-} from "./localStorageGetSet";
 import { facebookAuth } from "./social-services";
 
 const facebookAppId = process.env.REACT_APP_FACEBOOK_APP_ID;
@@ -21,25 +16,7 @@ export function initFacebookSdk() {
       // auto authenticate with the api if already logged in with facebook
       window.FB.getLoginStatus(({ authResponse }) => {
         if (authResponse) {
-          facebookAuth(authResponse.accessToken)
-            .then((response) => {
-              if (response.status === 200) {
-                const user = {
-                  id: response.data._id,
-                  firstName: response.data.firstName,
-                  lastName: response.data.lastName,
-                  name: response.data.name,
-                  email: response.data.email || "",
-                  role: response.data.role,
-                };
-                setLocalAccessToken(response.data.accessToken);
-                setLocalRefreshToken(response.data.refreshToken);
-                setLocalUser(user);
-              }
-            })
-            .catch((error) => {
-              resolve();
-            });
+          facebookAuth(authResponse.accessToken).then(resolve);
         } else {
           resolve();
         }
