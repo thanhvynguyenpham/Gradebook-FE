@@ -15,7 +15,7 @@ function SignUp() {
         <title>Sign Up</title>
         <meta property="og:title" content="SignUp" key="signup" />
       </head>
-      <Grid container spacing={2} className="authen">
+      <Grid container className="authen">
         <Grid item xs={11} md={5} flexDirection="row">
           <SignUpForm
             showGGFailedAlert={() => setShowGGLoginFailed(true)}

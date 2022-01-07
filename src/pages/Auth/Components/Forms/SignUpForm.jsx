@@ -66,7 +66,6 @@ export const SignUpForm = ({
       setErrorMsg("");
       setEmail(values.email);
       submitForm(values);
-      console.log("submit");
     },
     validateOnChange: (value) => {},
   });

@@ -90,10 +90,6 @@ export default function Accounts({
     setFailedMessage(true);
   };
 
-  React.useEffect(() => {
-    console.log(users);
-  }, [users]);
-
   return (
     <>
       <Stack spacing={3}>

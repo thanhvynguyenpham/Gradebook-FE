@@ -20,6 +20,7 @@ import {
   setLocalRefreshToken,
   setLocalUser,
 } from "../../../../Utils/localStorageGetSet";
+import { facebookAuth, googleAuth } from "../../../../Utils/social-services";
 import AlertDialog from "../../../../Components/Alert/AlertDialog";
 import { useEffect } from "react";
 import { TIME_LIMIT } from "../../../../enum";
@@ -89,10 +90,7 @@ export const LoginForm = ({
   };
   const onGoogleLoginSuccess = (response) => {
     showLoadingScreen();
-    const body = {
-      token: response.tokenId,
-    };
-    post("/auth/google", JSON.stringify(body))
+    googleAuth(response.tokenId)
       .then((response) => {
         closeLoadingScreen();
         if (response.status === 200) {
@@ -113,12 +111,14 @@ export const LoginForm = ({
       .catch((error) => {
         closeLoadingScreen();
         switch (error.response.status) {
-          // login failed
+          case 400:
           case 401:
-            showFailedAlert();
+            showFailedAlert(
+              "Cannot login with your Google Account. Please try again!"
+            );
             break;
           // account blocked
-          case 402:
+          case 410:
             setAlertMessage(
               "Your account has been blocked. Please contact admin to unblock your account."
             );
@@ -134,11 +134,48 @@ export const LoginForm = ({
     console.log(response);
   };
   async function facebookLogin() {
-    // login with facebook then authenticate with the API to get a JWT auth token
     const { authResponse } = await new Promise(window.FB.login);
     if (!authResponse) return;
-
-    console.log(authResponse.accessToken);
+    showLoadingScreen();
+    facebookAuth(authResponse.accessToken)
+      .then((response) => {
+        closeLoadingScreen();
+        if (response.status === 200) {
+          const user = {
+            id: response.data._id,
+            firstName: response.data.firstName,
+            lastName: response.data.lastName,
+            name: response.data.name,
+            email: response.data.email || "",
+            role: response.data.role,
+          };
+          setLocalAccessToken(response.data.accessToken);
+          setLocalRefreshToken(response.data.refreshToken);
+          setLocalUser(user);
+          navigate();
+        }
+      })
+      .catch((error) => {
+        closeLoadingScreen();
+        switch (error.response.status) {
+          case 400:
+          case 401:
+            showFailedAlert(
+              "Cannot login with your Facebook Account. Please try again!"
+            );
+            break;
+          // account blocked
+          case 410:
+            setAlertMessage(
+              "Your account has been blocked. Please contact admin to unblock your account."
+            );
+            break;
+          default:
+            setAlertMessage("Something when wrong, please try again.");
+            break;
+        }
+        console.log(error);
+      });
   }
 
   const submitForm = (values) => {

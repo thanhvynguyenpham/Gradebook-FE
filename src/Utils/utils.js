@@ -12,17 +12,21 @@ export function escapeRegExp(value) {
 }
 
 export const filterList = (list, cols, searchValue) => {
+  if (list.length === 0) return;
   const normalizedSearchText = searchValue.toString();
   // .normalize("NFD")
   // .replace(/[\u0300-\u036f]/g, "");
   const searchRegex = new RegExp(escapeRegExp(normalizedSearchText), "i");
   const filteredRows = list.filter((row) => {
     return cols.some((field) => {
+      console.log(row);
+      console.log(field);
       return searchRegex.test(
-        row[field]
-          .toString()
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
+        row[field] &&
+          row[field]
+            .toString()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
       );
     });
   });
