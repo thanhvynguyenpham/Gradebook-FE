@@ -1,4 +1,10 @@
-import { Button, IconButton, InputAdornment, TextField } from "@mui/material";
+import {
+  Button,
+  Grid,
+  IconButton,
+  InputAdornment,
+  TextField,
+} from "@mui/material";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { Link } from "react-router-dom";
@@ -14,6 +20,7 @@ import {
   setLocalRefreshToken,
   setLocalUser,
 } from "../../../../Utils/localStorageGetSet";
+import { facebookAuth, googleAuth } from "../../../../Utils/social-services";
 import AlertDialog from "../../../../Components/Alert/AlertDialog";
 import { useEffect } from "react";
 import { TIME_LIMIT } from "../../../../enum";
@@ -83,10 +90,7 @@ export const LoginForm = ({
   };
   const onGoogleLoginSuccess = (response) => {
     showLoadingScreen();
-    const body = {
-      token: response.tokenId,
-    };
-    post("/auth/google", JSON.stringify(body))
+    googleAuth(response.tokenId)
       .then((response) => {
         closeLoadingScreen();
         if (response.status === 200) {
@@ -107,12 +111,14 @@ export const LoginForm = ({
       .catch((error) => {
         closeLoadingScreen();
         switch (error.response.status) {
-          // login failed
+          case 400:
           case 401:
-            showFailedAlert();
+            showFailedAlert(
+              "Cannot login with your Google Account. Please try again!"
+            );
             break;
           // account blocked
-          case 402:
+          case 410:
             setAlertMessage(
               "Your account has been blocked. Please contact admin to unblock your account."
             );
@@ -127,6 +133,50 @@ export const LoginForm = ({
   const onGoogleLoginFailure = (response) => {
     console.log(response);
   };
+  async function facebookLogin() {
+    const { authResponse } = await new Promise(window.FB.login);
+    if (!authResponse) return;
+    showLoadingScreen();
+    facebookAuth(authResponse.accessToken)
+      .then((response) => {
+        closeLoadingScreen();
+        if (response.status === 200) {
+          const user = {
+            id: response.data._id,
+            firstName: response.data.firstName,
+            lastName: response.data.lastName,
+            name: response.data.name,
+            email: response.data.email || "",
+            role: response.data.role,
+          };
+          setLocalAccessToken(response.data.accessToken);
+          setLocalRefreshToken(response.data.refreshToken);
+          setLocalUser(user);
+          navigate();
+        }
+      })
+      .catch((error) => {
+        closeLoadingScreen();
+        switch (error.response.status) {
+          case 400:
+          case 401:
+            showFailedAlert(
+              "Cannot login with your Facebook Account. Please try again!"
+            );
+            break;
+          // account blocked
+          case 410:
+            setAlertMessage(
+              "Your account has been blocked. Please contact admin to unblock your account."
+            );
+            break;
+          default:
+            setAlertMessage("Something when wrong, please try again.");
+            break;
+        }
+        console.log(error);
+      });
+  }
 
   const submitForm = (values) => {
     showLoadingScreen();
@@ -291,29 +341,45 @@ export const LoginForm = ({
             <div className="message" style={{ textAlign: "center" }}>
               or login with
             </div>
-            <GoogleLogin
-              clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-              render={(renderProps) => (
-                <Button
-                  className="gg-login-btn"
-                  onClick={renderProps.onClick}
-                  disabled={renderProps.disabled}
-                >
+            <Grid container justifyContent="center">
+              <Grid item>
+                <GoogleLogin
+                  clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+                  render={(renderProps) => (
+                    <Button
+                      className="gg-login-btn"
+                      onClick={renderProps.onClick}
+                      disabled={renderProps.disabled}
+                    >
+                      <img
+                        data-test="icon"
+                        src="assets/icons/google-icon.svg"
+                        alt="google"
+                        width="36"
+                        height="36"
+                        className="button__icon"
+                      />
+                    </Button>
+                  )}
+                  buttonText="Login"
+                  onSuccess={onGoogleLoginSuccess}
+                  onFailure={onGoogleLoginFailure}
+                  cookiePolicy={"single_host_origin"}
+                />
+              </Grid>
+              <Grid item>
+                <Button className="fb-login-btn" onClick={facebookLogin}>
                   <img
                     data-test="icon"
-                    src="assets/icons/google-icon.svg"
-                    alt="google"
+                    src="assets/icons/facebook-icon.svg"
+                    alt="facebook"
                     width="36"
                     height="36"
                     className="button__icon"
                   />
                 </Button>
-              )}
-              buttonText="Login"
-              onSuccess={onGoogleLoginSuccess}
-              onFailure={onGoogleLoginFailure}
-              cookiePolicy={"single_host_origin"}
-            />
+              </Grid>
+            </Grid>
           </div>
           <div className="form-footer">
             <span>Haven't had an account yet?</span>

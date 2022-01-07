@@ -50,7 +50,6 @@ const Marks = ({
 
   useEffect(() => {
     getGradeBoard();
-    console.log(assignments);
   }, [assignments, students]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleBlur = (event, student, index, identity) => {

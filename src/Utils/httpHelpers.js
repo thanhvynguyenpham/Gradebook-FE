@@ -36,7 +36,7 @@ instance.interceptors.request.use(
   (config) => {
     const token = getLocalAccessToken();
     if (token) {
-      config.headers["x-access-token"] = token;
+      config.headers["Authorization"] = "Bearer " + token;
     }
     return config;
   },
@@ -61,7 +61,7 @@ instance.interceptors.response.use(
           const rs = await refreshToken();
           const { accessToken } = rs.data;
           setLocalAccessToken(accessToken);
-          instance.defaults.headers.common["x-access-token"] = accessToken;
+          instance.defaults.headers["Authorization"] = "Bearer " + accessToken;
 
           return instance(originalConfig);
         } catch (_error) {
@@ -85,9 +85,16 @@ instance.interceptors.response.use(
 );
 
 function refreshToken() {
+  const access_token = getLocalAccessToken();
+  const refresh_token = getLocalRefreshToken();
+  if (!refresh_token || !access_token) {
+    window.location.replace("/login");
+    return;
+  }
+
   return instance.post("/auth/refresh", {
-    accessToken: getLocalAccessToken(),
-    refreshToken: getLocalRefreshToken(),
+    accessToken: access_token,
+    refreshToken: refresh_token,
   });
 }
 
