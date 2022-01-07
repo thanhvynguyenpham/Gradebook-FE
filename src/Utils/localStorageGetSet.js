@@ -14,6 +14,10 @@ export function getLocalUser() {
   return user;
 }
 
+export function getLoginMethod() {
+  return localStorage.getItem("login_method");
+}
+
 export function setLocalAccessToken(value) {
   localStorage.setItem("access_token", value);
 }
@@ -24,6 +28,9 @@ export function setLocalRefreshToken(value) {
 
 export function setLocalUser(value) {
   localStorage.setItem("user", JSON.stringify(value));
+}
+export function setLoginMethod(value) {
+  localStorage.setItem("login_method", JSON.stringify(value));
 }
 
 export function setLocalUserName(value) {

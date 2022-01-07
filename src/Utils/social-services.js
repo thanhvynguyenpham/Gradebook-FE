@@ -3,6 +3,7 @@ import {
   setLocalAccessToken,
   setLocalRefreshToken,
   setLocalUser,
+  setLoginMethod,
 } from "./localStorageGetSet";
 
 export function googleAuth(token) {
@@ -27,5 +28,10 @@ export async function facebookAuth(token) {
   setLocalAccessToken(response.data.accessToken);
   setLocalRefreshToken(response.data.refreshToken);
   setLocalUser(user);
+  setLoginMethod("facebook");
   return user;
+}
+
+export function logoutFacebook() {
+  window.FB.api("/me/permissions", "delete", null, () => window.FB.logout());
 }

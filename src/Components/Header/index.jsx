@@ -35,10 +35,12 @@ import { useHistory } from "react-router";
 import {
   clearLocalStorage,
   getLocalUser,
+  getLoginMethod,
 } from "../../Utils/localStorageGetSet";
 import { Link } from "react-router-dom";
 import { nameToAvatar } from "../../Utils/converters";
 import { getAuth } from "../../Utils/httpHelpers";
+import { logoutFacebook } from "../../Utils/social-services";
 
 const NotificationIcons = {
   finalize: <AssignmentTurnedIn />,
@@ -109,6 +111,9 @@ export default function Header({ onCreateClass, onJoinClass, isAtMainPage }) {
   };
 
   function handleLogout() {
+    if (getLoginMethod() === "facebook") {
+      logoutFacebook();
+    }
     clearLocalStorage();
     history.push("/login");
   }
