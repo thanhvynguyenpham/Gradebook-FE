@@ -137,31 +137,32 @@ export const LoginForm = ({
     const { authResponse } = await new Promise(window.FB.login);
     if (!authResponse) return;
     showLoadingScreen();
-    try {
-      await facebookAuth(authResponse.accessToken);
-      closeLoadingScreen();
-      navigate();
-    } catch (error) {
-      closeLoadingScreen();
-      switch (error.response.status) {
-        case 400:
-        case 401:
-          showFailedAlert(
-            "Cannot login with your Facebook Account. Please try again!"
-          );
-          break;
-        // account blocked
-        case 410:
-          setAlertMessage(
-            "Your account has been blocked. Please contact admin to unblock your account."
-          );
-          break;
-        default:
-          setAlertMessage("Something when wrong, please try again.");
-          break;
-      }
-      console.log(error);
-    }
+    facebookAuth(authResponse.accessToken)
+      .then(() => {
+        closeLoadingScreen();
+        navigate();
+      })
+      .catch((error) => {
+        closeLoadingScreen();
+        switch (error.response.status) {
+          case 400:
+          case 401:
+            showFailedAlert(
+              "Cannot login with your Facebook Account. Please try again!"
+            );
+            break;
+          // account blocked
+          case 410:
+            setAlertMessage(
+              "Your account has been blocked. Please contact admin to unblock your account."
+            );
+            break;
+          default:
+            setAlertMessage("Something when wrong, please try again.");
+            break;
+        }
+        console.log(error);
+      });
   }
 
   const submitForm = (values) => {

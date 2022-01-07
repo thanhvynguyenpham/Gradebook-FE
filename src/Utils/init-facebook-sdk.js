@@ -1,4 +1,4 @@
-import { facebookAuth } from "./social-services";
+import { facebookAuth, logoutFacebook } from "./social-services";
 
 const facebookAppId = process.env.REACT_APP_FACEBOOK_APP_ID;
 
@@ -16,7 +16,12 @@ export function initFacebookSdk() {
       // auto authenticate with the api if already logged in with facebook
       window.FB.getLoginStatus(({ authResponse }) => {
         if (authResponse) {
-          facebookAuth(authResponse.accessToken).then(resolve);
+          facebookAuth(authResponse.accessToken)
+            .then(resolve)
+            .catch((error) => {
+              logoutFacebook();
+              window.location.replace("/login");
+            });
         } else {
           resolve();
         }
