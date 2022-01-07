@@ -30,7 +30,7 @@ export function setLocalUser(value) {
   localStorage.setItem("user", JSON.stringify(value));
 }
 export function setLoginMethod(value) {
-  localStorage.setItem("login_method", JSON.stringify(value));
+  localStorage.setItem("login_method", value);
 }
 
 export function setLocalUserName(value) {
