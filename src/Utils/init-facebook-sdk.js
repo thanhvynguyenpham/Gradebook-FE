@@ -35,7 +35,6 @@ export function initFacebookSdk() {
                 setLocalAccessToken(response.data.accessToken);
                 setLocalRefreshToken(response.data.refreshToken);
                 setLocalUser(user);
-                navigateAfterLogin();
               }
             })
             .catch((error) => {
@@ -61,13 +60,3 @@ export function initFacebookSdk() {
     })(document, "script", "facebook-jssdk");
   });
 }
-
-const navigateAfterLogin = () => {
-  const lastLocation = JSON.parse(sessionStorage.getItem("lastLocation"));
-  if (lastLocation) {
-    sessionStorage.removeItem("lastLocation");
-    window.location.replace(lastLocation);
-  } else {
-    window.location.replace("/");
-  }
-};
