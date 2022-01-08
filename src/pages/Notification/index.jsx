@@ -6,6 +6,7 @@ import {
 } from "@mui/icons-material";
 import {
   Avatar,
+  Chip,
   Container,
   Grid,
   List,
@@ -19,10 +20,10 @@ import {
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import Header from "../../Components/Header";
 import { NOTIFICATION_ITEMS_PER_PAGE } from "../../enum";
-import { getAuth } from "../../Utils/httpHelpers";
+import { getAuth, postAuth } from "../../Utils/httpHelpers";
 const NotificationIcons = {
   finalize: <AssignmentTurnedIn />,
   reply: <Chat color="primary" />,
@@ -31,6 +32,7 @@ const NotificationIcons = {
 };
 
 const Notification = () => {
+  const history = useHistory();
   const [notifications, setNotifications] = useState([]);
   const [notificationsLoading, setNotificationsLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -61,7 +63,7 @@ const Notification = () => {
       getAuth(`/noti`)
         .then((response) => {
           setNotificationsLoading(false);
-          let list = response.data;
+          let list = response.data.notis;
           setNotifications(list);
         })
         .catch((error) => {
@@ -84,6 +86,17 @@ const Notification = () => {
       default:
         return `/`;
     }
+  };
+  async function handleSeenNoti(value) {
+    setToSeen(value._id);
+    const link = getNotificationLink(value);
+    history.push(link);
+  }
+
+  const setToSeen = (id) => {
+    postAuth(`/noti/${id}/seen`).catch((error) => {
+      console.log(error);
+    });
   };
   return (
     <div>
@@ -124,14 +137,25 @@ const Notification = () => {
                 </>
               )}
               {presentList.map((value, index) => (
-                <Link to={() => getNotificationLink(value)}>
-                  <ListItem button key={index}>
-                    <ListItemAvatar>
-                      <Avatar>{NotificationIcons[value.type]}</Avatar>
-                    </ListItemAvatar>
-                    <ListItemText secondary={value.message} />
-                  </ListItem>
-                </Link>
+                <ListItem
+                  button
+                  key={index}
+                  onClick={() => handleSeenNoti(value)}
+                >
+                  <ListItemAvatar>
+                    <Avatar>{NotificationIcons[value.type]}</Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    secondary={
+                      <Typography color={"black"}>
+                        {value.message}{" "}
+                        {!value.seen && (
+                          <Chip size="small" label="New" color="success" />
+                        )}
+                      </Typography>
+                    }
+                  />
+                </ListItem>
               ))}
             </List>
           </Grid>

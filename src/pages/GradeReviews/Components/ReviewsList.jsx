@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Pagination, Stack, Typography } from "@mui/material";
+import { Pagination, Stack, Typography, useMediaQuery } from "@mui/material";
 import ReviewListItem from "./ReviewListItem";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -18,6 +18,7 @@ export default function ReviewsList({ hidden, list, isRequestedList }) {
     setPage(1);
     changeList(0);
   }, [list]); // eslint-disable-line
+  const smDown = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const changeList = (page) => {
     const newList = list.slice(
       page * REQUEST_ITEMS_PER_PAGE,
@@ -31,7 +32,7 @@ export default function ReviewsList({ hidden, list, isRequestedList }) {
   };
   return (
     <div hidden={hidden}>
-      <Stack spacing={2}>
+      <Stack spacing={smDown ? 4 : 2}>
         {presentList.map((item) => (
           <Link to={`/reviews/${item._id}`}>
             <ReviewListItem request={item} requestedList={isRequestedList} />

@@ -12,7 +12,7 @@ function ReviewListItem({ requestedList, request }) {
           <Grid
             item
             xs={12}
-            md={requestedList ? 4 : 3.5}
+            sm={requestedList ? 4 : 3.5}
             alignSelf="center"
             paddingLeft={smDown ? 0 : 4}
             textAlign={smDown ? "center" : "left"}
@@ -35,7 +35,7 @@ function ReviewListItem({ requestedList, request }) {
             item
             className="list-container-item"
             xs={12}
-            md={requestedList ? 4 : 3.5}
+            sm={requestedList ? 4 : 3.5}
             alignSelf="center"
             textAlign="center"
           >
@@ -48,7 +48,7 @@ function ReviewListItem({ requestedList, request }) {
               item
               className="list-container-item"
               xs={12}
-              md={2.5}
+              sm={2.5}
               alignSelf="center"
               textAlign="center"
             >
@@ -61,7 +61,7 @@ function ReviewListItem({ requestedList, request }) {
             item
             className="list-container-item"
             xs={12}
-            md={requestedList ? 3.5 : 2}
+            sm={requestedList ? 3.5 : 2}
             alignSelf="center"
             textAlign="center"
             marginBottom={smDown ? 3 : 0}
@@ -73,7 +73,7 @@ function ReviewListItem({ requestedList, request }) {
               container
               item
               xs={12}
-              md={0.5}
+              sm={0.5}
               alignSelf="center"
               className={`list-container-status list-container-status-${request.status}`}
             >

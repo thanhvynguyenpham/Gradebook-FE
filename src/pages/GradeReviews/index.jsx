@@ -81,7 +81,7 @@ function GradeReviews({ hidden }) {
       <Container className="dashboard" sx={{ mt: 4 }}>
         <Grid container spacing={6} justifyContent="center">
           <Grid container item justifyContent="center">
-            <Grid item xs={9} hidden={value !== 0}>
+            <Grid item xs={9} sm={12} md={9} hidden={value !== 0}>
               {isLoadingReview ? (
                 <Stack>
                   <Skeleton height="80px" />
@@ -98,7 +98,7 @@ function GradeReviews({ hidden }) {
                 />
               )}
             </Grid>
-            <Grid item xs={8} hidden={value !== 1}>
+            <Grid item xs={8} sm={12} md={9} hidden={value !== 1}>
               {isLoadingRequest ? (
                 <Stack>
                   <Skeleton height="80px" />

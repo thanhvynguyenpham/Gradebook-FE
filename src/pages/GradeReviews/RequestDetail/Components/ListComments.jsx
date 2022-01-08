@@ -14,6 +14,7 @@ import {
 import { nameToAvatar } from "../../../../Utils/converters";
 import { useState } from "react";
 import { getAuth, postAuth } from "../../../../Utils/httpHelpers";
+import { getLocalUser } from "../../../../Utils/localStorageGetSet";
 import { useParams } from "react-router-dom";
 
 const ListComments = ({ showAlert, status }) => {
@@ -21,6 +22,7 @@ const ListComments = ({ showAlert, status }) => {
   const { id } = useParams();
   const [comment, setComment] = useState("");
   const [disableComment, setDisableComment] = useState(false);
+  const user = getLocalUser();
   useEffect(() => {
     const loadComments = () => {
       getAuth(`/request/${id}/comments`).then((response) => {
@@ -84,7 +86,8 @@ const ListComments = ({ showAlert, status }) => {
             <Grid container spacing={2} alignItems="center">
               <Grid item xs={1.5}>
                 <Avatar sx={{ bgcolor: "red" }} aria-label="recipe">
-                  TV
+                  {(user.firstName && user.firstName.slice(0, 1)) +
+                    (user.lastName && user.lastName.slice(0, 1))}
                 </Avatar>
               </Grid>
               <Grid item xs={9.5}>
