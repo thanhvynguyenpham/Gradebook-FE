@@ -42,9 +42,8 @@ const Members = ({ classDetails, hidden, teachersList, studentsList }) => {
         setDisableButton(false);
       })
       .catch((error) => {
-        console.log(error);
-        if (error.response.status === 404) {
-          setAlertMessage(error.response.data.err);
+        if (error.response.status !== 500) {
+          setAlertMessage(error.response.data.message);
         } else {
           setAlertMessage("Cannot send email. Please try again!");
         }
@@ -85,7 +84,7 @@ const Members = ({ classDetails, hidden, teachersList, studentsList }) => {
                     Teachers
                   </Typography>
                 </Grid>
-                {classDetails.role === "teacher" && (
+                {classDetails.role !== "student" && (
                   <Grid item>
                     <IconButton
                       size="small"
@@ -126,7 +125,7 @@ const Members = ({ classDetails, hidden, teachersList, studentsList }) => {
                     Students
                   </Typography>
                 </Grid>
-                {classDetails.role === "teacher" && (
+                {classDetails.role !== "student" && (
                   <Grid item>
                     <IconButton
                       size="small"
@@ -149,7 +148,7 @@ const Members = ({ classDetails, hidden, teachersList, studentsList }) => {
                       </Avatar>
                     </ListItemAvatar>
                     <ListItemText primary={value.user.name} />
-                    {classDetails.role === "teacher" && value.studentId && (
+                    {classDetails.role !== "student" && value.studentId && (
                       <Chip label={value.studentId} color="primary" />
                     )}
                   </ListItem>

@@ -46,7 +46,11 @@ function Grading({
             >
               <Tab label="Grade Structure" key="tab-1" />
               <Tab label="Marks" key="tab-2" />
-              <Tab label="Student List" key="tab-3" />
+              <Tab
+                label="Student List"
+                key="tab-3"
+                hidden={classDetails.role !== "owner"}
+              />
             </Tabs>
           </Grid>
           <GradeStructure
@@ -68,7 +72,7 @@ function Grading({
             setOpenAlertMessage={setOpenAlertMessage}
           />
           <StudentList
-            hidden={value !== 2}
+            hidden={value !== 2 || classDetails.role !== "owner"}
             students={students}
             setStudents={setStudents}
             classDetails={classDetails}

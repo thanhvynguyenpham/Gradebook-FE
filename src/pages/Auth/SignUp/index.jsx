@@ -6,9 +6,20 @@ import { SignUpForm } from "../Components/Forms/SignUpForm";
 import "../Login/index.scss";
 
 function SignUp() {
-  const [showGGLoginFailed, setShowGGLoginFailed] = useState(false);
-  const [showRegisterFailed, setShowRegisterFailed] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
   const [showLoadingScreen, setShowLoadingScreen] = useState(false);
+  const showFailedAlert = (message) => {
+    if (!message) {
+      setAlertMessage(
+        "Sorry, we cannot complete your request at the moment. Please try again later."
+      );
+      setShowAlert(true);
+      return;
+    }
+    setAlertMessage(message);
+    setShowAlert(true);
+  };
   return (
     <div>
       <head>
@@ -18,24 +29,17 @@ function SignUp() {
       <Grid container className="authen">
         <Grid item xs={11} md={5} flexDirection="row">
           <SignUpForm
-            showGGFailedAlert={() => setShowGGLoginFailed(true)}
-            showFailedScreen={() => setShowRegisterFailed(true)}
+            showFailedAlert={showFailedAlert}
             showLoadingScreen={() => setShowLoadingScreen(true)}
             closeLoadingScreen={() => setShowLoadingScreen(false)}
           />
         </Grid>
       </Grid>
       <AlertDialog
-        title="Failed"
-        message="Cannot login with your Google Account. Please try again!"
-        handleClose={() => setShowGGLoginFailed(false)}
-        show={showGGLoginFailed}
-      />
-      <AlertDialog
-        title="Something went wrong"
-        message="Sorry. We cannot complete your request now. Please try again later."
-        handleClose={() => setShowRegisterFailed(false)}
-        show={showRegisterFailed}
+        title="Oops!"
+        message={alertMessage}
+        handleClose={() => setShowAlert(false)}
+        show={showAlert}
       />
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}

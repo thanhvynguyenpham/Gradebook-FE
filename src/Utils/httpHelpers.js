@@ -87,10 +87,10 @@ instance.interceptors.response.use(
 export async function refreshToken() {
   const access_token = getLocalAccessToken();
   const refresh_token = getLocalRefreshToken();
-  // if (!refresh_token || !access_token) {
-  //   window.location.replace("/login");
-  //   return;
-  // }
+  if (!refresh_token || !access_token) {
+    window.location.replace("/login");
+    return;
+  }
   return instance
     .post("/auth/refresh", {
       accessToken: access_token,

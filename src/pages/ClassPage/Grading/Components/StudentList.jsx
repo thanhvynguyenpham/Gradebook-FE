@@ -65,11 +65,7 @@ const StudentList = ({
       })
       .catch((error) => {
         setBtnDisabled(false);
-        if (error.response.data.err) {
-          setAlertMessage(error.response.data.err);
-        } else {
-          setAlertMessage("Cannot update right now. Please try again!");
-        }
+        setAlertMessage(error.response.data.message);
         setOpenAlertMessage(true);
       });
   };

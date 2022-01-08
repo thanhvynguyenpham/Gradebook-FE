@@ -39,13 +39,7 @@ export const ChangeIDForm = ({
         setStudentID(values.studentID);
       })
       .catch((error) => {
-        console.log(error);
-        if (error.response.status === 400) {
-          showAlertMessage(error.response.data.message);
-        } else {
-          showAlertMessage("We cannot change your ID now. Please try again!");
-        }
-
+        showAlertMessage(error.response.data.message);
         setDisable(false);
       });
   }

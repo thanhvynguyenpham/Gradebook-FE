@@ -72,28 +72,16 @@ const ClassPage = () => {
         if (response.status === 200) {
           setClassDetails(response.data);
           setDashBoardLoading(false);
-          if (response.data.role === "teacher") {
+          if (response.data.role !== "student") {
             getGradeStructure();
           }
         }
       })
       .catch((error) => {
-        switch (error.response.status) {
-          case 401:
-            if (user) {
-              setAlertMessage(
-                "You don't have permission to access this class."
-              );
-            } else {
-              history.push("/login");
-            }
-            break;
-          case 402:
-            setAlertMessage(error.response.data.message);
-            break;
-          default:
-            history.push("/404/Class Not Found");
-            break;
+        if (error.response.status === 410) {
+          setAlertMessage(error.response.data.message);
+        } else {
+          history.push("/404/Class Not Found");
         }
       });
   };
@@ -107,22 +95,10 @@ const ClassPage = () => {
         }
       })
       .catch((error) => {
-        switch (error.response.status) {
-          case 401:
-            if (user) {
-              setAlertMessage(
-                "You don't have permission to access this class."
-              );
-            } else {
-              history.push("/login");
-            }
-            break;
-          case 402:
-            setAlertMessage(error.response.data.message);
-            break;
-          default:
-            history.push("/404/Class Not Found");
-            break;
+        if (error.response.status === 410) {
+          setAlertMessage(error.response.data.message);
+        } else {
+          history.push("/404/Class Not Found");
         }
       });
   };
@@ -132,22 +108,10 @@ const ClassPage = () => {
         updateGradeStructure(response.data.gradeStructure);
       })
       .catch((error) => {
-        switch (error.response.status) {
-          case 401:
-            if (user) {
-              setAlertMessage(
-                "You don't have permission to access this class."
-              );
-            } else {
-              history.push("/login");
-            }
-            break;
-          case 402:
-            setAlertMessage(error.response.data.message);
-            break;
-          default:
-            history.push("/404/Class Not Found");
-            break;
+        if (error.response.status === 410) {
+          setAlertMessage(error.response.data.message);
+        } else {
+          history.push("/404/Class Not Found");
         }
       });
   };
@@ -179,7 +143,7 @@ const ClassPage = () => {
         classDetails={classDetails}
         loading={memberListLoading}
       />
-      {classDetails && classDetails.role === "teacher" ? (
+      {classDetails && classDetails.role !== "student" ? (
         <Grading
           hidden={value !== 2}
           gradeStructure={gradeStructure}

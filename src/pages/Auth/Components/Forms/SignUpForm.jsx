@@ -12,9 +12,7 @@ import React from "react";
 import "./index.scss";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
-import GoogleLogin from "react-google-login";
 import { useHistory } from "react-router";
-import Cookies from "js-cookie";
 import { post } from "../../../../Utils/httpHelpers";
 import AlertDialog from "../../../../Components/Alert/AlertDialog";
 import { setInterval } from "core-js";
@@ -40,10 +38,9 @@ const validationSchema = yup.object({
 });
 
 export const SignUpForm = ({
-  showGGFailedAlert,
+  showFailedAlert,
   showLoadingScreen,
   closeLoadingScreen,
-  showFailedScreen,
 }) => {
   const [errorMsg, setErrorMsg] = useState("");
   const [showPassword, setShowPassword] = React.useState(false);
@@ -87,30 +84,6 @@ export const SignUpForm = ({
     setShowPasswordConfirm(newStatus);
   }
 
-  const onGoogleLoginSuccess = (response) => {
-    showLoadingScreen();
-    const body = {
-      token: response.tokenId,
-    };
-    post("/auth/google", JSON.stringify(body))
-      .then((response) => {
-        closeLoadingScreen();
-        if (response.status === 200) {
-          Cookies.set("access_token", response.data.accessToken);
-          Cookies.set("refresh_token", response.data.refreshToken);
-          history.goBack();
-        }
-      })
-      .catch((error) => {
-        closeLoadingScreen();
-        showGGFailedAlert();
-        console.log(error);
-      });
-  };
-  const onGoogleLoginFailure = (response) => {
-    console.log(response);
-  };
-
   const submitForm = (values) => {
     showLoadingScreen();
     const body = {
@@ -125,11 +98,10 @@ export const SignUpForm = ({
       })
       .catch((error) => {
         closeLoadingScreen();
-        if (error.response.status === 400) {
-          setErrorMsg(error.response.data.err);
+        if (error.response.status !== 500) {
+          setErrorMsg(error.response.message);
         } else {
-          showFailedScreen();
-          console.log(error);
+          showFailedAlert("Something went wrong. Please try again later.");
         }
       });
   };
@@ -151,11 +123,10 @@ export const SignUpForm = ({
       })
       .catch((error) => {
         closeLoadingScreen();
-        if (error.response.status === 400) {
-          setErrorMsg(error.response.data.err);
+        if (error.response.status !== 400) {
+          showFailedAlert(error.response.message);
         } else {
-          showFailedScreen();
-          console.log(error);
+          showFailedAlert("Something went wrong. Please try again later.");
         }
       });
   };
@@ -310,34 +281,8 @@ export const SignUpForm = ({
             >
               Sign Up
             </Button>
-            <div className="social-login-block">
-              <div className="message" style={{ textAlign: "center" }}>
-                or login with
-              </div>
-              <GoogleLogin
-                clientId="989952992245-j12fvr7j1aeegfm7o1p5ltg3i94adku6.apps.googleusercontent.com"
-                render={(renderProps) => (
-                  <Button
-                    className="gg-login-btn"
-                    onClick={renderProps.onClick}
-                    disabled={renderProps.disabled}
-                  >
-                    <img
-                      data-test="icon"
-                      src="assets/icons/google-icon.svg"
-                      alt="google"
-                      width="36"
-                      height="36"
-                      className="button__icon"
-                    />
-                  </Button>
-                )}
-                buttonText="Login"
-                onSuccess={onGoogleLoginSuccess}
-                onFailure={onGoogleLoginFailure}
-                cookiePolicy={"single_host_origin"}
-              />
-            </div>
+            <br></br>
+            <br></br>
             <div className="form-footer">
               <span>Already have an account?</span>
               <span style={{ float: "right" }}>

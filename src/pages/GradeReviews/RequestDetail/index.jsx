@@ -23,11 +23,7 @@ function RequestDetail() {
           setIsLoading(false);
         })
         .catch((error) => {
-          if (error.response.status !== 500) {
-            showAlert(error.response.data.message);
-          } else {
-            showAlert("Something went wrong, please try again!");
-          }
+          showAlert(error.response.data.message);
         });
     };
     loadRequest();

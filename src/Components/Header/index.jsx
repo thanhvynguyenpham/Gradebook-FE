@@ -59,6 +59,7 @@ export default function Header({ onCreateClass, onJoinClass, isAtMainPage }) {
   const [notifications, setNotifications] = React.useState([]);
   const [notificationsLoading, setNotificationsLoading] = React.useState(false);
   const [numNoti, setNumNoti] = React.useState(0);
+  const [ws, setWs] = React.useState(null);
   const user = getLocalUser();
 
   const handleSeenNotification = (value) => {
@@ -86,7 +87,9 @@ export default function Header({ onCreateClass, onJoinClass, isAtMainPage }) {
       var ws = new WebSocket(
         `ws://${process.env.REACT_APP_API_NO_HTTPS_LINK}?token=${accessToken}`
       );
-      ws.onopen = function () {};
+      ws.onopen = function () {
+        setWs(ws);
+      };
 
       ws.onmessage = function (e) {
         const data = JSON.parse(e.data);
@@ -105,6 +108,7 @@ export default function Header({ onCreateClass, onJoinClass, isAtMainPage }) {
               console.log("Cannot get new refresh token, close connection now");
               // Cannot get new refresh token, close connection now
               ws.close();
+              setWs(null);
             });
         } else {
           // auto reconnect after 2 seconds
@@ -125,7 +129,12 @@ export default function Header({ onCreateClass, onJoinClass, isAtMainPage }) {
     }
     fetchNotifications();
     connect();
-  }, []);
+    return () => {
+      if (ws !== null) {
+        ws.close();
+      }
+    };
+  }, []); // eslint-disable-line
 
   const openProfileMenu = Boolean(anchorElProfile);
 
@@ -410,7 +419,7 @@ export default function Header({ onCreateClass, onJoinClass, isAtMainPage }) {
               variant="h6"
               noWrap
               component="div"
-              sx={{ display: { xs: "none", sm: "block" } }}
+              sx={{ display: "block" }}
             >
               Gradebook
             </Typography>
