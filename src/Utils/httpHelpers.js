@@ -84,18 +84,22 @@ instance.interceptors.response.use(
   }
 );
 
-function refreshToken() {
+export async function refreshToken() {
   const access_token = getLocalAccessToken();
   const refresh_token = getLocalRefreshToken();
-  if (!refresh_token || !access_token) {
-    window.location.replace("/login");
-    return;
-  }
-
-  return instance.post("/auth/refresh", {
-    accessToken: access_token,
-    refreshToken: refresh_token,
-  });
+  // if (!refresh_token || !access_token) {
+  //   window.location.replace("/login");
+  //   return;
+  // }
+  return instance
+    .post("/auth/refresh", {
+      accessToken: access_token,
+      refreshToken: refresh_token,
+    })
+    .then((response) => {
+      const { accessToken } = response.data;
+      setLocalAccessToken(accessToken);
+    });
 }
 
 export function getAuth(url) {

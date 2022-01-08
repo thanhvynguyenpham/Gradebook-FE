@@ -34,12 +34,13 @@ import {
 import { useHistory } from "react-router";
 import {
   clearLocalStorage,
+  getLocalAccessToken,
   getLocalUser,
   getLoginMethod,
 } from "../../Utils/localStorageGetSet";
 import { Link } from "react-router-dom";
 import { nameToAvatar } from "../../Utils/converters";
-import { getAuth } from "../../Utils/httpHelpers";
+import { getAuth, postAuth, refreshToken } from "../../Utils/httpHelpers";
 import { logoutFacebook } from "../../Utils/social-services";
 
 const NotificationIcons = {
@@ -57,7 +58,75 @@ export default function Header({ onCreateClass, onJoinClass, isAtMainPage }) {
   const [anchorElNotification, setAnchorElNotification] = React.useState(null);
   const [notifications, setNotifications] = React.useState([]);
   const [notificationsLoading, setNotificationsLoading] = React.useState(false);
+  const [numNoti, setNumNoti] = React.useState(0);
   const user = getLocalUser();
+
+  const handleSeenNotification = (value) => {
+    setToSeen(value._id);
+    const link = getNotificationLink(value);
+    history.push(link);
+  };
+
+  const setToSeen = (id) => {
+    postAuth(`/noti/${id}/seen`)
+      .then((response) => {
+        setNumNoti(numNoti - 1);
+        let newList = [...notifications];
+        newList.find((value) => value._id === id).seen = true;
+        setNotifications(newList);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  React.useEffect(() => {
+    function connect() {
+      const accessToken = getLocalAccessToken();
+      var ws = new WebSocket(
+        `ws://${process.env.REACT_APP_API_NO_HTTPS_LINK}?token=${accessToken}`
+      );
+      ws.onopen = function () {};
+
+      ws.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        if (data.notis) {
+          setNotifications(data.notis);
+          setNumNoti(data.numNoSeen);
+        }
+      };
+
+      ws.onclose = function (e) {
+        if (e.code === 4001) {
+          // expired token, get new token and then reconnect
+          refreshToken()
+            .then(() => connect())
+            .catch((error) => {
+              console.log("Cannot get new refresh token, close connection now");
+              // Cannot get new refresh token, close connection now
+              ws.close();
+            });
+        } else {
+          // auto reconnect after 2 seconds
+          setTimeout(function () {
+            connect();
+          }, 2000);
+        }
+      };
+
+      ws.onerror = function (err) {
+        console.error(
+          "Socket encountered error: ",
+          err.message,
+          "Closing socket"
+        );
+        ws.close();
+      };
+    }
+    fetchNotifications();
+    connect();
+  }, []);
+
   const openProfileMenu = Boolean(anchorElProfile);
 
   const handleClickProfile = (event) => {
@@ -73,12 +142,6 @@ export default function Header({ onCreateClass, onJoinClass, isAtMainPage }) {
   const handleCloseNotification = () => {
     setAnchorElNotification(null);
   };
-
-  React.useEffect(() => {
-    if (openNotificationMenu) {
-      fetchNotifications();
-    }
-  }, [openNotificationMenu]);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -131,7 +194,8 @@ export default function Header({ onCreateClass, onJoinClass, isAtMainPage }) {
     getAuth(`/noti?limit=5`)
       .then((response) => {
         setNotificationsLoading(false);
-        setNotifications(response.data);
+        setNotifications(response.data.notis);
+        setNumNoti(response.data.numNoSeen);
       })
       .catch((error) => {
         setNotificationsLoading(false);
@@ -254,14 +318,22 @@ export default function Header({ onCreateClass, onJoinClass, isAtMainPage }) {
       )}
       <List sx={{ width: { xs: 250, md: 300 } }}>
         {notifications.map((value, index) => (
-          <Link to={() => getNotificationLink(value)}>
-            <ListItem button key={index}>
-              <ListItemAvatar>
+          <ListItem
+            button
+            key={index}
+            onClick={() => handleSeenNotification(value)}
+          >
+            <ListItemAvatar>
+              {value.seen ? (
                 <Avatar>{NotificationIcons[value.type]}</Avatar>
-              </ListItemAvatar>
-              <ListItemText secondary={value.message} />
-            </ListItem>
-          </Link>
+              ) : (
+                <Badge color="error" badgeContent=" " variant="dot">
+                  <Avatar>{NotificationIcons[value.type]}</Avatar>
+                </Badge>
+              )}
+            </ListItemAvatar>
+            <ListItemText secondary={value.message} />
+          </ListItem>
         ))}
       </List>
       <Link to="/notification">
@@ -365,7 +437,9 @@ export default function Header({ onCreateClass, onJoinClass, isAtMainPage }) {
               aria-label="Notifications"
               color="inherit"
             >
-              <Notifications />
+              <Badge badgeContent={numNoti} color="error">
+                <Notifications />
+              </Badge>
             </IconButton>
             <IconButton
               onClick={handleClickProfile}
@@ -386,7 +460,7 @@ export default function Header({ onCreateClass, onJoinClass, isAtMainPage }) {
               aria-label="Notifications"
               color="inherit"
             >
-              <Badge badgeContent={17} color="error">
+              <Badge badgeContent={numNoti} color="error">
                 <Notifications />
               </Badge>
             </IconButton>
