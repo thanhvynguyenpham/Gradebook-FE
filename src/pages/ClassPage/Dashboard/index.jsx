@@ -171,7 +171,9 @@ const DashBoard = ({ classDetails, user, listPosts, hidden, loading }) => {
           <Grid container item xs={12} sm={4}>
             <Stack spacing={2} width={"100%"}>
               {loading && renderSkeleton}
-              {classDetails.role === "teacher" && renderClassCodeBar}
+              {(classDetails.role === "teacher" ||
+                classDetails.role === "owner") &&
+                renderClassCodeBar}
               {classDetails.role === "student" && renderStudentIDBar}
               <Card>
                 <CardContent>

@@ -52,11 +52,7 @@ const ListComments = ({ showAlert, status }) => {
         })
         .catch((error) => {
           setDisableComment(false);
-          if (error.response.status !== 500) {
-            showAlert(error.response.data.message);
-          } else {
-            showAlert("Something went wrong, please try again!");
-          }
+          showAlert(error.response.data.message);
         });
     }
   };

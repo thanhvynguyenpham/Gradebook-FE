@@ -143,11 +143,7 @@ function GradeStructure({
         setDisableButton(false);
       })
       .catch((error) => {
-        if (error.response.status === 404 || error.response.status === 400) {
-          setAlertMessage(error.response.data.err);
-        } else {
-          setAlertMessage("Cannot update right now. Please try again!");
-        }
+        setAlertMessage(error.response.data.message);
         setOpenAlertMessage(true);
         setDisableButton(false);
       });

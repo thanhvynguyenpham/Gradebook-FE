@@ -128,12 +128,7 @@ export const ProfileForm = ({
         showSuccessAlert();
       })
       .catch((error) => {
-        console.log(error);
-        if (error.response.status === 400) {
-          showFailedAlert(error.response.data.message);
-        } else {
-          showFailedAlert();
-        }
+        showFailedAlert(error.response.data.message);
         setDisabledIDForm(false);
       });
   }
