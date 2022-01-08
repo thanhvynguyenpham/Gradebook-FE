@@ -1,9 +1,10 @@
 import * as React from "react";
-import { Alert, Snackbar, Stack } from "@mui/material";
+import { Stack } from "@mui/material";
 import { deleteAuth, postAuth } from "../../Utils/httpHelpers";
 import { useState } from "react";
 import UsersList from "./UsersList";
 import NewAdmin from "./NewAdmin";
+import Snackbars from "../Snackbars/Snackbars";
 
 export default function Accounts({
   users,
@@ -46,6 +47,7 @@ export default function Accounts({
         } else {
           updateUsersStatus(id, "disable");
         }
+        handleSuccessMessage("Block account successfully!");
       })
       .catch((error) => {
         if (error.response.status !== 500) {
@@ -64,6 +66,7 @@ export default function Accounts({
         } else {
           updateUsersStatus(id, "enable");
         }
+        handleSuccessMessage("Unblock account successfully!");
       })
       .catch((error) => {
         if (error.response.status !== 500) {
@@ -120,32 +123,13 @@ export default function Accounts({
         handleClose={handleClose}
         showFailedScreen={handleFailedMessage}
       />
-      <Snackbar
-        open={successMessage}
-        autoHideDuration={4000}
-        onClose={() => setSuccessMessage(false)}
-      >
-        <Alert
-          onClose={() => setSuccessMessage(false)}
-          severity="success"
-          sx={{ width: "100%" }}
-        >
-          {message}
-        </Alert>
-      </Snackbar>
-      <Snackbar
-        open={failedMessage}
-        autoHideDuration={4000}
-        onClose={() => setFailedMessage(false)}
-      >
-        <Alert
-          onClose={() => setFailedMessage(false)}
-          severity="error"
-          sx={{ width: "100%" }}
-        >
-          {message}
-        </Alert>
-      </Snackbar>
+      <Snackbars
+        message={message}
+        successMessage={successMessage}
+        failedMessage={failedMessage}
+        setSuccessMessage={setSuccessMessage}
+        setFailedMessage={setFailedMessage}
+      />
     </>
   );
 }

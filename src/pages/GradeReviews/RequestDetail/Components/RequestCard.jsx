@@ -51,11 +51,7 @@ const RequestCard = ({ showAlert, id, request, setRequest, isLoading }) => {
       })
       .catch((error) => {
         event.target[0].value = "";
-        if (error.response.status !== 500) {
-          showAlert(error.response.data.message);
-        } else {
-          showAlert("Something went wrong, please try again!");
-        }
+        showAlert(error.response.data.message);
       });
   };
   const FinalGradePanel = () => {

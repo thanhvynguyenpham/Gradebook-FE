@@ -96,9 +96,13 @@ const Marks = ({
         setOpenAlertMessage(true);
       })
       .catch((error) => {
-        console.log(error);
-        setAlertMessage("Something went wrong. Please try again.");
-        setOpenAlertMessage(true);
+        if (error.response.status !== 500) {
+          setAlertMessage(error.response.data.message);
+          setOpenAlertMessage(true);
+        } else {
+          setAlertMessage("Something went wrong. Please try again.");
+          setOpenAlertMessage(true);
+        }
       });
   };
 
@@ -114,8 +118,7 @@ const Marks = ({
         setOpenAlertMessage(true);
       })
       .catch((error) => {
-        console.log(error);
-        setAlertMessage("Something went wrong. Please try again.");
+        setAlertMessage(error.response.data.message);
         setOpenAlertMessage(true);
       });
   };

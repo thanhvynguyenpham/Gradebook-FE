@@ -56,8 +56,7 @@ const CreateClassForm = ({
         onCreateSuccess();
       })
       .catch((error) => {
-        console.log(error);
-        onCreateFailed();
+        onCreateFailed(error.response.data.message);
         setBtnDisabled(false);
       });
   }

@@ -21,6 +21,7 @@ import {
 import { DoDisturbOff, DoDisturbOn } from "@mui/icons-material";
 import { deleteAuth, postAuth } from "../../Utils/httpHelpers";
 import TableSortedHead from "../TableCell.jsx/TableSortedHead";
+import Snackbars from "../Snackbars/Snackbars";
 
 export default function Classes({ classes, setClasses, isLoading }) {
   const [page, setPage] = React.useState(0);
@@ -29,6 +30,9 @@ export default function Classes({ classes, setClasses, isLoading }) {
   const [rows, setRows] = React.useState(classes);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("createdAt");
+  const [successMessage, setSuccessMessage] = React.useState(false);
+  const [failedMessage, setFailedMessage] = React.useState(false);
+  const [message, setMessage] = React.useState("");
 
   React.useEffect(() => {
     handleSearch(searchText);
@@ -63,9 +67,12 @@ export default function Classes({ classes, setClasses, isLoading }) {
     deleteAuth(`/admin/classes/${id}`)
       .then(() => {
         updateStatus(id, "unable");
+        setMessage("Block class successfully");
+        setSuccessMessage(true);
       })
       .catch((error) => {
-        console.log(error);
+        setMessage(error.response.data.message);
+        setFailedMessage(true);
       });
   };
 
@@ -73,9 +80,12 @@ export default function Classes({ classes, setClasses, isLoading }) {
     postAuth(`/admin/classes/${id}`)
       .then(() => {
         updateStatus(id, "enable");
+        setMessage("Unblock class successfully");
+        setSuccessMessage(true);
       })
       .catch((error) => {
-        console.log(error);
+        setMessage(error.response.data.message);
+        setFailedMessage(true);
       });
   };
   const handleOnChange = (event) => requestSearch(event.target.value);
@@ -83,130 +93,139 @@ export default function Classes({ classes, setClasses, isLoading }) {
   const clearSearch = () => requestSearch("");
 
   return (
-    <Paper
-      sx={{
-        width: "100%",
-        overflow: "hidden",
-        p: 2,
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <Grid container flexDirection={"column"} padding={2}>
-        <Grid item>
-          <Title>Classes</Title>
+    <>
+      <Paper
+        sx={{
+          width: "100%",
+          overflow: "hidden",
+          p: 2,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <Grid container flexDirection={"column"} padding={2}>
+          <Grid item>
+            <Title>Classes</Title>
+          </Grid>
+          <Grid item>
+            <TextField
+              variant="standard"
+              value={searchText}
+              onChange={handleOnChange}
+              placeholder="Search by name…"
+              InputProps={{
+                startAdornment: <Search fontSize="small" />,
+                endAdornment: (
+                  <IconButton
+                    title="Clear"
+                    aria-label="Clear"
+                    size="small"
+                    style={{ visibility: searchText ? "visible" : "hidden" }}
+                    onClick={clearSearch}
+                  >
+                    <Clear fontSize="small" />
+                  </IconButton>
+                ),
+              }}
+              sx={{
+                width: {
+                  xs: 1,
+                  sm: "auto",
+                },
+                m: (theme) => theme.spacing(1, 0.5, 1.5),
+                "& .MuiSvgIcon-root": {
+                  mr: 0.5,
+                },
+                "& .MuiInput-underline:before": {
+                  borderBottom: 1,
+                  borderColor: "divider",
+                },
+              }}
+            />
+          </Grid>
         </Grid>
-        <Grid item>
-          <TextField
-            variant="standard"
-            value={searchText}
-            onChange={handleOnChange}
-            placeholder="Search by name…"
-            InputProps={{
-              startAdornment: <Search fontSize="small" />,
-              endAdornment: (
-                <IconButton
-                  title="Clear"
-                  aria-label="Clear"
-                  size="small"
-                  style={{ visibility: searchText ? "visible" : "hidden" }}
-                  onClick={clearSearch}
-                >
-                  <Clear fontSize="small" />
-                </IconButton>
-              ),
-            }}
-            sx={{
-              width: {
-                xs: 1,
-                sm: "auto",
-              },
-              m: (theme) => theme.spacing(1, 0.5, 1.5),
-              "& .MuiSvgIcon-root": {
-                mr: 0.5,
-              },
-              "& .MuiInput-underline:before": {
-                borderBottom: 1,
-                borderColor: "divider",
-              },
-            }}
-          />
-        </Grid>
-      </Grid>
-      {isLoading ? (
-        Array.from({ length: 7 }, (_, i) => <Skeleton height={50} />)
-      ) : (
-        <>
-          <TableContainer>
-            <Table stickyHeader aria-label="sticky table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Owner</TableCell>
-                  <TableCell>Number of teachers</TableCell>
-                  <TableCell>Number of students</TableCell>
-                  <TableSortedHead
-                    label={"Created Date"}
-                    order={order}
-                    orderBy={orderBy}
-                    setOrder={setOrder}
-                    setOrderBy={setOrderBy}
-                  />
-                  <TableCell></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows
-                  .sort(getDateComparator(order, orderBy))
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row, index) => {
-                    return (
-                      <TableRow key={index}>
-                        <TableCell width="270px">{row.name}</TableCell>
-                        <TableCell width="200px">
-                          {row.createdUser.name}
-                        </TableCell>
-                        <TableCell>{row.numOfTeachers}</TableCell>
-                        <TableCell>{row.numOfStudents}</TableCell>
-                        <TableCell>{row.createdAt}</TableCell>
-                        <TableCell align="right">
-                          {row.status === "enable" ? (
-                            <Button
-                              variant="outlined"
-                              style={{ width: "120px" }}
-                              startIcon={<DoDisturbOn />}
-                              onClick={() => handleBlock(row._id)}
-                            >
-                              Block
-                            </Button>
-                          ) : (
-                            <Button
-                              variant="contained"
-                              style={{ width: "120px" }}
-                              startIcon={<DoDisturbOff />}
-                              onClick={() => handleUnblock(row._id)}
-                            >
-                              Unblock
-                            </Button>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 50]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </>
-      )}
-    </Paper>
+        {isLoading ? (
+          Array.from({ length: 7 }, (_, i) => <Skeleton height={50} />)
+        ) : (
+          <>
+            <TableContainer>
+              <Table stickyHeader aria-label="sticky table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Name</TableCell>
+                    <TableCell>Owner</TableCell>
+                    <TableCell>Number of teachers</TableCell>
+                    <TableCell>Number of students</TableCell>
+                    <TableSortedHead
+                      label={"Created Date"}
+                      order={order}
+                      orderBy={orderBy}
+                      setOrder={setOrder}
+                      setOrderBy={setOrderBy}
+                    />
+                    <TableCell></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {rows
+                    .sort(getDateComparator(order, orderBy))
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row, index) => {
+                      return (
+                        <TableRow key={index}>
+                          <TableCell width="270px">{row.name}</TableCell>
+                          <TableCell width="200px">
+                            {row.createdUser.name}
+                          </TableCell>
+                          <TableCell>{row.numOfTeachers}</TableCell>
+                          <TableCell>{row.numOfStudents}</TableCell>
+                          <TableCell>{row.createdAt}</TableCell>
+                          <TableCell align="right">
+                            {row.status === "enable" ? (
+                              <Button
+                                variant="outlined"
+                                style={{ width: "120px" }}
+                                startIcon={<DoDisturbOn />}
+                                onClick={() => handleBlock(row._id)}
+                              >
+                                Block
+                              </Button>
+                            ) : (
+                              <Button
+                                variant="contained"
+                                style={{ width: "120px" }}
+                                startIcon={<DoDisturbOff />}
+                                onClick={() => handleUnblock(row._id)}
+                              >
+                                Unblock
+                              </Button>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 50]}
+              component="div"
+              count={rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </>
+        )}
+      </Paper>
+      <Snackbars
+        message={message}
+        successMessage={successMessage}
+        failedMessage={failedMessage}
+        setSuccessMessage={setSuccessMessage}
+        setFailedMessage={setFailedMessage}
+      />
+    </>
   );
 }

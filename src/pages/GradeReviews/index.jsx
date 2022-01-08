@@ -32,11 +32,7 @@ function GradeReviews({ hidden }) {
         })
         .catch((error) => {
           setIsLoadingReview(false);
-          if (error.response.status !== 500) {
-            setAlertMessage(error.response.data.message);
-          } else {
-            setAlertMessage("Something went wrong, please try again.");
-          }
+          setAlertMessage(error.response.data.message);
         });
     };
     const getRequestList = () => {
@@ -47,11 +43,7 @@ function GradeReviews({ hidden }) {
         })
         .catch((error) => {
           setIsLoadingRequest(false);
-          if (error.response.status !== 500) {
-            setAlertMessage(error.response.data.message);
-          } else {
-            setAlertMessage("Something went wrong, please try again.");
-          }
+          setAlertMessage(error.response.data.message);
         });
     };
     getReviewList();

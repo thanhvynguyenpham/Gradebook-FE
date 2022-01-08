@@ -41,7 +41,7 @@ export const JoinClassPage = () => {
           history.push(`/class/${id}`);
         })
         .catch((error) => {
-          console.log("Not a member, continue.");
+          //"Not a member, continue."
         });
     };
     checkAlreadyInClass();
@@ -67,11 +67,7 @@ export const JoinClassPage = () => {
         history.replace(`/class/${id}`);
       })
       .catch((error) => {
-        if (error.response.status !== 500) {
-          setAlertMessage(error.response.data.message);
-        } else {
-          setAlertMessage("Something went wrong. Please try again later.");
-        }
+        setAlertMessage(error.response.data.message);
         setDisable(false);
         setFailedMessage(true);
       });
@@ -87,11 +83,7 @@ export const JoinClassPage = () => {
         history.replace(`/class/${id}`);
       })
       .catch((error) => {
-        if (error.response.status !== 500) {
-          setAlertMessage(error.response.data.message);
-        } else {
-          setAlertMessage("Something went wrong. Please try again later.");
-        }
+        setAlertMessage(error.response.data.message);
         setDisable(false);
         setFailedMessage(true);
       });
