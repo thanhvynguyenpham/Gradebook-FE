@@ -143,11 +143,6 @@ export default function Header({ onCreateClass, onJoinClass, isAtMainPage }) {
     setAnchorElNotification(null);
   };
 
-  React.useEffect(() => {
-    if (openNotificationMenu) {
-    }
-  }, []);
-
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
