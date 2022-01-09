@@ -228,7 +228,7 @@ export const LoginForm = ({
       .catch((error) => {
         closeLoadingScreen();
         if (error.response.status === 400) {
-          setErrorMsg(error.response.data.err);
+          setErrorMsg(error.response.data.message);
         } else {
           setAlertMessage("Something went wrong, please try again.");
           console.log(error);

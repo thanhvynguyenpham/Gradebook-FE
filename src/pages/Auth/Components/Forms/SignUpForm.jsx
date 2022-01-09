@@ -99,7 +99,7 @@ export const SignUpForm = ({
       .catch((error) => {
         closeLoadingScreen();
         if (error.response.status !== 500) {
-          setErrorMsg(error.response.message);
+          setErrorMsg(error.response.data.message);
         } else {
           showFailedAlert("Something went wrong. Please try again later.");
         }

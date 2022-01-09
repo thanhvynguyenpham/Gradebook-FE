@@ -1,22 +1,22 @@
 import { ThemeProvider } from "@mui/material";
 import { Route, Redirect, Switch } from "react-router-dom";
-import PrivateRoute from "./Components/Routes/PrivateRoute";
-import PublicRoute from "./Components/Routes/PublicRoute";
-import Home from "./pages/Home";
-import Login from "./pages/Auth/Login";
-import SignUp from "./pages/Auth/SignUp";
-import ChangePassword from "./pages/Auth/ChangePassword";
-import theme from "./theme";
-import ClassPage from "./pages/ClassPage";
-import { ProfilePage } from "./pages/Profile";
-import { JoinClassPage } from "./pages/JoinClassPage";
-import NotFoundPage from "./pages/PageNotFound/PageNotFound";
-import AdminDashboard from "./pages/Admin";
-import GradeReviews from "./pages/GradeReviews";
-import ConfirmEmail from "./pages/Auth/ConfirmEmail";
-import RequestDetail from "./pages/GradeReviews/RequestDetail";
-import { ForgotPassword } from "./pages/Auth/Components/Forms/ForgotPassword";
-import Notification from "./pages/Notification";
+import Home from "pages/Home";
+import Login from "pages/Auth/Login";
+import SignUp from "pages/Auth/SignUp";
+import ChangePassword from "pages/Auth/ChangePassword";
+import theme from "theme";
+import ClassPage from "pages/ClassPage";
+import { ProfilePage } from "pages/Profile";
+import { JoinClassPage } from "pages/JoinClassPage";
+import NotFoundPage from "pages/PageNotFound/PageNotFound";
+import GradeReviews from "pages/GradeReviews";
+import ConfirmEmail from "pages/Auth/ConfirmEmail";
+import RequestDetail from "pages/GradeReviews/RequestDetail";
+import { ForgotPassword } from "pages/Auth/Components/Forms/ForgotPassword";
+import Notification from "pages/Notification";
+import AdminDashboard from "pages/Admin";
+import PrivateRoute from "Components/Routes/PrivateRoute";
+import PublicRoute from "Components/Routes/PublicRoute";
 
 function App() {
   return (

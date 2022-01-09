@@ -71,11 +71,7 @@ export const ForgotPassword = () => {
       })
       .catch((error) => {
         setShowLoadingScreen(false);
-        if (error.response.status !== 500) {
-          setAlertMessage(error.response.data.message);
-        } else {
-          setAlertMessage("Something went wrong. Please try again!");
-        }
+        setAlertMessage(error.response.data.message);
       });
   };
   const handleCloseAlert = () => {

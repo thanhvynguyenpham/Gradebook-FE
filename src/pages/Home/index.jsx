@@ -33,9 +33,9 @@ export default function Home() {
     setOpenSnackBar(true);
   }
 
-  function onCreateFailed() {
+  function onCreateFailed(message) {
     setSuccess(false);
-    setMessage("Cannot create class, please try again.");
+    setMessage(message);
     setOpenSnackBar(true);
   }
 

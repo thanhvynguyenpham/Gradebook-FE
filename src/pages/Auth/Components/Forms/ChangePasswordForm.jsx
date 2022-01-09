@@ -66,11 +66,7 @@ export const ChangePasswordForm = ({
         setShowSuccessAlert(true);
       })
       .catch((error) => {
-        if (error.response.status !== 500) {
-          setAlertMessage(error.response.data.message);
-        } else {
-          setAlertMessage("Something went wrong, please try again.");
-        }
+        setAlertMessage(error.response.data.message);
         closeLoadingScreen();
         passwordFormik.resetForm();
       });
