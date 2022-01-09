@@ -207,7 +207,7 @@ const DashBoard = ({ classDetails, user, listPosts, hidden, loading }) => {
             <Stack width={"100%"} spacing={2}>
               {listPosts &&
                 listPosts.map((value, key) => (
-                  <Card>
+                  <Card key={key}>
                     <CardHeader
                       avatar={
                         loading ? (

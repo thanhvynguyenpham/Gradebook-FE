@@ -12,16 +12,12 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useHistory, useLocation, useParams } from "react-router";
+import { useHistory, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import Header from "../../Components/Header";
 import { getAuth, postAuth } from "../../Utils/httpHelpers";
+import { useQuery } from "../../Utils/utils";
 import "./index.scss";
-function useQuery() {
-  const { search } = useLocation();
-
-  return React.useMemo(() => new URLSearchParams(search), [search]);
-}
 export const JoinClassPage = () => {
   const { id } = useParams();
   let query = useQuery();

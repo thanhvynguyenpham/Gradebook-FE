@@ -158,7 +158,7 @@ const RequestCard = ({ showAlert, id, request, setRequest, isLoading }) => {
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <Link to={`/class/${request.class._id}`}>
+                    <Link to={`/class/${request.class._id}?tab=2`}>
                       <Button variant="contained" color="secondary">
                         Go to class
                       </Button>

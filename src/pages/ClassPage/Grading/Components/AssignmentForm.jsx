@@ -45,7 +45,6 @@ const AssignmentForm = ({
         <form onBlur={formik.handleSubmit}>
           <Grid
             container
-            xs={12}
             padding={2}
             minHeight={80}
             columnSpacing={3}

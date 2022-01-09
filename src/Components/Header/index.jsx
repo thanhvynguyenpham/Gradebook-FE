@@ -292,13 +292,11 @@ export default function Header({ onCreateClass, onJoinClass, isAtMainPage }) {
   const getNotificationLink = (notification) => {
     switch (notification.type) {
       case "finalize":
-        return `/class/${notification.classId}`;
+        return `/class/${notification.classId}?tab=2`;
       case "reply":
-        return `/reviews/${notification.requestId}`;
       case "decision":
-        return `/reviews/${notification.requestId}`;
       case "request":
-        return `/reviews`;
+        return `/reviews/${notification.requestId}`;
       default:
         return `/`;
     }

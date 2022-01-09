@@ -44,13 +44,12 @@ const Marks = ({
         console.log(error);
       });
   };
-  useEffect(() => {
-    getGradeBoard();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    getGradeBoard();
-  }, [assignments, students]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (classDetails._id !== undefined) {
+      getGradeBoard();
+    }
+  }, [assignments, students, classDetails]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleBlur = (event, student, index, identity) => {
     if (event.target.value > 10 || event.target.value < 0) {
@@ -75,7 +74,7 @@ const Marks = ({
     };
     patchAuth(`/class/${classDetails._id}/cell-grades-board`, body)
       .then((response) => {
-        updateStudent(response.data, index);
+        setStudentList(response.data);
       })
       .catch((error) => {
         console.log(error);
@@ -121,14 +120,6 @@ const Marks = ({
         setAlertMessage(error.response.data.message);
         setOpenAlertMessage(true);
       });
-  };
-
-  const updateStudent = (student, index) => {
-    let newList = [...studentList];
-    if (newList[index]) {
-      newList[index] = student;
-      setStudentList(newList);
-    }
   };
 
   const handleOpenDialog = () => {

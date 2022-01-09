@@ -70,12 +70,11 @@ const Members = ({ classDetails, hidden, teachersList, studentsList }) => {
   return (
     <div hidden={hidden}>
       <Container>
-        <Grid container spacing={2} xs={12} justifyContent="center">
+        <Grid container spacing={2} justifyContent="center">
           <Grid item xs={12} sm={8} md={7}>
             <Stack spacing={1} width={"100%"}>
               <Grid
                 container
-                xs={12}
                 sx={{ mt: 4, mb: 2 }}
                 justifyContent="space-between"
               >
@@ -116,7 +115,6 @@ const Members = ({ classDetails, hidden, teachersList, studentsList }) => {
             <Stack spacing={1} width={"100%"}>
               <Grid
                 container
-                xs={12}
                 sx={{ mt: 4, mb: 2 }}
                 justifyContent="space-between"
               >

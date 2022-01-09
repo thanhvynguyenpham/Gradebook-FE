@@ -7,18 +7,23 @@ import Header from "../../Components/Header";
 import { addID } from "../../Utils/converters";
 import { getAuth } from "../../Utils/httpHelpers";
 import { getLocalUser } from "../../Utils/localStorageGetSet";
+import { useQuery } from "../../Utils/utils";
 import "../Home/Main/index.scss";
 import DashBoard from "./Dashboard";
 import Grading from "./Grading";
 import Members from "./Members";
 import StudentGrading from "./StudentGrading";
-
+const listTab = [0, 1, 2];
 const ClassPage = () => {
   const { id } = useParams();
+  let query = useQuery();
+  const tab = +query.get("tab");
   const user = getLocalUser();
   const history = useHistory();
-
-  const [value, setValue] = React.useState(0);
+  const checkTab = (tab) => {
+    return listTab.includes(tab);
+  };
+  const [value, setValue] = React.useState(checkTab(tab) ? tab : 0);
   const [classDetails, setClassDetails] = useState([]);
   const [studentsList, setStudentsList] = useState([]);
   const [teachersList, setTeachersList] = useState([]);
@@ -145,7 +150,6 @@ const ClassPage = () => {
       />
       {classDetails && classDetails.role !== "student" ? (
         <Grading
-          hidden={value !== 2}
           gradeStructure={gradeStructure}
           classDetails={classDetails}
           updateGradeStructure={updateGradeStructure}

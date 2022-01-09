@@ -166,12 +166,7 @@ function GradeStructure({
                 ref={provided.innerRef}
               >
                 <Paper elevation={3} className="top-panel">
-                  <Grid
-                    container
-                    xs={12}
-                    justifyContent="space-between"
-                    padding={2}
-                  >
+                  <Grid container justifyContent="space-between" padding={2}>
                     <Grid item>
                       <Typography variant="h5" component="div">
                         Grade structure
@@ -211,7 +206,7 @@ function GradeStructure({
                   </Draggable>
                 ))}
                 {provided.placeholder}
-                <Grid container xs={12} justifyContent="center">
+                <Grid container justifyContent="center">
                   <Grid item>
                     <Button
                       variant="contained"

@@ -107,7 +107,7 @@ const UploadGradeForm = ({
     >
       <DialogTitle id="alert-dialog-title">Upload Marksheet</DialogTitle>
       <DialogContent>
-        <Grid container xs={12} justifyContent="space-evenly" spacing={2}>
+        <Grid container justifyContent="space-evenly" spacing={2}>
           <Grid item xs={4}>
             <FormControl fullWidth variant="standard" size="small">
               <InputLabel id="demo-simple-select-label">Assignment</InputLabel>

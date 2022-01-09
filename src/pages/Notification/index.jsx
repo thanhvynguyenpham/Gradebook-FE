@@ -29,7 +29,7 @@ import Snackbars from "../../Components/Snackbars/Snackbars";
 
 const NotificationIcons = {
   finalize: <AssignmentTurnedIn />,
-  reply: <Chat color="primary" />,
+  reply: <Chat />,
   decision: <FactCheck />,
   request: <AutoAwesomeMotion />,
 };
@@ -81,13 +81,11 @@ const Notification = () => {
   const getNotificationLink = (notification) => {
     switch (notification.type) {
       case "finalize":
-        return `/class/${notification.classId}`;
+        return `/class/${notification.classId}?tab=2`;
       case "reply":
-        return `/reviews/${notification.requestId}`;
       case "decision":
-        return `/reviews/${notification.requestId}`;
       case "request":
-        return `/reviews`;
+        return `/reviews/${notification.requestId}`;
       default:
         return `/`;
     }
