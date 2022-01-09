@@ -1,7 +1,8 @@
-import { Alert, Container, Grid, Snackbar } from "@mui/material";
+import { Container, Grid } from "@mui/material";
 import React, { useState } from "react";
 import { Redirect } from "react-router";
 import Header from "../../Components/Header";
+import Snackbars from "../../Components/Snackbars/Snackbars";
 import { getLocalUser } from "../../Utils/localStorageGetSet";
 import { ProfileForm } from "./Form";
 import "./index.scss";
@@ -48,32 +49,13 @@ export const ProfilePage = () => {
           </Grid>
         </Container>
       </div>
-      <Snackbar
-        open={successMessage}
-        autoHideDuration={4000}
-        onClose={() => setSuccessMessage(false)}
-      >
-        <Alert
-          onClose={() => setSuccessMessage(false)}
-          severity="success"
-          sx={{ width: "100%" }}
-        >
-          {message}
-        </Alert>
-      </Snackbar>
-      <Snackbar
-        open={failedMessage}
-        autoHideDuration={4000}
-        onClose={() => setFailedMessage(false)}
-      >
-        <Alert
-          onClose={() => setFailedMessage(false)}
-          severity="error"
-          sx={{ width: "100%" }}
-        >
-          {message}
-        </Alert>
-      </Snackbar>
+      <Snackbars
+        message={message}
+        successMessage={successMessage}
+        failedMessage={failedMessage}
+        setSuccessMessage={setSuccessMessage}
+        setFailedMessage={setFailedMessage}
+      />
     </div>
   );
 };

@@ -21,6 +21,7 @@ import {
   ViewList,
 } from "@mui/icons-material";
 import {
+  Alert,
   Avatar,
   Badge,
   CircularProgress,
@@ -30,6 +31,7 @@ import {
   ListItemAvatar,
   ListItemIcon,
   ListItemText,
+  Snackbar,
 } from "@mui/material";
 import { useHistory } from "react-router";
 import {
@@ -60,6 +62,9 @@ export default function Header({ onCreateClass, onJoinClass, isAtMainPage }) {
   const [notificationsLoading, setNotificationsLoading] = React.useState(false);
   const [numNoti, setNumNoti] = React.useState(0);
   const [ws, setWs] = React.useState(null);
+  const [alertMessage, setAlertMessage] = React.useState("");
+  const [openAlertMessage, setOpenAlertMessage] = React.useState(false);
+  const [presentNotification, setPresentNotification] = React.useState();
   const user = getLocalUser();
 
   const handleSeenNotification = (value) => {
@@ -69,23 +74,16 @@ export default function Header({ onCreateClass, onJoinClass, isAtMainPage }) {
   };
 
   const setToSeen = (id) => {
-    postAuth(`/noti/${id}/seen`)
-      .then((response) => {
-        setNumNoti(numNoti - 1);
-        let newList = [...notifications];
-        newList.find((value) => value._id === id).seen = true;
-        setNotifications(newList);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    postAuth(`/noti/${id}/seen`).catch((error) => {
+      console.log(error);
+    });
   };
 
   React.useEffect(() => {
     function connect() {
       const accessToken = getLocalAccessToken();
       var ws = new WebSocket(
-        `wss://${process.env.REACT_APP_API_NO_HTTPS_LINK}?token=${accessToken}`
+        `ws://${process.env.REACT_APP_API_NO_HTTPS_LINK}?token=${accessToken}`
       );
       ws.onopen = function () {
         setWs(ws);
@@ -96,6 +94,11 @@ export default function Header({ onCreateClass, onJoinClass, isAtMainPage }) {
         if (data.notis) {
           setNotifications(data.notis);
           setNumNoti(data.numNoSeen);
+          if (data.event === "noti" && data.notis[0]) {
+            setAlertMessage(data.notis[0].message);
+            setOpenAlertMessage(true);
+            setPresentNotification(data.notis[0]);
+          }
         }
       };
 
@@ -210,6 +213,11 @@ export default function Header({ onCreateClass, onJoinClass, isAtMainPage }) {
         setNotificationsLoading(false);
         console.log(error);
       });
+  }
+
+  function handleOnCLickSnackbarNotification() {
+    const link = getNotificationLink(presentNotification);
+    history.push(link);
   }
 
   const menuId = "primary-search-account-menu";
@@ -411,85 +419,101 @@ export default function Header({ onCreateClass, onJoinClass, isAtMainPage }) {
   );
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
-        <Toolbar>
-          <Link to="/" style={{ color: "white" }}>
-            <Typography
-              variant="h6"
-              noWrap
-              component="div"
-              sx={{ display: "block" }}
-            >
-              Gradebook
-            </Typography>
-          </Link>
-          <Box sx={{ flexGrow: 1 }} />
+    <>
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position="static">
+          <Toolbar>
+            <Link to="/" style={{ color: "white" }}>
+              <Typography
+                variant="h6"
+                noWrap
+                component="div"
+                sx={{ display: "block" }}
+              >
+                Gradebook
+              </Typography>
+            </Link>
+            <Box sx={{ flexGrow: 1 }} />
 
-          <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            {isAtMainPage && (
+            <Box sx={{ display: { xs: "none", md: "flex" } }}>
+              {isAtMainPage && (
+                <IconButton
+                  size="large"
+                  edge="end"
+                  aria-label="account of current user"
+                  aria-controls={menuId}
+                  aria-haspopup="true"
+                  onClick={handleAddMenuOpen}
+                  color="inherit"
+                >
+                  <Add />
+                </IconButton>
+              )}
               <IconButton
+                onClick={handleClickNotification}
                 size="large"
-                edge="end"
-                aria-label="account of current user"
-                aria-controls={menuId}
-                aria-haspopup="true"
-                onClick={handleAddMenuOpen}
+                aria-label="Notifications"
                 color="inherit"
               >
-                <Add />
+                <Badge badgeContent={numNoti} color="error">
+                  <Notifications />
+                </Badge>
               </IconButton>
-            )}
-            <IconButton
-              onClick={handleClickNotification}
-              size="large"
-              aria-label="Notifications"
-              color="inherit"
-            >
-              <Badge badgeContent={numNoti} color="error">
-                <Notifications />
-              </Badge>
-            </IconButton>
-            <IconButton
-              onClick={handleClickProfile}
-              size="large"
-              aria-label="Account"
-              color="inherit"
-            >
-              <Avatar aria-label="avatar">
-                {user && nameToAvatar(user.name)}
-              </Avatar>
-            </IconButton>
-          </Box>
+              <IconButton
+                onClick={handleClickProfile}
+                size="large"
+                aria-label="Account"
+                color="inherit"
+              >
+                <Avatar aria-label="avatar">
+                  {user && nameToAvatar(user.name)}
+                </Avatar>
+              </IconButton>
+            </Box>
 
-          <Box sx={{ display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              onClick={handleClickNotification}
-              size="large"
-              aria-label="Notifications"
-              color="inherit"
-            >
-              <Badge badgeContent={numNoti} color="error">
-                <Notifications />
-              </Badge>
-            </IconButton>
-            <IconButton
-              size="large"
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </Box>
-        </Toolbar>
-      </AppBar>
-      {renderProfileMenu}
-      {renderNotificationMenu}
-      {renderAddMenu}
-      {renderMobileMenu}
-    </Box>
+            <Box sx={{ display: { xs: "flex", md: "none" } }}>
+              <IconButton
+                onClick={handleClickNotification}
+                size="large"
+                aria-label="Notifications"
+                color="inherit"
+              >
+                <Badge badgeContent={numNoti} color="error">
+                  <Notifications />
+                </Badge>
+              </IconButton>
+              <IconButton
+                size="large"
+                aria-label="show more"
+                aria-controls={mobileMenuId}
+                aria-haspopup="true"
+                onClick={handleMobileMenuOpen}
+                color="inherit"
+              >
+                <MoreIcon />
+              </IconButton>
+            </Box>
+          </Toolbar>
+        </AppBar>
+        {renderProfileMenu}
+        {renderNotificationMenu}
+        {renderAddMenu}
+        {renderMobileMenu}
+      </Box>
+      <Snackbar
+        open={openAlertMessage}
+        autoHideDuration={4000}
+        onClose={() => setOpenAlertMessage(false)}
+      >
+        <Alert
+          onClose={() => setOpenAlertMessage(false)}
+          severity="info"
+          sx={{ width: "100%", cursor: "pointer" }}
+          onClick={handleOnCLickSnackbarNotification}
+        >
+          {alertMessage}
+        </Alert>
+      </Snackbar>
+    </>
   );
 }

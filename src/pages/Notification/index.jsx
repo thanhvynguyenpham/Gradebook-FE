@@ -16,6 +16,7 @@ import {
   Pagination,
   Skeleton,
   Typography,
+  Button,
 } from "@mui/material";
 import React from "react";
 import { useState } from "react";
@@ -24,6 +25,8 @@ import { useHistory } from "react-router-dom";
 import Header from "../../Components/Header";
 import { NOTIFICATION_ITEMS_PER_PAGE } from "../../enum";
 import { getAuth, postAuth } from "../../Utils/httpHelpers";
+import Snackbars from "../../Components/Snackbars/Snackbars";
+
 const NotificationIcons = {
   finalize: <AssignmentTurnedIn />,
   reply: <Chat color="primary" />,
@@ -38,6 +41,9 @@ const Notification = () => {
   const [page, setPage] = useState(1);
   const [numOfPage, setNumOfPage] = useState(0);
   const [presentList, setPresentList] = useState([]);
+  const [successMessage, setSuccessMessage] = useState(false);
+  const [failedMessage, setFailedMessage] = useState(false);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const num = Math.ceil(notifications.length / NOTIFICATION_ITEMS_PER_PAGE);
@@ -57,20 +63,19 @@ const Notification = () => {
     setPage(value);
     changeList(value - 1);
   };
+  function fetchNotifications() {
+    getAuth(`/noti`)
+      .then((response) => {
+        setNotificationsLoading(false);
+        let list = response.data.notis;
+        setNotifications(list);
+      })
+      .catch((error) => {
+        setNotificationsLoading(false);
+      });
+  }
   useEffect(() => {
-    function fetchNotifications() {
-      setNotificationsLoading(true);
-      getAuth(`/noti`)
-        .then((response) => {
-          setNotificationsLoading(false);
-          let list = response.data.notis;
-          setNotifications(list);
-        })
-        .catch((error) => {
-          setNotificationsLoading(false);
-          console.log(error);
-        });
-    }
+    setNotificationsLoading(true);
     fetchNotifications();
   }, []);
   const getNotificationLink = (notification) => {
@@ -98,6 +103,18 @@ const Notification = () => {
       console.log(error);
     });
   };
+  const handleReadAll = () => {
+    postAuth(`/noti/seen`)
+      .then(() => {
+        fetchNotifications();
+        setMessage("Marked all notifications as read.");
+        setSuccessMessage(true);
+      })
+      .catch((error) => {
+        setMessage(error.response.data.message);
+        setFailedMessage(true);
+      });
+  };
   return (
     <div>
       <Header isAtMainPage={false} />
@@ -110,7 +127,16 @@ const Notification = () => {
           marginTop="30px"
         >
           <Grid item xs={12} sm={10} md={8}>
-            <Typography variant="h4">Notifications</Typography>
+            <Grid container item justifyContent="space-between">
+              <Grid item>
+                <Typography variant="h4">Notifications</Typography>
+              </Grid>
+              <Grid item>
+                <Button onClick={handleReadAll} disabled={notificationsLoading}>
+                  Mark all as read
+                </Button>
+              </Grid>
+            </Grid>
             <List sx={{ width: "100%", mt: "10px" }}>
               {!notificationsLoading && notifications.length === 0 && (
                 <Typography variant="h5" textAlign="center">
@@ -173,6 +199,13 @@ const Notification = () => {
           )}
         </Grid>
       </Container>
+      <Snackbars
+        message={message}
+        successMessage={successMessage}
+        failedMessage={failedMessage}
+        setSuccessMessage={setSuccessMessage}
+        setFailedMessage={setFailedMessage}
+      />
     </div>
   );
 };
