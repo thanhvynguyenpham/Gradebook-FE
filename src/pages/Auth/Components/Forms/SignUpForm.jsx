@@ -13,11 +13,11 @@ import "./index.scss";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
 import { useHistory } from "react-router";
-import { post } from "../../../../Utils/httpHelpers";
-import AlertDialog from "../../../../Components/Alert/AlertDialog";
+import { post } from "Utils/httpHelpers";
+import AlertDialog from "Components/Alert/AlertDialog";
 import { setInterval } from "core-js";
 import { useEffect } from "react";
-import { TIME_LIMIT } from "../../../../enum";
+import { TIME_LIMIT } from "enum";
 
 const validationSchema = yup.object({
   firstname: yup

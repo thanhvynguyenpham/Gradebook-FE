@@ -7,10 +7,10 @@ import "./index.scss";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
-import AlertDialog from "../../../../Components/Alert/AlertDialog";
+import AlertDialog from "Components/Alert/AlertDialog";
 import { useEffect } from "react";
-import { useQuery } from "../../../../Utils/utils";
-import { post } from "../../../../Utils/httpHelpers";
+import { useQuery } from "Utils/utils";
+import { post } from "Utils/httpHelpers";
 
 const passwordValidationSchema = yup.object({
   password: yup.string().required("Please enter new password."),

@@ -1,11 +1,11 @@
 import { Alert, Backdrop, CircularProgress, Snackbar } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import CreateClassForm from "../../Components/Form/CreateClassForm";
-import JoinClassForm from "../../Components/Form/JoinClassForm";
 
-import Header from "../../Components/Header";
-import { getAuth } from "../../Utils/httpHelpers";
-import Main from "./Main";
+import Header from "Components/Header";
+import { getAuth } from "Utils/httpHelpers";
+import Main from "./Components/Main";
+import CreateClassForm from "./Components/Form/CreateClassForm";
+import JoinClassForm from "./Components/Form/JoinClassForm";
 
 export default function Home() {
   const [showCreateForm, setShowCreateForm] = useState(false);

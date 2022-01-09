@@ -1,7 +1,7 @@
 import { Grid } from "@mui/material";
 import React from "react";
-import Class from "../../../Components/Class";
 import "./index.scss";
+import Class from "pages/Home/Components/Class";
 
 export default function Main(props) {
   return (

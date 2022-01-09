@@ -12,8 +12,8 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
-import { postAuth } from "../../Utils/httpHelpers";
-import AlertDialog from "../Alert/AlertDialog";
+import { postAuth } from "Utils/httpHelpers";
+import AlertDialog from "Components/Alert/AlertDialog";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;

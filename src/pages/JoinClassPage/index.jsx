@@ -14,9 +14,9 @@ import {
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router";
 import { Link } from "react-router-dom";
-import Header from "../../Components/Header";
-import { getAuth, postAuth } from "../../Utils/httpHelpers";
-import { useQuery } from "../../Utils/utils";
+import Header from "Components/Header";
+import { getAuth, postAuth } from "Utils/httpHelpers";
+import { useQuery } from "Utils/utils";
 import "./index.scss";
 export const JoinClassPage = () => {
   const { id } = useParams();

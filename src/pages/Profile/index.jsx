@@ -1,9 +1,9 @@
 import { Container, Grid } from "@mui/material";
 import React, { useState } from "react";
 import { Redirect } from "react-router";
-import Header from "../../Components/Header";
-import Snackbars from "../../Components/Snackbars/Snackbars";
-import { getLocalUser } from "../../Utils/localStorageGetSet";
+import Header from "Components/Header";
+import Snackbars from "Components/Snackbars/Snackbars";
+import { getLocalUser } from "Utils/localStorageGetSet";
 import { ProfileForm } from "./Form";
 import "./index.scss";
 

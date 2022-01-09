@@ -15,7 +15,7 @@ import {
   Snackbar,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { getAuth } from "../../../Utils/httpHelpers";
+import { getAuth } from "Utils/httpHelpers";
 import "../Grading/index.scss";
 import CreateRequest from "./Components/CreateRequest";
 function StudentGrading({ hidden, classDetails }) {

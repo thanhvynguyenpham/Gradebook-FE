@@ -14,16 +14,16 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
 import GoogleLogin from "react-google-login";
 import { useHistory } from "react-router-dom";
-import { post } from "../../../../Utils/httpHelpers";
+import { post } from "Utils/httpHelpers";
 import {
   setLocalAccessToken,
   setLocalRefreshToken,
   setLocalUser,
-} from "../../../../Utils/localStorageGetSet";
-import { facebookAuth, googleAuth } from "../../../../Utils/social-services";
-import AlertDialog from "../../../../Components/Alert/AlertDialog";
+} from "Utils/localStorageGetSet";
+import { facebookAuth, googleAuth } from "Utils/social-services";
+import AlertDialog from "Components/Alert/AlertDialog";
 import { useEffect } from "react";
-import { TIME_LIMIT } from "../../../../enum";
+import { TIME_LIMIT } from "enum";
 
 const validationSchema = yup.object({
   email: yup

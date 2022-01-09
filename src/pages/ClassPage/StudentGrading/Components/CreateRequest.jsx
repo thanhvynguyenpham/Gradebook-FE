@@ -16,7 +16,7 @@ import {
   Slide,
   Grid,
 } from "@mui/material";
-import { postAuth } from "../../../../Utils/httpHelpers";
+import { postAuth } from "Utils/httpHelpers";
 import { useState } from "react";
 const validationSchema = yup.object({
   point: yup

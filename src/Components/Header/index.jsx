@@ -39,11 +39,11 @@ import {
   getLocalAccessToken,
   getLocalUser,
   getLoginMethod,
-} from "../../Utils/localStorageGetSet";
+} from "Utils/localStorageGetSet";
 import { Link } from "react-router-dom";
-import { nameToAvatar } from "../../Utils/converters";
-import { getAuth, postAuth, refreshToken } from "../../Utils/httpHelpers";
-import { logoutFacebook } from "../../Utils/social-services";
+import { nameToAvatar } from "Utils/converters";
+import { getAuth, postAuth, refreshToken } from "Utils/httpHelpers";
+import { logoutFacebook } from "Utils/social-services";
 
 const NotificationIcons = {
   finalize: <AssignmentTurnedIn />,

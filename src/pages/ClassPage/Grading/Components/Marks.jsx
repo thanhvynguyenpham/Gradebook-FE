@@ -14,12 +14,7 @@ import {
   Input,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import {
-  deleteAuth,
-  getAuth,
-  patchAuth,
-  postAuth,
-} from "../../../../Utils/httpHelpers";
+import { deleteAuth, getAuth, patchAuth, postAuth } from "Utils/httpHelpers";
 import ExportGradeForm from "./ExportGradeForm";
 import UploadGradeForm from "./UploadGradeForm";
 const Marks = ({

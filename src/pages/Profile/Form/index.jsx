@@ -12,9 +12,9 @@ import {
 import { useFormik } from "formik";
 import * as yup from "yup";
 import React, { useEffect, useState } from "react";
-import { getAuth, patchAuth } from "../../../Utils/httpHelpers";
+import { getAuth, patchAuth } from "Utils/httpHelpers";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { setLocalUserName } from "../../../Utils/localStorageGetSet";
+import { setLocalUserName } from "Utils/localStorageGetSet";
 
 const nameValidationSchema = yup.object({
   firstname: yup

@@ -17,7 +17,7 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { AddCircleOutlined } from "@mui/icons-material";
 
 import "../index.scss";
-import { patchAuth } from "../../../../Utils/httpHelpers";
+import { patchAuth } from "Utils/httpHelpers";
 
 const MAX_SCORE = 10;
 

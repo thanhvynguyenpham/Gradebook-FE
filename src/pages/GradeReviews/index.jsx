@@ -10,9 +10,9 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useState, useEffect } from "react";
-import Header from "../../Components/Header";
+import Header from "Components/Header";
 import ReviewsList from "./Components/ReviewsList";
-import { getAuth } from "../../Utils/httpHelpers";
+import { getAuth } from "Utils/httpHelpers";
 
 function GradeReviews({ hidden }) {
   const [value, setValue] = useState(0);

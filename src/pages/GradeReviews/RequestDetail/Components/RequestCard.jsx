@@ -17,8 +17,8 @@ import {
 } from "@mui/material";
 import "./index.scss";
 import { Link } from "react-router-dom";
-import { patchAuth } from "../../../../Utils/httpHelpers";
-import { convertToLocalDate, nameToAvatar } from "../../../../Utils/converters";
+import { patchAuth } from "Utils/httpHelpers";
+import { convertToLocalDate, nameToAvatar } from "Utils/converters";
 import { useState } from "react";
 
 const RequestCard = ({ showAlert, id, request, setRequest, isLoading }) => {

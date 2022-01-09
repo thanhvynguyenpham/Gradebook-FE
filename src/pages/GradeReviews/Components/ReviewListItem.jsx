@@ -1,6 +1,6 @@
 import { Chip, Grid, Paper, useMediaQuery } from "@mui/material";
 import React from "react";
-import { convertToLocalDate } from "../../../Utils/converters";
+import { convertToLocalDate } from "Utils/converters";
 import "./index.scss";
 
 function ReviewListItem({ requestedList, request }) {

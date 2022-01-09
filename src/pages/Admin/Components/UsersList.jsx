@@ -20,8 +20,8 @@ import { useState } from "react";
 import Title from "./Title";
 import Search from "@mui/icons-material/Search";
 import Clear from "@mui/icons-material/Clear";
-import { filterList, getDateComparator } from "../../Utils/utils";
-import TableSortedHead from "../TableCell.jsx/TableSortedHead";
+import { filterList, getDateComparator } from "Utils/utils";
+import TableSortedHead from "Components/TableCell.jsx/TableSortedHead";
 const UsersList = ({
   isLoading,
   users,

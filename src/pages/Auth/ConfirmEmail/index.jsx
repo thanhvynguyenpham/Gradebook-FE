@@ -8,8 +8,8 @@ import {
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { post } from "../../../Utils/httpHelpers";
-import { useQuery } from "../../../Utils/utils";
+import { post } from "Utils/httpHelpers";
+import { useQuery } from "Utils/utils";
 
 import "../Login/index.scss";
 

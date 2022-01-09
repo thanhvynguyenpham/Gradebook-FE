@@ -20,8 +20,8 @@ import {
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import XLSX from "xlsx";
-import { convertToJson } from "../../../../Utils/converters";
-import { postAuth } from "../../../../Utils/httpHelpers";
+import { convertToJson } from "Utils/converters";
+import { postAuth } from "Utils/httpHelpers";
 
 const UploadGradeForm = ({
   openDialog,

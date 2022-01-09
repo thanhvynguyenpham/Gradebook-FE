@@ -1,6 +1,6 @@
 import React from "react";
 import { Redirect, Route } from "react-router-dom";
-import { getLocalAccessToken } from "../../Utils/localStorageGetSet";
+import { getLocalAccessToken } from "Utils/localStorageGetSet";
 export const PublicRoute = ({ component: Component, ...restOfProps }) => (
   <Route
     {...restOfProps}

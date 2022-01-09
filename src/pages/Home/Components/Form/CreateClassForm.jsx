@@ -7,7 +7,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { postAuth } from "../../Utils/httpHelpers";
+import { postAuth } from "Utils/httpHelpers";
 
 const validationSchema = yup.object({
   classname: yup

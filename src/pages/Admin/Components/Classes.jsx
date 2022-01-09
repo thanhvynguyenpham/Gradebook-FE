@@ -7,7 +7,7 @@ import TableRow from "@mui/material/TableRow";
 import Title from "./Title";
 import Search from "@mui/icons-material/Search";
 import Clear from "@mui/icons-material/Clear";
-import { filterList, getDateComparator } from "../../Utils/utils";
+import { filterList, getDateComparator } from "Utils/utils";
 import {
   Button,
   Paper,
@@ -19,9 +19,9 @@ import {
   IconButton,
 } from "@mui/material";
 import { DoDisturbOff, DoDisturbOn } from "@mui/icons-material";
-import { deleteAuth, postAuth } from "../../Utils/httpHelpers";
-import TableSortedHead from "../TableCell.jsx/TableSortedHead";
-import Snackbars from "../Snackbars/Snackbars";
+import { deleteAuth, postAuth } from "Utils/httpHelpers";
+import TableSortedHead from "Components/TableCell.jsx/TableSortedHead";
+import Snackbars from "Components/Snackbars/Snackbars";
 
 export default function Classes({ classes, setClasses, isLoading }) {
   const [page, setPage] = React.useState(0);

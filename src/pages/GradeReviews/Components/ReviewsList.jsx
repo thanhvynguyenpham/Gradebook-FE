@@ -3,7 +3,7 @@ import { Pagination, Stack, Typography, useMediaQuery } from "@mui/material";
 import ReviewListItem from "./ReviewListItem";
 import { useState } from "react";
 import { useEffect } from "react";
-import { REQUEST_ITEMS_PER_PAGE } from "../../../enum";
+import { REQUEST_ITEMS_PER_PAGE } from "enum";
 import { Link } from "react-router-dom";
 
 export default function ReviewsList({ hidden, list, isRequestedList }) {

@@ -8,7 +8,7 @@ import {
   TextField,
 } from "@mui/material";
 import React, { useState } from "react";
-import { validateEmail } from "../../../../Utils/converters";
+import { validateEmail } from "Utils/converters";
 
 const EmailInvitationDialog = ({
   open,

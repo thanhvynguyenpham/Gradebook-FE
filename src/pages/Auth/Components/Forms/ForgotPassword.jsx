@@ -11,11 +11,11 @@ import { Link } from "react-router-dom";
 import React from "react";
 import "./index.scss";
 import { useState } from "react";
-import { post } from "../../../../Utils/httpHelpers";
-import AlertDialog from "../../../../Components/Alert/AlertDialog";
+import { post } from "Utils/httpHelpers";
+import AlertDialog from "Components/Alert/AlertDialog";
 import { useEffect } from "react";
 import { setInterval } from "core-js";
-import { TIME_LIMIT } from "../../../../enum";
+import { TIME_LIMIT } from "enum";
 
 const validationSchema = yup.object({
   email: yup

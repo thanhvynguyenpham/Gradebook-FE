@@ -1,10 +1,10 @@
 import * as React from "react";
 import { Stack } from "@mui/material";
-import { deleteAuth, postAuth } from "../../Utils/httpHelpers";
+import { deleteAuth, postAuth } from "Utils/httpHelpers";
 import { useState } from "react";
 import UsersList from "./UsersList";
 import NewAdmin from "./NewAdmin";
-import Snackbars from "../Snackbars/Snackbars";
+import Snackbars from "Components/Snackbars/Snackbars";
 
 export default function Accounts({
   users,

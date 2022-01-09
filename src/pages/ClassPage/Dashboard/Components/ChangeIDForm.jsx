@@ -2,7 +2,7 @@ import { Button, Grid, TextField } from "@mui/material";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import React, { useState } from "react";
-import { patchAuth } from "../../../../Utils/httpHelpers";
+import { patchAuth } from "Utils/httpHelpers";
 const validationSchema = yup.object({
   studentID: yup
     .string()

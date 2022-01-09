@@ -14,15 +14,15 @@ import Grid from "@mui/material/Grid";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import LogoutIcon from "@mui/icons-material/Logout";
-import Accounts from "../../Components/DashBoard/Accounts";
+import Accounts from "./Components/Accounts";
 import { ListItem, ListItemIcon, ListItemText, Tooltip } from "@mui/material";
 import ClassIcon from "@mui/icons-material/Class";
 import PeopleIcon from "@mui/icons-material/People";
-import Classes from "../../Components/DashBoard/Classes";
 import { useHistory } from "react-router-dom";
-import { clearLocalStorage } from "../../Utils/localStorageGetSet";
-import { getAuth } from "../../Utils/httpHelpers";
+import { clearLocalStorage } from "Utils/localStorageGetSet";
+import { getAuth } from "Utils/httpHelpers";
 import { useState } from "react";
+import Classes from "pages/Admin/Components/Classes";
 
 const drawerWidth = 240;
 

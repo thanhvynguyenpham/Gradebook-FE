@@ -15,8 +15,8 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
-import { nameToAvatar } from "../../../Utils/converters";
-import { postAuth } from "../../../Utils/httpHelpers";
+import { nameToAvatar } from "Utils/converters";
+import { postAuth } from "Utils/httpHelpers";
 import EmailInvitationDialog from "./Components/EmailInvitationDialog";
 
 const Members = ({ classDetails, hidden, teachersList, studentsList }) => {

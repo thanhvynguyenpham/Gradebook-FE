@@ -18,7 +18,7 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { getAuth } from "../../../Utils/httpHelpers";
+import { getAuth } from "Utils/httpHelpers";
 import "./index.scss";
 
 const DashBoard = ({ classDetails, user, listPosts, hidden, loading }) => {

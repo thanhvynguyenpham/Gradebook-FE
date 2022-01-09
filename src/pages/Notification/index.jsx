@@ -22,10 +22,10 @@ import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import Header from "../../Components/Header";
-import { NOTIFICATION_ITEMS_PER_PAGE } from "../../enum";
-import { getAuth, postAuth } from "../../Utils/httpHelpers";
-import Snackbars from "../../Components/Snackbars/Snackbars";
+import Header from "Components/Header";
+import { NOTIFICATION_ITEMS_PER_PAGE } from "enum";
+import { getAuth, postAuth } from "Utils/httpHelpers";
+import Snackbars from "Components/Snackbars/Snackbars";
 
 const NotificationIcons = {
   finalize: <AssignmentTurnedIn />,

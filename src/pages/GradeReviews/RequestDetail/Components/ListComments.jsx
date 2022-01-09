@@ -11,10 +11,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { nameToAvatar } from "../../../../Utils/converters";
+import { nameToAvatar } from "Utils/converters";
 import { useState } from "react";
-import { getAuth, postAuth } from "../../../../Utils/httpHelpers";
-import { getLocalUser } from "../../../../Utils/localStorageGetSet";
+import { getAuth, postAuth } from "Utils/httpHelpers";
+import { getLocalUser } from "Utils/localStorageGetSet";
 import { useParams } from "react-router-dom";
 
 const ListComments = ({ showAlert, status }) => {

@@ -1,6 +1,6 @@
 import { Input } from "@mui/material";
 import React from "react";
-import { patchAuth } from "../../Utils/httpHelpers";
+import { patchAuth } from "Utils/httpHelpers";
 
 const IDField = ({
   identity,
