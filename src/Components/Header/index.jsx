@@ -83,7 +83,7 @@ export default function Header({ onCreateClass, onJoinClass, isAtMainPage }) {
     function connect() {
       const accessToken = getLocalAccessToken();
       var ws = new WebSocket(
-        `ws://${process.env.REACT_APP_API_NO_HTTPS_LINK}?token=${accessToken}`
+        `wss://${process.env.REACT_APP_API_NO_HTTPS_LINK}?token=${accessToken}`
       );
       ws.onopen = function () {
         setWs(ws);
