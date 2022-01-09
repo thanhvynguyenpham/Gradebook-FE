@@ -150,6 +150,7 @@ const ClassPage = () => {
       />
       {classDetails && classDetails.role !== "student" ? (
         <Grading
+          hidden={value !== 2}
           gradeStructure={gradeStructure}
           classDetails={classDetails}
           updateGradeStructure={updateGradeStructure}
