@@ -108,7 +108,7 @@ const Marks = ({
         // let newArray = [...assignments];
         // newArray[index].finalized = true;
         updateGradeStructure(response.data.gradeStructure);
-        setAlertMessage("Finalized this assignment.");
+        setAlertMessage("Unfinalized this assignment.");
         setOpenAlertMessage(true);
       })
       .catch((error) => {

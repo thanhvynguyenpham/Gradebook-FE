@@ -54,7 +54,12 @@ instance.interceptors.response.use(
 
     if (err.response) {
       // Access Token was expired
-      if (err.response.status === 401 && !originalConfig._retry) {
+      if (
+        err.response.status === 401 &&
+        !originalConfig._retry &&
+        err.response.data.message ===
+          "Not found or Invalid or Expired access token."
+      ) {
         originalConfig._retry = true;
 
         try {
@@ -84,24 +89,19 @@ instance.interceptors.response.use(
   }
 );
 
-export async function refreshToken() {
+export function refreshToken() {
   const access_token = getLocalAccessToken();
   const refresh_token = getLocalRefreshToken();
   if (!refresh_token || !access_token) {
     window.location.replace("/login");
     return;
   }
-  return instance
-    .post("/auth/refresh", {
-      accessToken: access_token,
-      refreshToken: refresh_token,
-    })
-    .then((response) => {
-      const { accessToken } = response.data;
-      setLocalAccessToken(accessToken);
-    });
-}
 
+  return instance.post("/auth/refresh", {
+    accessToken: access_token,
+    refreshToken: refresh_token,
+  });
+}
 export function getAuth(url) {
   return instance.get(endpoint + url);
 }

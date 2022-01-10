@@ -42,8 +42,10 @@ import {
 } from "Utils/localStorageGetSet";
 import { Link } from "react-router-dom";
 import { nameToAvatar } from "Utils/converters";
-import { getAuth, postAuth, refreshToken } from "Utils/httpHelpers";
+import { getAuth, postAuth } from "Utils/httpHelpers";
 import { logoutFacebook } from "Utils/social-services";
+import { refreshToken } from "Utils/httpHelpers";
+import { setLocalAccessToken } from "Utils/localStorageGetSet";
 
 const NotificationIcons = {
   finalize: <AssignmentTurnedIn />,
@@ -80,56 +82,6 @@ export default function Header({ onCreateClass, onJoinClass, isAtMainPage }) {
   };
 
   React.useEffect(() => {
-    function connect() {
-      const accessToken = getLocalAccessToken();
-      var ws = new WebSocket(
-        `wss://${process.env.REACT_APP_API_NO_HTTPS_LINK}?token=${accessToken}`
-      );
-      ws.onopen = function () {
-        setWs(ws);
-      };
-
-      ws.onmessage = function (e) {
-        const data = JSON.parse(e.data);
-        if (data.notis) {
-          setNotifications(data.notis);
-          setNumNoti(data.numNoSeen);
-          if (data.event === "noti" && data.notis[0]) {
-            setAlertMessage(data.notis[0].message);
-            setOpenAlertMessage(true);
-            setPresentNotification(data.notis[0]);
-          }
-        }
-      };
-
-      ws.onclose = function (e) {
-        if (e.code === 4001) {
-          // expired token, get new token and then reconnect
-          refreshToken()
-            .then(() => connect())
-            .catch((error) => {
-              console.log("Cannot get new refresh token, close connection now");
-              // Cannot get new refresh token, close connection now
-              ws.close();
-              setWs(null);
-            });
-        } else {
-          // auto reconnect after 2 seconds
-          setTimeout(function () {
-            connect();
-          }, 2000);
-        }
-      };
-
-      ws.onerror = function (err) {
-        console.error(
-          "Socket encountered error: ",
-          err.message,
-          "Closing socket"
-        );
-        ws.close();
-      };
-    }
     fetchNotifications();
     connect();
     return () => {
@@ -138,6 +90,68 @@ export default function Header({ onCreateClass, onJoinClass, isAtMainPage }) {
       }
     };
   }, []); // eslint-disable-line
+
+  // connect to
+  function connect(token) {
+    const accessToken = token ? token : getLocalAccessToken();
+    var ws = new WebSocket(
+      `wss://${process.env.REACT_APP_API_NO_HTTPS_LINK}?token=${accessToken}`
+    );
+    ws.onopen = function () {
+      setWs(ws);
+    };
+
+    ws.onmessage = function (e) {
+      const data = JSON.parse(e.data);
+      if (data.notis) {
+        setNotifications(data.notis);
+        setNumNoti(data.numNoSeen);
+        if (data.event === "noti" && data.notis[0]) {
+          setAlertMessage(data.notis[0].message);
+          setOpenAlertMessage(true);
+          setPresentNotification(data.notis[0]);
+        }
+      }
+    };
+
+    ws.onclose = function (e) {
+      // auto reconnect after 10 seconds
+      setTimeout(function () {
+        check(e);
+      }, 10000);
+    };
+
+    ws.onerror = function (err) {
+      console.error(
+        "Socket encountered error: ",
+        err.message,
+        "Closing socket"
+      );
+      ws.close();
+    };
+  }
+  //check if websocket instance is closed, if so call `connect` function.
+  const check = (e) => {
+    if (!ws || ws.readyState === WebSocket.CLOSED) {
+      if (e.code === 4001) {
+        // expired token, get new token and then reconnect
+        refreshToken()
+          .then((rs) => {
+            const { accessToken } = rs.data;
+            setLocalAccessToken(accessToken);
+            connect(accessToken);
+          })
+          .catch((error) => {
+            console.log("Cannot get new refresh token, close connection now");
+            // Cannot get new refresh token, close connection now
+            ws.close();
+            setWs(null);
+          });
+      } else {
+        connect();
+      }
+    }
+  };
 
   const openProfileMenu = Boolean(anchorElProfile);
 

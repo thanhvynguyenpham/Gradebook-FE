@@ -111,7 +111,6 @@ export const LoginForm = ({
       .catch((error) => {
         closeLoadingScreen();
         switch (error.response.status) {
-          case 400:
           case 401:
             showFailedAlert(
               "Cannot login with your Google Account. Please try again!"
