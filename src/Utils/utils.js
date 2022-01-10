@@ -19,8 +19,6 @@ export const filterList = (list, cols, searchValue) => {
   const searchRegex = new RegExp(escapeRegExp(normalizedSearchText), "i");
   const filteredRows = list.filter((row) => {
     return cols.some((field) => {
-      console.log(row);
-      console.log(field);
       return searchRegex.test(
         row[field] &&
           row[field]

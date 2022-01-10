@@ -22,6 +22,8 @@ import { DoDisturbOff, DoDisturbOn } from "@mui/icons-material";
 import { deleteAuth, postAuth } from "Utils/httpHelpers";
 import TableSortedHead from "Components/TableCell.jsx/TableSortedHead";
 import Snackbars from "Components/Snackbars/Snackbars";
+import ClassDetail from "./ClassDetail";
+import { useState } from "react";
 
 export default function Classes({ classes, setClasses, isLoading }) {
   const [page, setPage] = React.useState(0);
@@ -33,6 +35,16 @@ export default function Classes({ classes, setClasses, isLoading }) {
   const [successMessage, setSuccessMessage] = React.useState(false);
   const [failedMessage, setFailedMessage] = React.useState(false);
   const [message, setMessage] = React.useState("");
+  const [openDetail, setOpenDetail] = useState(false);
+  const [activeClass, setActiveClass] = useState();
+  const handleOpenDetail = (presentClass) => {
+    setOpenDetail(true);
+    console.log(presentClass);
+    setActiveClass(presentClass);
+  };
+  const handleClose = () => {
+    setOpenDetail(false);
+  };
 
   React.useEffect(() => {
     handleSearch(searchText);
@@ -94,6 +106,11 @@ export default function Classes({ classes, setClasses, isLoading }) {
 
   return (
     <>
+      <ClassDetail
+        open={openDetail}
+        handleClose={handleClose}
+        activeClass={activeClass}
+      />
       <Paper
         sx={{
           width: "100%",
@@ -172,7 +189,11 @@ export default function Classes({ classes, setClasses, isLoading }) {
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => {
                       return (
-                        <TableRow key={index}>
+                        <TableRow
+                          key={index}
+                          onClick={() => handleOpenDetail(row)}
+                          sx={{ cursor: "pointer" }}
+                        >
                           <TableCell width="270px">{row.name}</TableCell>
                           <TableCell width="200px">
                             {row.createdUser.name}
